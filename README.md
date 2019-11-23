@@ -5,6 +5,10 @@ addressing a growing number of use cases. As the heart of the Elastic Stack,
 it centrally stores your data so you can discover the expected and uncover the
 unexpected.
 
+## Java Client
+
+See official documentation [Java High Level REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html).
+
 ## Unit Test
 
 <https://www.elastic.co/guide/en/elasticsearch/reference/current/unit-tests.html>
@@ -24,3 +28,5 @@ run.
   <https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html>
 - Elastic, "Java Testing Framework", Elastic, 2019.
   <https://www.elastic.co/guide/en/elasticsearch/reference/current/testing-framework.html>
+- Elastic, "Java High Level REST Client", Elastic, 2019.
+  <https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html>
