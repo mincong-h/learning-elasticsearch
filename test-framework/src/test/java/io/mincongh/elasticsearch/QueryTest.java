@@ -2,8 +2,7 @@ package io.mincongh.elasticsearch;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.get.*;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.rest.RestStatus;
@@ -12,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test query APIs in Elasticsearch: {@link GetRequest}.
+ * Test query APIs in Elasticsearch: {@link GetRequest}, {@link MultiGetRequest}.
  *
  * @author Mincong Huang
  */
@@ -60,5 +59,29 @@ public class QueryTest extends ESSingleNodeTestCase {
     assertEquals("Sansa", source.get("firstName"));
     assertEquals("Stark", source.get("lastName"));
     assertEquals("2019-11-23", source.get("datetime"));
+  }
+
+  @Test
+  public void multiGetRequest() {
+    MultiGetRequest request =
+        new MultiGetRequest() //
+            .add("users", "sansa")
+            .add("users", "arya");
+    MultiGetResponse response = node().client().multiGet(request).actionGet();
+    MultiGetItemResponse[] responses = response.getResponses();
+
+    assertEquals("users", responses[0].getIndex());
+    assertEquals("sansa", responses[0].getId());
+    Map<String, Object> source0 = responses[0].getResponse().getSourceAsMap();
+    assertEquals("Sansa", source0.get("firstName"));
+    assertEquals("Stark", source0.get("lastName"));
+    assertEquals("2019-11-23", source0.get("datetime"));
+
+    assertEquals("users", responses[1].getIndex());
+    assertEquals("arya", responses[1].getId());
+    Map<String, Object> source1 = responses[1].getResponse().getSourceAsMap();
+    assertEquals("Arya", source1.get("firstName"));
+    assertEquals("Stark", source1.get("lastName"));
+    assertEquals("2019-11-23", source1.get("datetime"));
   }
 }
