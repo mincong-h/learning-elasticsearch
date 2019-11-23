@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.mincongh</groupId>
+  <artifactId>learning-elasticsearch-parent</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Learning Elasticsearch - Parent</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
+    <!--
+      Elasticsearch/Lucene Version Mapping:
+      https://github.com/elastic/elasticsearch/blob/master/server/src/main/java/org/elasticsearch/Version.java#L58-L76
+     -->
+    <elasticsearch.version>7.4.2</elasticsearch.version>
+    <!--
+      Dependencies should be aligned with Elasticsearch Testing Framework's
+      requirement. Inspect Maven dependency tree to find out the right version:
+
+          mvn dependency:tree
+     -->
+    <apache.log4j.version>2.7</apache.log4j.version>
+    <junit.version>4.12</junit.version>
+    <assertj.version>3.13.2</assertj.version>
+  </properties>
+
+  <modules>
+    <module>test-framework</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.elasticsearch.test</groupId>
+        <artifactId>framework</artifactId>
+        <version>${elasticsearch.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${apache.log4j.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
