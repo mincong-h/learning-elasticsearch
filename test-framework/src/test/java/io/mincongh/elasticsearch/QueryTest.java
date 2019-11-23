@@ -2,16 +2,28 @@ package io.mincongh.elasticsearch;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.*;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test query APIs in Elasticsearch: {@link GetRequest}, {@link MultiGetRequest}.
+ * Test query APIs in Elasticsearch:
+ *
+ * <ul>
+ *   <li>{@link GetRequest}
+ *   <li>{@link MultiGetRequest}
+ *   <li>{@link SearchRequest}.
+ * </ul>
  *
  * @author Mincong Huang
  */
@@ -32,19 +44,20 @@ public class QueryTest extends ESSingleNodeTestCase {
     arya.put("lastName", "Stark");
     arya.put("datetime", "2019-11-23");
 
-    IndexResponse r1 =
+    BulkResponse response =
         node()
             .client()
-            .index(new IndexRequest().index("users").id("sansa").source(sansa))
-            .actionGet();
-    IndexResponse r2 =
-        node()
-            .client()
-            .index(new IndexRequest().index("users").id("arya").source(arya))
+            .prepareBulk()
+            .add(new IndexRequest().index("users").id("sansa").source(sansa))
+            .add(new IndexRequest().index("users").id("arya").source(arya))
+            .setRefreshPolicy(RefreshPolicy.WAIT_UNTIL)
+            .execute()
             .actionGet();
 
-    assertEquals(RestStatus.CREATED, r1.status());
-    assertEquals(RestStatus.CREATED, r2.status());
+    assertEquals(RestStatus.OK, response.status());
+    for (BulkItemResponse r : response.getItems()) {
+      assertEquals(RestStatus.CREATED, r.status());
+    }
   }
 
   @Test
@@ -83,5 +96,20 @@ public class QueryTest extends ESSingleNodeTestCase {
     assertEquals("Arya", source1.get("firstName"));
     assertEquals("Stark", source1.get("lastName"));
     assertEquals("2019-11-23", source1.get("datetime"));
+  }
+
+  @Test
+  public void searchRequest() {
+    SearchResponse response =
+        node()
+            .client()
+            .prepareSearch("users")
+            .setQuery(QueryBuilders.termQuery("lastName", "stark"))
+            .get();
+
+    SearchHits hits = response.getHits();
+    assertEquals(2L, hits.getTotalHits().value);
+    assertEquals("sansa", hits.getHits()[0].getId());
+    assertEquals("arya", hits.getHits()[1].getId());
   }
 }
