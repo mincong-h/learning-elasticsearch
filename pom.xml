@@ -28,7 +28,6 @@
      -->
     <apache.log4j.version>2.7</apache.log4j.version>
     <junit.version>4.12</junit.version>
-    <assertj.version>3.13.2</assertj.version>
   </properties>
 
   <modules>
@@ -52,11 +51,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
