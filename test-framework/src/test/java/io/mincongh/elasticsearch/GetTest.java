@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
@@ -54,8 +53,14 @@ public class GetTest extends ESSingleNodeTestCase {
 
   @Test
   public void getRequest() {
-    GetRequest request = new GetRequest().index("users").id("sansa");
-    GetResponse response = node().client().get(request).actionGet();
+    GetResponse response =
+        node()
+            .client() //
+            .prepareGet()
+            .setIndex("users")
+            .setId("sansa")
+            .execute()
+            .actionGet();
 
     assertEquals("users", response.getIndex());
     assertEquals("sansa", response.getId());
