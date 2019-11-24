@@ -17,7 +17,7 @@ import org.junit.Test;
  *     href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-document-index.html">Index
  *     API | Java REST Client | Elastic</a>
  */
-public class IndexingTest extends ESSingleNodeTestCase {
+public class IndexTest extends ESSingleNodeTestCase {
 
   @Test
   public void indexing() {
