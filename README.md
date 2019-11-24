@@ -20,6 +20,20 @@ the `ESTokenStreamTestCase` class. Those specific classes execute additional
 checks which ensure that no resources leaks are happening, after the test has
 run.
 
+## JAR Hell
+
+If you work with IntelliJ, you need to follow the official instruction [Configuring
+IDEs and running tests][jar-hell]
+to avoid JAR Hell. In particular:
+
+- Set VM option `idea.no.launcher=true` in _"Help > Edit VM Options"_
+- Remove `ant-javafx.jar` from the classpath of your SDK in _"Project Structure (`cmd` + `;`) > 1.8 (Java 8) > Classpath"_
+
+If you still get JAR hell problem, see the [official link][jar-hell] to get up-to-date
+instructions.
+
+[jar-hell]: https://github.com/elastic/elasticsearch/blob/master/CONTRIBUTING.md#configuring-ides-and-running-tests
+
 ## References
 
 - Elastic, "Getting started with Elasticsearch", Elastic, 2019.
