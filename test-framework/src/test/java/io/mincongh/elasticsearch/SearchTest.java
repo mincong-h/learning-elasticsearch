@@ -37,12 +37,17 @@ public class SearchTest extends ESSingleNodeTestCase {
     arya.put("firstName", "Arya");
     arya.put("lastName", "Stark");
 
+    Map<String, String> tyrion = new HashMap<>();
+    tyrion.put("firstName", "Tyrion");
+    tyrion.put("lastName", "Lannister");
+
     BulkResponse response =
         node()
             .client()
             .prepareBulk()
             .add(new IndexRequest().index("users").id("sansa").source(sansa))
             .add(new IndexRequest().index("users").id("arya").source(arya))
+            .add(new IndexRequest().index("users").id("tyrion").source(tyrion))
             .setRefreshPolicy(RefreshPolicy.WAIT_UNTIL)
             .execute()
             .actionGet();
