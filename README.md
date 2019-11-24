@@ -1,4 +1,4 @@
-# Learning Elasticsearch
+# Learning Elasticsearch [![CircleCI](https://circleci.com/gh/mincong-h/learning-elasticsearch.svg?style=svg)](https://circleci.com/gh/mincong-h/learning-elasticsearch)
 
 Elasticsearch is a distributed, RESTful search and analytics engine capable of
 addressing a growing number of use cases. As the heart of the Elastic Stack,
