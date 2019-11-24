@@ -10,9 +10,12 @@ import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.junit.Test;
 
 /**
- * Test {@link IndexRequest} in Elasticsearch.
+ * Tests "Index API".
  *
  * @author Mincong Huang
+ * @see <a
+ *     href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-document-index.html">Index
+ *     API | Java REST Client | Elastic</a>
  */
 public class IndexingTest extends ESSingleNodeTestCase {
 
@@ -42,7 +45,6 @@ public class IndexingTest extends ESSingleNodeTestCase {
     Map<String, String> source = new HashMap<>();
     source.put("firstName", "Sansa");
     source.put("lastName", "Stark");
-    source.put("date", "2019-11-23");
     return source;
   }
 }
