@@ -115,4 +115,17 @@ public class SearchTest extends ESSingleNodeTestCase {
     SearchHits hits = response.getHits();
     assertEquals(5L, hits.getTotalHits().value);
   }
+
+  @Test
+  public void searchApi_matchPhraseQuery() {
+    SearchResponse response =
+        node()
+            .client()
+            .prepareSearch("users")
+            .setQuery(QueryBuilders.matchPhraseQuery("house", "House Lannister"))
+            .get();
+
+    SearchHits hits = response.getHits();
+    assertEquals(3L, hits.getTotalHits().value);
+  }
 }
