@@ -9,11 +9,11 @@ import org.junit.Test;
  *
  * @author Mincong Huang
  */
-@ClusterScope(numDataNodes = 3)
+@ClusterScope(numDataNodes = 1)
 public class ClusterTest extends ESIntegTestCase {
 
   @Test
   public void numDataNodes() {
-    assertEquals(3, cluster().numDataNodes());
+    assertEquals(1, cluster().numDataNodes());
   }
 }
