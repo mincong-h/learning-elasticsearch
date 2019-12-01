@@ -32,6 +32,7 @@
 
   <modules>
     <module>test-framework</module>
+    <module>docker</module>
   </modules>
 
   <dependencyManagement>
@@ -71,8 +72,27 @@
             <argLine>--enable-preview</argLine>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>0.26.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
 
+  <profiles>
+    <profile>
+      <id>skip-tests</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <properties>
+        <docker.skip>true</docker.skip>
+      </properties>
+    </profile>
+  </profiles>
 </project>

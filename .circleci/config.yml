@@ -18,6 +18,9 @@ jobs:
     steps:
       - checkout
 
+      # Set up Docker environment
+      - setup_remote_docker
+
       # Download and cache dependencies
       - restore_cache:
           keys:
