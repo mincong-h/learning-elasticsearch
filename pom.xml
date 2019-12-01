@@ -27,6 +27,9 @@
           mvn dependency:tree
      -->
     <apache.log4j.version>2.7</apache.log4j.version>
+    <assertj.version>3.13.2</assertj.version>
+    <jackson.version>2.10.1</jackson.version>
+    <json.unit.version>2.11.1</json.unit.version>
     <junit.version>4.12</junit.version>
   </properties>
 
@@ -38,9 +41,28 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-assertj</artifactId>
+        <version>${json.unit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.elasticsearch.test</groupId>
         <artifactId>framework</artifactId>
         <version>${elasticsearch.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -49,9 +71,10 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -68,6 +91,14 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M4</version>
+          <configuration>
+            <argLine>--enable-preview</argLine>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.0.0-M4</version>
           <configuration>
             <argLine>--enable-preview</argLine>
           </configuration>
@@ -79,6 +110,44 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <!--
+              Disable Security Manager set up by Elasticsearch test case
+              because it prevents Jackson to serialize POJOs
+              (ReflectionPermission) and we don't need this security
+              enforcement when testing client-side Elasticsearch features.
+             -->
+            <tests.security.manager>false</tests.security.manager>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <!--
+              Disable Security Manager set up by Elasticsearch test case
+              because it prevents Jackson to serialize POJOs
+              (ReflectionPermission) and we don't need this security
+              enforcement when testing client-side Elasticsearch features.
+             -->
+            <tests.security.manager>false</tests.security.manager>
+          </systemPropertyVariables>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>
