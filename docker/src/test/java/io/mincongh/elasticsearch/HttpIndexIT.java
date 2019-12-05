@@ -7,11 +7,19 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+import org.apache.http.HttpHost;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.rest.RestStatus;
 import org.junit.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class HttpIndexIT {
 
@@ -60,6 +68,18 @@ public class HttpIndexIT {
           .containsEntry("failed", BigDecimal.valueOf(0));
     } finally {
       conn.disconnect();
+    }
+  }
+
+  @Test
+  public void itShouldIndexWithRestClient() throws Exception {
+    var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+    var idxRequest =
+        new IndexRequest("msg").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
+    try (var client = new RestHighLevelClient(builder)) {
+      var idxResponse = client.index(idxRequest, RequestOptions.DEFAULT);
+      assertEquals("msg", idxResponse.getIndex());
+      assertEquals(RestStatus.CREATED, idxResponse.status());
     }
   }
 }
