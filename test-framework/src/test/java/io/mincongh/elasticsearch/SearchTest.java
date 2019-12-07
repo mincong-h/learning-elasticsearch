@@ -1,5 +1,6 @@
 package io.mincongh.elasticsearch;
 
+import java.util.Map;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -17,7 +18,8 @@ import org.junit.Test;
  * Tests Search APIs.
  *
  * @author Mincong Huang
- * @see <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/_search_apis.html">Search
+ * @see <a
+ *     href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/_search_apis.html">Search
  *     APIs | Java REST Client | Elastic</a>
  */
 public class SearchTest extends ESSingleNodeTestCase {
@@ -31,46 +33,60 @@ public class SearchTest extends ESSingleNodeTestCase {
         node()
             .client()
             .prepareBulk()
-            .add(new IndexRequest("users").id("sansa").source("""
-                {
-                  "firstName": "Sansa",
-                  "lastName": "Stark",
-                  "gender": "female",
-                  "house": "House Stark"
-                }
-                """, XContentType.JSON))
-            .add(new IndexRequest("users").id("arya").source("""
-                {
-                  "firstName": "Arya",
-                  "lastName": "Stark",
-                  "gender": "female",
-                  "house": "House Stark"
-                }
-                """, XContentType.JSON))
-            .add(new IndexRequest("users").id("tyrion").source("""
-                {
-                  "firstName": "Tyrion",
-                  "lastName": "Lannister",
-                  "gender": "male",
-                  "house": "House Lannister"
-                }
-                """, XContentType.JSON))
-            .add(new IndexRequest("users").id("jaime").source("""
-                {
-                  "firstName": "Jaime",
-                  "lastName": "Lannister",
-                  "gender": "male",
-                  "house": "House Lannister"
-                }
-                """, XContentType.JSON))
-            .add(new IndexRequest("users").id("cersei").source("""
-                {
-                  "firstName": "Cersei",
-                  "lastName": "Lannister",
-                  "gender": "female",
-                  "house": "House Lannister"
-                }
-                """, XContentType.JSON))
+            .add(
+                new IndexRequest("users")
+                    .id("sansa")
+                    .source(
+                        Map.of(
+                            "firstName", "Sansa",
+                            "lastName", "Stark",
+                            "gender", "female",
+                            "house", "House Stark"),
+                        XContentType.JSON))
+            .add(
+                new IndexRequest("users")
+                    .id("arya")
+                    .source(
+                        Map.of(
+                            "firstName", "Arya",
+                            "lastName", "Stark",
+                            "gender", "female",
+                            "house", "House Stark"),
+                        XContentType.JSON))
+            .add(
+                new IndexRequest("users")
+                    .id("tyrion")
+                    .source(
+                        Map.of(
+                            "firstName",
+                            "Tyrion",
+                            "lastName",
+                            "Lannister",
+                            "gender",
+                            "male",
+                            "house",
+                            "House Lannister"),
+                        XContentType.JSON))
+            .add(
+                new IndexRequest("users")
+                    .id("jaime")
+                    .source(
+                        Map.of(
+                            "firstName", "Jaime",
+                            "lastName", "Lannister",
+                            "gender", "male",
+                            "house", "House Lannister"),
+                        XContentType.JSON))
+            .add(
+                new IndexRequest("users")
+                    .id("cersei")
+                    .source(
+                        Map.of(
+                            "firstName", "Cersei",
+                            "lastName", "Lannister",
+                            "gender", "female",
+                            "house", "House Lannister"),
+                        XContentType.JSON))
             .setRefreshPolicy(RefreshPolicy.WAIT_UNTIL)
             .execute()
             .actionGet();
@@ -106,7 +122,7 @@ public class SearchTest extends ESSingleNodeTestCase {
   @Test
   public void searchApi_allMatchQuery() {
     SearchResponse response =
-        node()
+        node() //
             .client()
             .prepareSearch("users")
             .setQuery(QueryBuilders.matchAllQuery())
