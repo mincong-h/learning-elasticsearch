@@ -54,7 +54,7 @@ public class IndexTest extends ESSingleNodeTestCase {
             .id("sansa")
             .source(source);
 
-    IndexResponse idxResponse = node().client().index(idxRequest).actionGet();
+    IndexResponse idxResponse = client().index(idxRequest).actionGet();
     assertEquals("users", idxResponse.getIndex());
     assertEquals(RestStatus.CREATED, idxResponse.status());
     assertEquals("sansa", idxResponse.getId());

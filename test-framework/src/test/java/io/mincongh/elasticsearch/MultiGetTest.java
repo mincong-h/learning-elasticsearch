@@ -38,8 +38,7 @@ public class MultiGetTest extends ESSingleNodeTestCase {
     arya.put("lastName", "Stark");
 
     BulkResponse response =
-        node()
-            .client()
+        client() //
             .prepareBulk()
             .add(new IndexRequest().index("users").id("sansa").source(sansa))
             .add(new IndexRequest().index("users").id("arya").source(arya))
@@ -59,7 +58,7 @@ public class MultiGetTest extends ESSingleNodeTestCase {
         new MultiGetRequest() //
             .add("users", "sansa")
             .add("users", "arya");
-    MultiGetResponse response = node().client().multiGet(request).actionGet();
+    MultiGetResponse response = client().multiGet(request).actionGet();
     MultiGetItemResponse[] responses = response.getResponses();
 
     assertEquals("users", responses[0].getIndex());

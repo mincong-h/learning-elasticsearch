@@ -30,8 +30,7 @@ public class SearchTest extends ESSingleNodeTestCase {
     super.setUp();
 
     BulkResponse response =
-        node()
-            .client()
+        client()
             .prepareBulk()
             .add(
                 new IndexRequest("users")
@@ -107,8 +106,7 @@ public class SearchTest extends ESSingleNodeTestCase {
   @Test
   public void searchApi_termQueryQuery() {
     SearchResponse response =
-        node()
-            .client()
+        client()
             .prepareSearch("users")
             .setQuery(QueryBuilders.termQuery("lastName", "stark"))
             .get();
@@ -122,8 +120,7 @@ public class SearchTest extends ESSingleNodeTestCase {
   @Test
   public void searchApi_allMatchQuery() {
     SearchResponse response =
-        node() //
-            .client()
+        client() //
             .prepareSearch("users")
             .setQuery(QueryBuilders.matchAllQuery())
             .get();
@@ -135,8 +132,7 @@ public class SearchTest extends ESSingleNodeTestCase {
   @Test
   public void searchApi_matchPhraseQuery() {
     SearchResponse response =
-        node()
-            .client()
+        client() //
             .prepareSearch("users")
             .setQuery(QueryBuilders.matchPhraseQuery("house", "House Lannister"))
             .get();

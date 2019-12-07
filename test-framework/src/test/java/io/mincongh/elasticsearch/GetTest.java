@@ -36,8 +36,7 @@ public class GetTest extends ESSingleNodeTestCase {
     arya.put("lastName", "Stark");
 
     BulkResponse response =
-        node()
-            .client()
+        client()
             .prepareBulk()
             .add(new IndexRequest().index("users").id("sansa").source(sansa))
             .add(new IndexRequest().index("users").id("arya").source(arya))
@@ -54,8 +53,7 @@ public class GetTest extends ESSingleNodeTestCase {
   @Test
   public void getRequest() {
     GetResponse response =
-        node()
-            .client() //
+        client() //
             .prepareGet()
             .setIndex("users")
             .setId("sansa")
