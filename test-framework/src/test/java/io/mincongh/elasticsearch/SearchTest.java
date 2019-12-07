@@ -86,7 +86,7 @@ public class SearchTest extends ESSingleNodeTestCase {
                             "gender", "female",
                             "house", "House Lannister"),
                         XContentType.JSON))
-            .setRefreshPolicy(RefreshPolicy.WAIT_UNTIL)
+            .setRefreshPolicy(RefreshPolicy.IMMEDIATE)
             .execute()
             .actionGet();
 

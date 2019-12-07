@@ -42,7 +42,7 @@ public class MultiGetTest extends ESSingleNodeTestCase {
             .prepareBulk()
             .add(new IndexRequest().index("users").id("sansa").source(sansa))
             .add(new IndexRequest().index("users").id("arya").source(arya))
-            .setRefreshPolicy(RefreshPolicy.WAIT_UNTIL)
+            .setRefreshPolicy(RefreshPolicy.IMMEDIATE)
             .execute()
             .actionGet();
 
