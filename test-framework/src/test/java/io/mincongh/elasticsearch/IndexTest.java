@@ -96,4 +96,13 @@ public class IndexTest extends ESSingleNodeTestCase {
     assertEquals(1, shardInfo.getSuccessful());
     assertEquals(1, shardInfo.getTotal());
   }
+
+  @Test
+  public void itShouldIndexContentTypeJson() {
+    IndexRequest idxRequest =
+        new IndexRequest("msg").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
+    IndexResponse idxResponse = client().index(idxRequest).actionGet();
+    assertEquals("msg", idxResponse.getIndex());
+    assertEquals(RestStatus.CREATED, idxResponse.status());
+  }
 }
