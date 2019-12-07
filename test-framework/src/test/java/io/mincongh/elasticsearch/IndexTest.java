@@ -1,8 +1,12 @@
 package io.mincongh.elasticsearch;
 
 import java.util.HashMap;
+import java.util.Map;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.action.support.replication.ReplicationResponse.ShardInfo;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
@@ -40,6 +44,31 @@ public class IndexTest extends ESSingleNodeTestCase {
             .actionGet();
     assertEquals("msg", idxResponse.getIndex());
     assertEquals(RestStatus.CREATED, idxResponse.status());
+  }
+
+  @Test
+  public void itShouldIndexWithBulkRequest() {
+    Map<String, String> sansa = new HashMap<>();
+    sansa.put("firstName", "Sansa");
+    sansa.put("lastName", "Stark");
+
+    Map<String, String> arya = new HashMap<>();
+    arya.put("firstName", "Arya");
+    arya.put("lastName", "Stark");
+
+    BulkResponse response =
+        client()
+            .prepareBulk()
+            .add(new IndexRequest().index("users").id("sansa").source(sansa))
+            .add(new IndexRequest().index("users").id("arya").source(arya))
+            .setRefreshPolicy(RefreshPolicy.WAIT_UNTIL)
+            .execute()
+            .actionGet();
+
+    assertEquals(RestStatus.OK, response.status());
+    for (BulkItemResponse r : response.getItems()) {
+      assertEquals(RestStatus.CREATED, r.status());
+    }
   }
 
   @Test
