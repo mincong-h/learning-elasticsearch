@@ -38,11 +38,11 @@ public class IndexTest extends ESSingleNodeTestCase {
     IndexResponse idxResponse =
         client()
             .prepareIndex()
-            .setIndex("msg")
+            .setIndex("my_index")
             .setSource("{\"msg\":\"Hello world!\"}", XContentType.JSON)
             .execute()
             .actionGet();
-    assertEquals("msg", idxResponse.getIndex());
+    assertEquals("my_index", idxResponse.getIndex());
     assertEquals(RestStatus.CREATED, idxResponse.status());
   }
 
@@ -100,9 +100,9 @@ public class IndexTest extends ESSingleNodeTestCase {
   @Test
   public void itShouldIndexContentTypeJson() {
     IndexRequest idxRequest =
-        new IndexRequest("msg").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
+        new IndexRequest("my_index").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
     IndexResponse idxResponse = client().index(idxRequest).actionGet();
-    assertEquals("msg", idxResponse.getIndex());
+    assertEquals("my_index", idxResponse.getIndex());
     assertEquals(RestStatus.CREATED, idxResponse.status());
   }
 }

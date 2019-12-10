@@ -26,7 +26,7 @@ public class HttpIndexIT {
   @Test
   public void index() throws Exception {
     // HTTP Request
-    URL url = new URL("http://localhost:9200/customer/_doc/sansa?pretty");
+    URL url = new URL("http://localhost:9200/users/_doc/sansa?pretty");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     conn.setDoOutput(true);
     conn.setRequestMethod("PUT");
@@ -48,7 +48,7 @@ public class HttpIndexIT {
       System.out.println(content);
       assertThatJson(content)
           .isObject()
-          .containsEntry("_index", "customer")
+          .containsEntry("_index", "users")
           .containsEntry("_type", "_doc")
           .containsEntry("_id", "sansa")
           /*
@@ -75,10 +75,10 @@ public class HttpIndexIT {
   public void itShouldIndexWithRestClient() throws Exception {
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     var idxRequest =
-        new IndexRequest("msg").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
+        new IndexRequest("my_index").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
     try (var client = new RestHighLevelClient(builder)) {
       var idxResponse = client.index(idxRequest, RequestOptions.DEFAULT);
-      assertEquals("msg", idxResponse.getIndex());
+      assertEquals("my_index", idxResponse.getIndex());
       assertEquals(RestStatus.CREATED, idxResponse.status());
     }
   }
