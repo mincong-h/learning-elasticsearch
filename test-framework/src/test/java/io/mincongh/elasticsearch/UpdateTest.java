@@ -29,6 +29,7 @@ public class UpdateTest extends ESSingleNodeTestCase {
             .execute()
             .actionGet();
     assertEquals(RestStatus.CREATED, response.status());
+    assertEquals(1L, response.getVersion());
   }
 
   @Test
@@ -56,6 +57,9 @@ public class UpdateTest extends ESSingleNodeTestCase {
     var source = response.getGetResult().getSource();
     assertEquals("My Name", source.get("name"));
     assertEquals(28, source.get("age"));
+
+    // And the version is incremented
+    assertEquals(2L, response.getVersion());
   }
 
   @Test
@@ -83,6 +87,9 @@ public class UpdateTest extends ESSingleNodeTestCase {
     // And the source contains the original source
     var source = response.getGetResult().getSource();
     assertEquals(28, source.get("age"));
+
+    // And this is the first version
+    assertEquals(1L, response.getVersion());
   }
 
   @Test
@@ -111,5 +118,8 @@ public class UpdateTest extends ESSingleNodeTestCase {
     var source = response.getGetResult().getSource();
     assertEquals(28, source.get("age"));
     assertEquals("My New Name", source.get("name"));
+
+    // And the version is incremented
+    assertEquals(2L, response.getVersion());
   }
 }
