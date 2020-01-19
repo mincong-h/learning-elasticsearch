@@ -122,4 +122,29 @@ public class UpdateTest extends ESSingleNodeTestCase {
     // And the version is incremented
     assertEquals(2L, response.getVersion());
   }
+
+  @Test
+  public void dropExistingValue() {
+    // Given an existing user "1"
+
+    // When update it with name equal to null
+    var response =
+        client() //
+            .prepareUpdate()
+            .setIndex("users")
+            .setId("1")
+            .setDoc("{\"name\":null}", XContentType.JSON)
+            .setFetchSource(true) // fetch source for testing purpose
+            .setRefreshPolicy(RefreshPolicy.IMMEDIATE)
+            .execute()
+            .actionGet();
+
+    // Then the update is successful and the existing value is overwritten
+    var source = response.getGetResult().getSource();
+    assertTrue(source.containsKey("name"));
+    assertNull(source.get("name"));
+
+    // And the version is incremented
+    assertEquals(2L, response.getVersion());
+  }
 }
