@@ -5,6 +5,47 @@ addressing a growing number of use cases. As the heart of the Elastic Stack,
 it centrally stores your data so you can discover the expected and uncover the
 unexpected.
 
+## Elasticsearch Version
+
+How to find the version of Elasticsearch?
+
+### Docker
+
+Find it from the image:
+
+```
+$ docker ps
+CONTAINER ID        IMAGE                                                 COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+f19c11cb116f        docker.elastic.co/elasticsearch/elasticsearch:7.5.0   "/usr/local/bin/dock…"   46 seconds ago      Up 45 seconds       0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp   elated_dubinsky
+```
+
+### cURL
+
+Use cURL to send a HTTP request to a node, such as localhost:
+
+```
+$ curl localhost:9200
+```
+```json
+{
+  "name" : "f19c11cb116f",
+  "cluster_name" : "es-docker-cluster",
+  "cluster_uuid" : "knFvbP__SkC02BbUag8pEw",
+  "version" : {
+    "number" : "7.5.0",
+    "build_flavor" : "default",
+    "build_type" : "docker",
+    "build_hash" : "e9ccaed468e2fac2275a3761849cbee64b39519f",
+    "build_date" : "2019-11-26T01:06:52.518245Z",
+    "build_snapshot" : false,
+    "lucene_version" : "8.3.0",
+    "minimum_wire_compatibility_version" : "6.8.0",
+    "minimum_index_compatibility_version" : "6.0.0-beta1"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
 ## Java Client
 
 See official documentation [Java High Level REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html).
