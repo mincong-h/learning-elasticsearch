@@ -1,4 +1,4 @@
-package io.mincongh.elasticsearch;
+package io.mincong.elasticsearch;
 
 import java.util.Map;
 import org.elasticsearch.action.bulk.BulkItemResponse;

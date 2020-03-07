@@ -5,13 +5,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>io.mincongh</groupId>
-    <artifactId>learning-elasticsearch-parent</artifactId>
+    <groupId>io.mincong</groupId>
+    <artifactId>es-demo-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>learning-elasticsearch-test-framework</artifactId>
-  <name>Learning Elasticsearch - Testing Framework</name>
+  <artifactId>es-demo-test-framework</artifactId>
+  <name>Elasticsearch Demos - Testing Framework</name>
 
   <dependencies>
     <dependency>

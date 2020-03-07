@@ -1,4 +1,4 @@
-package io.mincongh.elasticsearch;
+package io.mincong.elasticsearch;
 
 import java.util.Map;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
@@ -8,17 +8,18 @@ import org.elasticsearch.test.ESIntegTestCase.ClusterScope;
 import org.junit.Test;
 
 /**
- * Elasticsearch cluster is {@link ClusterHealthStatus#GREEN} when all shards are allocated (both
- * primary and replicas). Here, we have two data nodes: one for primary shard and one for replica
- * shard. Since the condition is satisfied, the cluster health status is GREEN.
+ * Elasticsearch cluster is {@link ClusterHealthStatus#YELLOW} when the primary shard is allocated
+ * but replicas are not. Here, we have only one data node but we need at least two data nodes: one
+ * for primary shard and one for replica shard. Since the condition is not satisfied, the cluster
+ * health status is YELLOW.
  *
  * @author Mincong Huang
  * @see <a
  *     href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html">Cluster
  *     Health API | Elasticsearch Reference</a>
  */
-@ClusterScope(numDataNodes = 2)
-public class GreenClusterIT extends ESIntegTestCase {
+@ClusterScope(numDataNodes = 1)
+public class YelloClusterIT extends ESIntegTestCase {
 
   @Override
   public int minimumNumberOfReplicas() {
@@ -39,7 +40,7 @@ public class GreenClusterIT extends ESIntegTestCase {
         .setRefreshPolicy(RefreshPolicy.IMMEDIATE)
         .execute()
         .actionGet();
-    ClusterHealthStatus status = ensureGreen("users");
-    assertEquals(ClusterHealthStatus.GREEN, status);
+    ClusterHealthStatus status = ensureYellowAndNoInitializingShards("users");
+    assertEquals(ClusterHealthStatus.YELLOW, status);
   }
 }

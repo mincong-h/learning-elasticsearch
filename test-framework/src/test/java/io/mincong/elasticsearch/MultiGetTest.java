@@ -1,4 +1,4 @@
-package io.mincongh.elasticsearch;
+package io.mincong.elasticsearch;
 
 import java.util.HashMap;
 import java.util.Map;

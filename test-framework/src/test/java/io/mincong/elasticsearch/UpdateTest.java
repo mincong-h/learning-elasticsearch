@@ -1,4 +1,4 @@
-package io.mincongh.elasticsearch;
+package io.mincong.elasticsearch;
 
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.common.xcontent.XContentType;

@@ -1,4 +1,4 @@
-package io.mincongh.elasticsearch;
+package io.mincong.elasticsearch;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
