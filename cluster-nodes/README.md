@@ -1,5 +1,7 @@
 # Nodes Information
 
+<https://mincong.io/2020/03/07/elasticsearch-cat-nodes-api/>
+
 The goal is to understand the current state of cluster nodes: the size of the
 cluster, the node types, the load, the disk usage, the Elasticsearch version...
 This is useful when operating an Elasticsearch cluster.
