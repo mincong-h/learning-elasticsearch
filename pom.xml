@@ -38,6 +38,7 @@
     <module>docker</module>
     <module>cluster-nodes</module>
     <module>snapshot</module>
+    <module>search</module>
   </modules>
 
   <dependencyManagement>
