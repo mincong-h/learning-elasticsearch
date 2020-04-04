@@ -37,6 +37,7 @@
     <module>test-framework</module>
     <module>docker</module>
     <module>cluster-nodes</module>
+    <module>mapping</module>
     <module>snapshot</module>
     <module>search</module>
   </modules>
