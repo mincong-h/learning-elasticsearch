@@ -4,6 +4,7 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsRequest;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.junit.Test;
@@ -41,5 +42,33 @@ public class ExplicitMappingTest extends ESSingleNodeTestCase {
                 .sourceAsMap()
                 .get("message");
     Assertions.assertThat(messageField).hasSize(1).containsEntry("type", "text");
+  }
+
+  @Test
+  public void addFieldToExistingMapping() {
+    createIndexWithExplictMapping();
+
+    var putMapping =
+        new PutMappingRequest("my_index")
+            .type("_doc")
+            .source("{\"properties\":{\"description\":{\"type\":\"text\"}}}", XContentType.JSON);
+    var response = client().admin().indices().putMapping(putMapping).actionGet();
+    Assertions.assertThat(response.isAcknowledged()).isTrue();
+
+    var mappingResponse =
+        client()
+            .admin()
+            .indices()
+            .getFieldMappings(
+                new GetFieldMappingsRequest().indices("my_index").fields("description"))
+            .actionGet();
+    @SuppressWarnings("unchecked")
+    var descriptionField =
+        (Map<String, Object>)
+            mappingResponse
+                .fieldMappings("my_index", "_doc", "description")
+                .sourceAsMap()
+                .get("description");
+    Assertions.assertThat(descriptionField).hasSize(1).containsEntry("type", "text");
   }
 }
