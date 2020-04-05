@@ -7,19 +7,19 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
+import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import org.apache.http.HttpHost;
+import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class HttpIndexIT {
 
@@ -41,12 +41,12 @@ public class HttpIndexIT {
     try {
       conn.connect();
       int statusCode = conn.getResponseCode();
-      assertThat(statusCode).isEqualTo(201);
+      Assertions.assertThat(statusCode).isEqualTo(201);
       Scanner s = new Scanner(conn.getInputStream()).useDelimiter("\\A");
       String content = s.hasNext() ? s.next() : "";
       System.out.println("PUT " + statusCode + " " + url);
       System.out.println(content);
-      assertThatJson(content)
+      JsonAssertions.assertThatJson(content)
           .isObject()
           .containsEntry("_index", "users")
           .containsEntry("_type", "_doc")
@@ -60,7 +60,7 @@ public class HttpIndexIT {
           .containsEntry("result", "created")
           .containsKey("_seq_no")
           .containsEntry("_primary_term", BigDecimal.valueOf(1));
-      assertThatJson(content)
+      JsonAssertions.assertThatJson(content)
           .node("_shards")
           .isObject()
           .containsEntry("total", BigDecimal.valueOf(2))
@@ -78,8 +78,8 @@ public class HttpIndexIT {
         new IndexRequest("my_index").source("{\"msg\":\"Hello world!\"}", XContentType.JSON);
     try (var client = new RestHighLevelClient(builder)) {
       var idxResponse = client.index(idxRequest, RequestOptions.DEFAULT);
-      assertEquals("my_index", idxResponse.getIndex());
-      assertEquals(RestStatus.CREATED, idxResponse.status());
+      Assert.assertEquals("my_index", idxResponse.getIndex());
+      Assert.assertEquals(RestStatus.CREATED, idxResponse.status());
     }
   }
 }
