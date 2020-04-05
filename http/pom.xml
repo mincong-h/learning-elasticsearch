@@ -9,10 +9,10 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>es-demo-docker</artifactId>
+  <artifactId>es-demo-http</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>Elasticsearch Demos - Docker</name>
+  <name>Elasticsearch Demos - HTTP</name>
 
   <dependencies>
     <dependency>
