@@ -34,8 +34,8 @@
   </properties>
 
   <modules>
-    <module>test-framework</module>
     <module>cluster-nodes</module>
+    <module>basics</module>
     <module>http</module>
     <module>mapping</module>
     <module>snapshot</module>

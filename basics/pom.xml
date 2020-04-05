@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>es-demo-test-framework</artifactId>
-  <name>Elasticsearch Demos - Testing Framework</name>
+  <name>Elasticsearch Demos - Basics</name>
 
   <dependencies>
     <dependency>
