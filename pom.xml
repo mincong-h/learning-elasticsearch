@@ -28,7 +28,7 @@
      -->
     <apache.log4j.version>2.7</apache.log4j.version>
     <assertj.version>3.13.2</assertj.version>
-    <jackson.version>2.10.1</jackson.version>
+    <jackson.version>2.10.3</jackson.version>
     <json.unit.version>2.11.1</json.unit.version>
     <junit.version>4.12</junit.version>
   </properties>
