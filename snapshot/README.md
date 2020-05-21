@@ -20,10 +20,10 @@ docker run \
 
 ## APIs
 
+### Create Snapshot Repository
+
 Create a new snapshot repository `fs_backup` in local file-system for backup
 purpose:
-
-### Create Snapshot Repository
 
 ```
 PUT /_snapshot/{repository}
