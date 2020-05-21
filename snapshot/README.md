@@ -7,8 +7,8 @@ Snapshot and restore in Elasticsearch.
 ```sh
 #
 # Start docker image:
-# - Use env variable discovery.type=single-node to bypass the bootstrap checks
-# - Use env variable path.repo=/tmp as the root path for the snapshot repositories
+# - Use single-node discovery mode to bypass the bootstrap checks
+# - Use /tmp as the root path for the snapshot repositories
 # - Publish port 9200 to communicate with docker image
 #
 docker run \
