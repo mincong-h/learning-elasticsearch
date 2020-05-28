@@ -81,6 +81,22 @@ curl localhost:9200/_snapshot?pretty
 # }
 ```
 
+### Get Snapshot Repository
+
+Retrieve information about one snapshot repository.
+
+```
+GET /_snapshot/{repository}
+```
+
+### Get Snapshots
+
+Retrieve information about all snapshots inside one snapshot repository.
+
+```
+GET /_snapshot/{repository}/_all
+```
+
 ## References
 
 - Elastic, "Snapshot and restore | Elasticsearch Reference \[7.6\]", _Elastic_, 2020.
