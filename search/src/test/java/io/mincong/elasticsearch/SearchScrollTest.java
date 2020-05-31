@@ -46,10 +46,11 @@ public class SearchScrollTest extends ESSingleNodeTestCase {
     for (var hit : searchResponse.getHits()) {
       results.add(hit.getId());
     }
-    logger.info("results={} ({} new), scrollId={}",
-          results.size(),
-          results.size(),
-          searchResponse.getScrollId());
+    logger.info(
+        "results={} ({} new), scrollId={}",
+        results.size(),
+        results.size(),
+        searchResponse.getScrollId());
 
     // more requests
     var scrollId = searchResponse.getScrollId();
@@ -66,7 +67,8 @@ public class SearchScrollTest extends ESSingleNodeTestCase {
         newResults.add(hit.getId());
       }
       results.addAll(newResults);
-      logger.info("results={} ({} new), scrollId={}",
+      logger.info(
+          "results={} ({} new), scrollId={}",
           results.size(),
           newResults.size(),
           resp.getScrollId());

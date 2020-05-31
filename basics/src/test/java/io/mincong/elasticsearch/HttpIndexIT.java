@@ -1,5 +1,7 @@
 package io.mincong.elasticsearch;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -18,8 +20,6 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpIndexIT {
 

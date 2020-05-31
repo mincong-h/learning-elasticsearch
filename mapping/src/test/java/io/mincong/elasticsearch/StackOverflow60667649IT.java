@@ -3,7 +3,6 @@ package io.mincong.elasticsearch;
 import java.util.Map;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
-import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
