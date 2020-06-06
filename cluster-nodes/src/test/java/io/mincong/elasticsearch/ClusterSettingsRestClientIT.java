@@ -14,6 +14,7 @@ import org.junit.*;
 /**
  * Cluster get settings API
  *
+ * @see ClusterSettingsLegacyClientTest
  * @see <a
  *     href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-get-settings.html">
  *     Cluster get settings API</a>

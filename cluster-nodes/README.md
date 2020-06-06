@@ -65,13 +65,28 @@ jdk                                | j                                          
 GET /_cluster/settings
 ```
 
+### Java Legacy Client
+
+```java
+var clusterStateResponse = client.admin().cluster().prepareState().get();
+var metaData = clusterStateResponse.getState().getMetaData();
+
+metaData.transientSettings();
+metaData.persistentSettings();
+metaData.settings();
+```
+
 ### Java High Level Rest Client
 
 <https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-high-cluster-get-settings.html>
 
 ```java
-ClusterGetSettingsRequest request = new ClusterGetSettingsRequest();
-ClusterGetSettingsResponse response = client.cluster().getSettings(request, RequestOptions.DEFAULT);
+var request = new ClusterGetSettingsRequest();
+var response = client.cluster().getSettings(request, RequestOptions.DEFAULT);
+
+response.getDefaultSettings();
+response.getPersistentSettings();
+response.getTransientSettings();
 ```
 
 ## References
