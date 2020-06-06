@@ -1,4 +1,6 @@
-# Nodes Information
+# Cluster
+
+## Nodes Information
 
 <https://mincong.io/2020/03/07/elasticsearch-cat-nodes-api/>
 
@@ -6,7 +8,7 @@ The goal is to understand the current state of cluster nodes: the size of the
 cluster, the node types, the load, the disk usage, the Elasticsearch version...
 This is useful when operating an Elasticsearch cluster.
 
-## Preparation
+### Preparation
 
 Run `docker-compose` to start an Elasticsearch cluster in localhost:
 
@@ -14,7 +16,7 @@ Run `docker-compose` to start an Elasticsearch cluster in localhost:
 $ docker-compose -f src/test/resources/docker-compose.yml up
 ```
 
-## Querying
+### Querying
 
 Once the cluster is started, send an HTTP request to "Nodes Info API":
 
@@ -51,6 +53,25 @@ type                               | t                                          
 build                              | b                                           | es build hash
 jdk                                | j                                           | jdk version
 ...
+```
+
+## Cluster Settings
+
+### API
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-get-settings.html>
+
+```
+GET /_cluster/settings
+```
+
+### Java High Level Rest Client
+
+<https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-high-cluster-get-settings.html>
+
+```java
+ClusterGetSettingsRequest request = new ClusterGetSettingsRequest();
+ClusterGetSettingsResponse response = client.cluster().getSettings(request, RequestOptions.DEFAULT);
 ```
 
 ## References
