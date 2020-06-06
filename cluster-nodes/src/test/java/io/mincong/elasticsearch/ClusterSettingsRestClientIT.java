@@ -18,7 +18,7 @@ import org.junit.*;
  *     href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-get-settings.html">
  *     Cluster get settings API</a>
  */
-public class ClusterSettingsRestClientTest extends ESRestTestCase {
+public class ClusterSettingsRestClientIT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
