@@ -9,8 +9,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>es-demo-cluster-nodes</artifactId>
-  <name>Elasticsearch Demos - Cluster Nodes</name>
+  <artifactId>es-demo-cluster</artifactId>
+  <name>Elasticsearch Demos - Cluster</name>
 
   <dependencies>
     <dependency>
