@@ -55,7 +55,7 @@ jdk                                | j                                          
 ...
 ```
 
-## Cluster Settings
+## Get Cluster Settings
 
 ### API
 
@@ -87,6 +87,16 @@ var response = client.cluster().getSettings(request, RequestOptions.DEFAULT);
 response.getDefaultSettings();
 response.getPersistentSettings();
 response.getTransientSettings();
+```
+
+## Update Cluster Settings
+
+### API
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-update-settings.html>
+
+```
+PUT /_cluster/settings
 ```
 
 ## References
