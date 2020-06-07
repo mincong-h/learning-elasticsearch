@@ -34,8 +34,8 @@
   </properties>
 
   <modules>
-    <module>cluster-nodes</module>
     <module>basics</module>
+    <module>cluster</module>
     <module>mapping</module>
     <module>snapshot</module>
     <module>search</module>
