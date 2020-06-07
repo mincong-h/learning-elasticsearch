@@ -51,8 +51,7 @@ Persistent settings are stored on each master-eligible node in the global
 cluster state file, which can be found in the Elasticsearch data directory:
 `data/CLUSTER_NAME/nodes/N/_state`, where `CLUSTER_NAME` is the name of the
 cluster and `N` is the node number (0 if this is the only node on this
-machine). The file name has the following format: `global-NNN` where `NNN` is
-the version of the cluster state.
+machine).
 
 Besides persistent settings, this file may contain other global metadata such as
 index templates. By default the global cluster state file is stored in the
