@@ -20,3 +20,10 @@ Articles wrote using code of this repository:
 - Elasticsearch: [Java High Level REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html)
 - Elasticsearch: [Java Testing Framework](https://www.elastic.co/guide/en/elasticsearch/reference/current/testing-framework.html)
 - Elasticsearch: [REST APIs](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html)
+
+## Other Resources
+
+Not related to this repository, but interesting articles to read about Elasticsearch:
+
+-  Nico Tonozzi and Dumitru Daniliuc, "Reducing search indexing latency to one second", _Twitter_, 2020.<br>
+   <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
