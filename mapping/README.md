@@ -1,5 +1,15 @@
 # Elasticsearch Mapping
 
+## Put Template
+
+### API
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-templates.html>
+
+```
+PUT _template/{name}
+```
+
 References:
 
 - Mapping <https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html>
