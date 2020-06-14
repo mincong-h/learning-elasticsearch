@@ -99,6 +99,11 @@ response.getTransientSettings();
 PUT /_cluster/settings
 ```
 
+## Articles
+
+- Alexander Reelsen, "Does the cluster state size impact performance?", _Elastic_, 2013.
+  <https://discuss.elastic.co/t/does-the-cluster-state-size-impact-performance/11344>
+
 ## References
 
 - Elastic, "Install Elasticsearch with Docker", _Elastic_, 2020.
