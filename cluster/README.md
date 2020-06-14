@@ -54,14 +54,14 @@ PUT /_cluster/settings
 
 ## Articles
 
-- Alexander Reelsen, "Does the cluster state size impact performance?", _Elastic_, 2013.
+- Alexander Reelsen, "Does the cluster state size impact performance?", _Elastic_, 2013.<br>
   <https://discuss.elastic.co/t/does-the-cluster-state-size-impact-performance/11344>
 
 ## References
 
-- Elastic, "Install Elasticsearch with Docker", _Elastic_, 2020.
+- Elastic, "Install Elasticsearch with Docker", _Elastic_, 2020.<br>
   <https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html>
-- Elastic, "Nodes Info API", _Elastic_, 2020.
+- Elastic, "Nodes Info API", _Elastic_, 2020.<br>
   <https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-nodes-info.html>
-- Elastic, "Cat Nodes API", _Elastic_, 2020.
+- Elastic, "Cat Nodes API", _Elastic_, 2020.<br>
   <https://www.elastic.co/guide/en/elasticsearch/reference/current/cat-nodes.html>
