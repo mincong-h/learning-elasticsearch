@@ -5,6 +5,18 @@ addressing a growing number of use cases. As the heart of the Elastic Stack,
 it centrally stores your data so you can discover the expected and uncover the
 unexpected.
 
+## Quickstart
+
+The fastest way to test any basic Elasticsearch feature is to start a Docker image with the desired Elasticsearch version:
+
+```sh
+docker run \
+  --rm \
+  -e discovery.type=single-node \
+  -p 9200:9200 \
+  docker.elastic.co/elasticsearch/elasticsearch:7.7.1
+```
+
 ## Articles
 
 Articles wrote using code of this repository:
