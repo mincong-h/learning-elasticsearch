@@ -5,6 +5,9 @@
 ```
 GET /_cluster/state
 ```
+```
+GET /_cluster/state/_all
+```
 
 The components of cluster state:
 
