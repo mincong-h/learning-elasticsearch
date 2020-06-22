@@ -19,7 +19,7 @@
       Elasticsearch/Lucene Version Mapping:
       https://github.com/elastic/elasticsearch/blob/master/server/src/main/java/org/elasticsearch/Version.java#L58-L76
      -->
-    <elasticsearch.version>7.7.1</elasticsearch.version>
+    <elasticsearch.version>7.8.0</elasticsearch.version>
     <!--
       Dependencies should be aligned with Elasticsearch Testing Framework's
       requirement. Inspect Maven dependency tree to find out the right version:
