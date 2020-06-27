@@ -25,7 +25,7 @@ public class ClusterStateTest extends ESSingleNodeTestCase {
             .getState();
 
     Assertions.assertThat(clusterState.blocks()).isEqualTo(ClusterBlocks.EMPTY_CLUSTER_BLOCK);
-    Assertions.assertThat(clusterState.metaData().indices()).isEmpty();
+    Assertions.assertThat(clusterState.metadata().indices()).isEmpty();
     Assertions.assertThat(clusterState.routingTable().allShards()).isEmpty();
     Assertions.assertThat(clusterState.nodes()).isEmpty();
   }
