@@ -29,7 +29,7 @@
     <apache.log4j.version>2.13.3</apache.log4j.version>
     <assertj.version>3.16.1</assertj.version>
     <jackson.version>2.10.1</jackson.version>
-    <json.unit.version>2.18.0</json.unit.version>
+    <json.unit.version>2.18.1</json.unit.version>
     <junit.version>4.13</junit.version>
   </properties>
 
@@ -97,11 +97,11 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M4</version>
+          <version>3.0.0-M5</version>
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M4</version>
+          <version>3.0.0-M5</version>
         </plugin>
         <plugin>
           <groupId>io.fabric8</groupId>

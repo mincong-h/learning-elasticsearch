@@ -1,5 +1,9 @@
 # Cluster State
 
+## Get Cluster State
+
+### API
+
 <https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-state.html>
 
 ```
@@ -8,6 +12,19 @@ GET /_cluster/state
 ```
 GET /_cluster/state/_all
 ```
+
+### Legacy Client
+
+```java
+var response = client
+    .admin()
+    .cluster()
+    .prepareState()
+    // set options here ...
+    .get();
+```
+
+## Components
 
 The components of cluster state:
 
@@ -57,3 +74,24 @@ templates | Security index templates, machine-learning metadata/state/config, lo
 indices | Index state, settings, mappings, alias, primary terms, allocations, etc
 index-graveyard | ?
 repositories | Snapshot repositories with type and settings
+
+## Reduce Network I/O
+
+Clear all the options before performing the actual call using `clear()` to
+avoid heavy network I/O. Useful when the cluster state is important:
+
+```java
+var clusterState = client
+    .admin()
+    .cluster()
+    .prepareState()
+    .clear()
+    /*
+     * Define your options explicitly here as:
+     *
+     *     setXxx(...)
+     */
+    .setCustoms(true)
+    .get()
+    .getState();
+```
