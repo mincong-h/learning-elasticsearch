@@ -10,7 +10,7 @@ import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotA
 import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotRequestBuilder;
 import org.elasticsearch.action.admin.indices.close.CloseIndexResponse.IndexResult;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
-import org.elasticsearch.cluster.metadata.RepositoryMetaData;
+import org.elasticsearch.cluster.metadata.RepositoryMetadata;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.Index;
@@ -83,7 +83,7 @@ public class SnapshotTest extends ESSingleNodeTestCase {
             .get()
             .repositories();
     Assertions.assertThat(repositories)
-        .extracting(RepositoryMetaData::name)
+        .extracting(RepositoryMetadata::name)
         .containsExactly("snapshotRepository");
 
     // create snapshot using "snapshotRepository"
@@ -140,7 +140,7 @@ public class SnapshotTest extends ESSingleNodeTestCase {
   private void removeSnapshot() throws ExecutionException, InterruptedException {
     var deleteSnapshot =
         new DeleteSnapshotRequestBuilder(client(), DeleteSnapshotAction.INSTANCE)
-            .setSnapshot("snapshot1")
+            .setSnapshots("snapshot1")
             .setRepository("snapshotRepository")
             .request();
 
