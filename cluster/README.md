@@ -22,7 +22,7 @@ GET /_cluster/settings
 
 ```java
 var clusterStateResponse = client.admin().cluster().prepareState().get();
-var metaData = clusterStateResponse.getState().getMetaData();
+var metaData = clusterStateResponse.getState().metadata();
 
 metaData.transientSettings();
 metaData.persistentSettings();
