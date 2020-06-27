@@ -25,9 +25,6 @@ public class ClusterNodesInfoIT extends ESIntegTestCase {
     var dataNodeCount = 0;
 
     for (var nodeInfo : nodesInfoResponse.getNodes()) {
-      var publishAddress = String.valueOf(nodeInfo.getTransport().address().publishAddress());
-      System.out.println(publishAddress);
-      Assertions.assertThat(publishAddress).matches("127\\.0\\.0\\.1:\\d+");
       if (DiscoveryNode.isDataNode(nodeInfo.getSettings())) {
         dataNodeCount++;
       }

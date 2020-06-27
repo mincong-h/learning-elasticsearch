@@ -7,7 +7,7 @@ import org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotReq
 import org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotAction;
 import org.elasticsearch.action.admin.cluster.snapshots.delete.DeleteSnapshotRequestBuilder;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
-import org.elasticsearch.cluster.metadata.RepositoryMetaData;
+import org.elasticsearch.cluster.metadata.RepositoryMetadata;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.rest.RestStatus;
@@ -75,7 +75,7 @@ public class ConcurrentSnapshotDeletionTest extends ESSingleNodeTestCase {
             .get()
             .repositories();
     Assertions.assertThat(repositories)
-        .extracting(RepositoryMetaData::name)
+        .extracting(RepositoryMetadata::name)
         .containsExactly("snapshotRepository");
   }
 
@@ -115,12 +115,12 @@ public class ConcurrentSnapshotDeletionTest extends ESSingleNodeTestCase {
   public void removeSnapshot() throws ExecutionException, InterruptedException {
     var requestU =
         new DeleteSnapshotRequestBuilder(client(), DeleteSnapshotAction.INSTANCE)
-            .setSnapshot("users-snapshot")
+            .setSnapshots("users-snapshot")
             .setRepository("snapshotRepository")
             .request();
     var requestC =
         new DeleteSnapshotRequestBuilder(client(), DeleteSnapshotAction.INSTANCE)
-            .setSnapshot("companies-snapshot")
+            .setSnapshots("companies-snapshot")
             .setRepository("snapshotRepository")
             .request();
 
