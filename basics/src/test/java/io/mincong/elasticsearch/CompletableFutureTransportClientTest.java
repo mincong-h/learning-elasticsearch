@@ -18,7 +18,7 @@ import org.junit.Test;
  *
  * @author Mincong Huang
  */
-public class TransportClientCompletableFutureTest extends ESSingleNodeTestCase {
+public class CompletableFutureTransportClientTest extends ESSingleNodeTestCase {
 
   @Test
   public void viaActionListenerWrap() {

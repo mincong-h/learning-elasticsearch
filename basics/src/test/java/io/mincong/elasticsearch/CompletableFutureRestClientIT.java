@@ -21,7 +21,7 @@ import org.junit.*;
  *
  * @author Mincong Huang
  */
-public class RestClientCompletableFutureIT extends ESRestTestCase {
+public class CompletableFutureRestClientIT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
