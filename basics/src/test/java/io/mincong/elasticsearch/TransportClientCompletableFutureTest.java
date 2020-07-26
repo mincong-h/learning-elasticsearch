@@ -28,10 +28,11 @@ public class TransportClientCompletableFutureTest extends ESSingleNodeTestCase {
         .cluster()
         .prepareState()
         .execute(ActionListener.wrap(cf::complete, cf::completeExceptionally));
+    var stateFuture = cf.thenApply(ClusterStateResponse::getState);
     // demo:end
 
-    var response = cf.join();
-    Assertions.assertThat(response.getState().getNodes().getSize()).isEqualTo(1);
+    var clusterState = stateFuture.join();
+    Assertions.assertThat(clusterState.getNodes().getSize()).isEqualTo(1);
   }
 
   @Test
