@@ -13,7 +13,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Wraps the legacy client {@link org.elasticsearch.client.Client} response future into {@link
+ * Wraps the response of legacy client {@link org.elasticsearch.client.Client} into {@link
  * CompletableFuture}.
  *
  * @author Mincong Huang

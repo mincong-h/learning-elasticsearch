@@ -16,7 +16,7 @@ import org.elasticsearch.test.rest.ESRestTestCase;
 import org.junit.*;
 
 /**
- * Wraps the legacy client {@link org.elasticsearch.client} response future into {@link
+ * Wraps the response of Java High Level REST Client {@link RestHighLevelClient} into {@link
  * CompletableFuture}.
  *
  * @author Mincong Huang
