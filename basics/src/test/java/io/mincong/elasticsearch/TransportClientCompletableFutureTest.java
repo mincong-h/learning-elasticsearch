@@ -68,6 +68,23 @@ public class TransportClientCompletableFutureTest extends ESSingleNodeTestCase {
   }
 
   @Test
+  public void timeoutGet() throws Exception {
+    var client = client();
+    var cf = new CompletableFuture<ClusterStateResponse>();
+    client
+        .admin()
+        .cluster()
+        .prepareState()
+        .execute(ActionListener.wrap(cf::complete, cf::completeExceptionally));
+
+    // demo:start
+    var response = cf.get(3000, TimeUnit.MILLISECONDS);
+    // demo:end
+
+    Assertions.assertThat(response.getState().getNodes().getSize()).isEqualTo(1);
+  }
+
+  @Test
   public void timeoutWithNumber() {
     var client = client();
     var cf = new CompletableFuture<ClusterStateResponse>();
