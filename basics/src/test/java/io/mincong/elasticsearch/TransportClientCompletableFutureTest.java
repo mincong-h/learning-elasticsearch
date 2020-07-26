@@ -1,10 +1,13 @@
 package io.mincong.elasticsearch;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -62,6 +65,59 @@ public class TransportClientCompletableFutureTest extends ESSingleNodeTestCase {
 
     var response = cf.join();
     Assertions.assertThat(response.getState().getNodes().getSize()).isEqualTo(1);
+  }
+
+  @Test
+  public void timeoutWithNumber() {
+    var client = client();
+    var cf = new CompletableFuture<ClusterStateResponse>();
+    client
+        .admin()
+        .cluster()
+        .prepareState()
+        .execute(ActionListener.wrap(cf::complete, cf::completeExceptionally));
+
+    // demo:start
+    var responseFuture = cf.orTimeout(3000, TimeUnit.MILLISECONDS);
+    // demo:end
+
+    Assertions.assertThat(responseFuture.join().getState().getNodes().getSize()).isEqualTo(1);
+  }
+
+  @Test
+  public void timeoutWithDuration() {
+    var client = client();
+    var cf = new CompletableFuture<ClusterStateResponse>();
+    client
+        .admin()
+        .cluster()
+        .prepareState()
+        .execute(ActionListener.wrap(cf::complete, cf::completeExceptionally));
+
+    // demo:start
+    var timeout = Duration.ofSeconds(3);
+    var responseFuture = cf.orTimeout(timeout.toMillis(), TimeUnit.MILLISECONDS);
+    // demo:end
+
+    Assertions.assertThat(responseFuture.join().getState().getNodes().getSize()).isEqualTo(1);
+  }
+
+  @Test
+  public void timeoutWithTimeValue() {
+    var client = client();
+    var cf = new CompletableFuture<ClusterStateResponse>();
+    client
+        .admin()
+        .cluster()
+        .prepareState()
+        .execute(ActionListener.wrap(cf::complete, cf::completeExceptionally));
+
+    // demo:start
+    var timeout = TimeValue.timeValueSeconds(3);
+    var responseFuture = cf.orTimeout(timeout.millis(), TimeUnit.MILLISECONDS);
+    // demo:end
+
+    Assertions.assertThat(responseFuture.join().getState().getNodes().getSize()).isEqualTo(1);
   }
 
   @Test
