@@ -17,6 +17,7 @@ import org.junit.Test;
  * CompletableFuture}.
  *
  * @author Mincong Huang
+ * @blog https://mincong.io/2020/07/26/es-client-completablefuture/
  */
 public class CompletableFutureTransportClientTest extends ESSingleNodeTestCase {
 
