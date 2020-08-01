@@ -30,6 +30,33 @@ var clusterStatsResponse = client.admin().cluster().prepareClusterStats().get();
 var availableByteSize = clusterStatsResponse.getNodesStats().getFs().getAvailable();
 ```
 
+## Java REST Client
+
+You cannot use Java High-Level REST Client to retrieve this information. You need to send a request
+using the Java Low-Level REST Client:
+
+```java
+var request = new Request("GET", "/_nodes/_all/stats/fs");
+var response = restClient.getLowLevelClient().performRequest(request);
+var body = EntityUtils.toString(response.getEntity());
+/*
+ * {
+ *   "_nodes": { ... },
+ *   "cluster_name": "docker-cluster",
+ *   "nodes": {
+ *     "fs": {
+ *       "timestamp": 1596277078797,
+ *       "total": {
+ *         "total_in_bytes": 15679725568,
+ *         "free_in_bytes": 7031689216,
+ *         "available_in_bytes": 6215008256
+ *       },
+ *       ...
+ * }
+ */
+// Then, parse the response body (JSON) in your preferred way
+```
+
 ## References
 
 - Korhan Herguner, "How to high level rest client request request nodes stats URGENT!", _Elastic Discuss_, 2019.<br>
