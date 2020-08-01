@@ -6,11 +6,6 @@ import org.junit.Test;
 
 public class ClusterStatsLegacyClientTest extends ESSingleNodeTestCase {
 
-  /**
-   * @see <a
-   *     href="https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-stats.html">Cluster
-   *     stats API</a>
-   */
   @Test
   public void getStats() {
     var client = client();
