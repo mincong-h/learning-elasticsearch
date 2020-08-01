@@ -21,6 +21,6 @@ public class ClusterStatsLegacyClientTest extends ESSingleNodeTestCase {
     var availableByteSize = clusterStatsResponse.getNodesStats().getFs().getAvailable();
     // demo:end
 
-    Assertions.assertThat(availableByteSize.getBytes()).isGreaterThan(0);
+    Assertions.assertThat(availableByteSize.getBytes()).isPositive();
   }
 }
