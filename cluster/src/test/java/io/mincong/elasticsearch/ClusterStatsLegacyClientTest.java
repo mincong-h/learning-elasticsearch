@@ -17,7 +17,7 @@ public class ClusterStatsLegacyClientTest extends ESSingleNodeTestCase {
 
     // demo:start
     var clusterStatsResponse = client.admin().cluster().prepareClusterStats().get();
-    // query value of `nodes.fs.available_in_bytes`
+    // query value of `nodes.fs.available`
     var availableByteSize = clusterStatsResponse.getNodesStats().getFs().getAvailable();
     // demo:end
 
