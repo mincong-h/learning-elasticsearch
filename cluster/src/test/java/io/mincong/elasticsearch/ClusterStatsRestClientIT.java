@@ -1,6 +1,12 @@
 package io.mincong.elasticsearch;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
 import org.apache.http.HttpHost;
+import org.apache.http.util.EntityUtils;
+import org.assertj.core.api.Assertions;
+import org.elasticsearch.client.Request;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.test.rest.ESRestTestCase;
@@ -36,8 +42,16 @@ public class ClusterStatsRestClientIT extends ESRestTestCase {
   }
 
   @Test
-  public void getStats() {
-    // TODO(mhuang): how to fetch this?
-    //  restClient.cluster() does not provide a method for stats
+  public void getStats() throws IOException {
+    // demo:start
+    var request = new Request("GET", "/_nodes/_all/stats/fs");
+    var response = restClient.getLowLevelClient().performRequest(request);
+    var body = EntityUtils.toString(response.getEntity());
+    var node = new ObjectMapper().readValue(body, ObjectNode.class);
+    var firstNodeMetrics = node.get("nodes").fields().next().getValue();
+    var bytes = firstNodeMetrics.get("fs").get("total").get("available_in_bytes").asLong();
+    // demo:end
+
+    Assertions.assertThat(bytes).isPositive();
   }
 }

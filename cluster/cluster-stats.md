@@ -29,3 +29,8 @@ var clusterStatsResponse = client.admin().cluster().prepareClusterStats().get();
 // query value of `nodes.fs.available`
 var availableByteSize = clusterStatsResponse.getNodesStats().getFs().getAvailable();
 ```
+
+## References
+
+- Korhan Herguner, "How to high level rest client request request nodes stats URGENT!", _Elastic Discuss_, 2019.<br>
+  https://discuss.elastic.co/t/how-to-high-level-rest-client-request-request-nodes-stats-urgent/170324
