@@ -1,5 +1,23 @@
 # GC
 
+## Flag Lookup
+
+Find the default value of a GC setting in Java:
+
+```sh
+java -XX:+PrintFlagsFinal -version
+```
+
+For example, finding the default value of `MaxGCPauseMillis` can be done as follow:
+
+```sh
+~ $ java -XX:+PrintFlagsFinal -version | grep MaxGCPauseMillis
+    uintx MaxGCPauseMillis                         = 200                                       {product} {default}
+openjdk version "14.0.2" 2020-07-14
+OpenJDK Runtime Environment AdoptOpenJDK (build 14.0.2+12)
+OpenJDK 64-Bit Server VM AdoptOpenJDK (build 14.0.2+12, mixed mode, sharing)
+```
+
 ## Articles
 
 - Elasticsearch, "GC logging", _Elasticsearch_, 2020.<br>
