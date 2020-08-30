@@ -32,13 +32,21 @@ Articles wrote using code of this repository:
 
 ## Resources
 
-- Elasticsearch: [Java High Level REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html)
-- Elasticsearch: [Java Testing Framework](https://www.elastic.co/guide/en/elasticsearch/reference/current/testing-framework.html)
-- Elasticsearch: [REST APIs](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html)
+Not related to this repository, but interesting resources to read about Elasticsearch.
 
-## Other Resources
+Elasticsearch documentation:
 
-Not related to this repository, but interesting articles to read about Elasticsearch:
+- [Java High Level REST Client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high.html)
+- [Java Testing Framework](https://www.elastic.co/guide/en/elasticsearch/reference/current/testing-framework.html)
+- [REST APIs](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html)
 
--  Nico Tonozzi and Dumitru Daniliuc, "Reducing search indexing latency to one second", _Twitter_, 2020.<br>
-   <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
+Book:
+
+- Radu Gheorghe, Matthew Lee hinman, Roy Russo, "Elasticsearch in Action", Manning, 2016.
+
+Blogs:
+
+- Nico Tonozzi and Dumitru Daniliuc, "Reducing search indexing latency to one second", _Twitter_, 2020.<br>
+  <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
+- Prabin Meitei M, "Garbage Collection in Elasticsearch and the G1GC", _Medium_, 2018.<br>
+  <https://medium.com/naukri-engineering/garbage-collection-in-elasticsearch-and-the-g1gc-16b79a447181>
