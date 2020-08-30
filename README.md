@@ -28,6 +28,7 @@ Articles wrote using code of this repository:
 - [Indexing New Data in Elasticsearch](https://mincong.io/2019/12/02/indexing-new-data-in-elasticsearch/)
 - [Wrap Elasticsearch Response Into CompletableFuture](https://mincong.io/2020/07/26/es-client-completablefuture/)
 - [Discovery in Elasticsearch](https://mincong.io/2020/08/22/discovery-in-elasticsearch/)
+- [GC in Elasticsearch](https://mincong.io/2020/08/30/gc-in-elasticsearch/)
 
 ## Resources
 
