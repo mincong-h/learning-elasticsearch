@@ -1,4 +1,4 @@
-package io.mincong.elasticsearch;
+package io.mincong.elasticsearch.index;
 
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.index.IndexRequest;
@@ -8,7 +8,11 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.junit.Test;
 
-public class IndexMapperParsingExceptionTest extends ESSingleNodeTestCase {
+/**
+ * @blog https://mincong.io/2020/09/13/es-index-exceptions/
+ * @author Mincong Huang
+ */
+public class MapperParsingExceptionTest extends ESSingleNodeTestCase {
 
   @Test
   public void testMetadataField() {

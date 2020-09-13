@@ -26,6 +26,7 @@ Articles wrote using code of this repository:
 - [Elasticsearch: cat nodes API](https://mincong.io/2020/03/07/elasticsearch-cat-nodes-api/)
 - [Elasticsearch: Scroll API in Java](https://mincong.io/2020/01/19/elasticsearch-scroll-api/)
 - [Indexing New Data in Elasticsearch](https://mincong.io/2019/12/02/indexing-new-data-in-elasticsearch/)
+- [Common Index Exceptions](https://mincong.io/2020/09/13/es-index-exceptions/)
 - [Wrap Elasticsearch Response Into CompletableFuture](https://mincong.io/2020/07/26/es-client-completablefuture/)
 - [Discovery in Elasticsearch](https://mincong.io/2020/08/22/discovery-in-elasticsearch/)
 - [GC in Elasticsearch](https://mincong.io/2020/08/30/gc-in-elasticsearch/)
