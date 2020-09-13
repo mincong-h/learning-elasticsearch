@@ -16,7 +16,7 @@ public class IndexNotFoundExceptionTest extends ESSingleNodeTestCase {
         /*
          * Disable auto index creation
          *
-         * See https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-index_.html#index-creation
+         * See https://www.elastic.co/guide/en/elasticsearch/reference/7.9/docs-index_.html#index-creation
          */
         .put("action.auto_create_index", false)
         .build();
