@@ -8,6 +8,10 @@ import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.test.ESSingleNodeTestCase;
 import org.junit.Test;
 
+/**
+ * @blog https://mincong.io/2020/09/13/es-index-exceptions/
+ * @author Mincong Huang
+ */
 public class MapperParsingExceptionTest extends ESSingleNodeTestCase {
 
   @Test
