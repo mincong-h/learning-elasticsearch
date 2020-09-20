@@ -20,6 +20,13 @@ docker run \
 
 ## APIs
 
+API | Method | Description
+:--- | :---: | :---
+`/_snapshot/` | GET | List snapshot repositories.
+`/_snapshot/{repository}` | GET | Get settings of a snapshot repository.
+`/_snapshot/{repository}` | PUT | Add a new snapshot repository or edit the settings of an existing repository.
+`/_cat/snapshots/{repository}` | GET | List snapshots of a repository.
+
 ### Create Snapshot Repository
 
 Create a new snapshot repository `fs_backup` in local file-system for backup
