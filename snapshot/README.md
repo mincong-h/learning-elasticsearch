@@ -23,9 +23,17 @@ docker run \
 API | Method | Description
 :--- | :---: | :---
 `/_snapshot/` | GET | List snapshot repositories.
-`/_snapshot/{repository}` | GET | Get settings of a snapshot repository.
-`/_snapshot/{repository}` | PUT | Add a new snapshot repository or edit the settings of an existing repository.
-`/_cat/snapshots/{repository}` | GET | List snapshots of a repository.
+`/_snapshot/_status` | GET | Get all currently running snapshots with detailed status information.
+`/_snapshot/{repo}` | GET | Get settings of a snapshot repository.
+`/_snapshot/{repo}` | PUT | Add a new snapshot repository or edit the settings of an existing repository.
+`/_snapshot/{repo}/_all` | GET | List all snapshots inside the given repository.
+`/_snapshot/{repo}/_current` | GET | List all currently running snapshots inside the given repository.
+`/_snapshot/{repo}/_status` | GET | Get all currently running snapshots of the given repository with detailed status information.
+`/_snapshot/{repo}/{snapshot}` | GET | Get information about a single snapshot or multiple snapshots (using separator "," or wildcard expression "\*")
+`/_snapshot/{repo}/{snapshot}` | DELETE | Deletes one or multiple snapshots.
+`/_snapshot/{repo}/{snapshot}/_restore` | POST | Restore a snapshot of a cluster.
+`/_snapshot/{repo}/{snapshot}/_status` | GET | Get a detailed description of the current state for each shard partitipcating in the snapshot.
+`/_cat/snapshots/{repo}` | GET | List snapshots of a repository.
 
 ### Create Snapshot Repository
 
