@@ -30,6 +30,7 @@ Articles wrote using code of this repository:
 - [Wrap Elasticsearch Response Into CompletableFuture](https://mincong.io/2020/07/26/es-client-completablefuture/)
 - [Discovery in Elasticsearch](https://mincong.io/2020/08/22/discovery-in-elasticsearch/)
 - [GC in Elasticsearch](https://mincong.io/2020/08/30/gc-in-elasticsearch/)
+- [18 Allocation Deciders in Elasticsearch](https://mincong.io/2020/09/27/shard-allocation/)
 
 ## Resources
 
