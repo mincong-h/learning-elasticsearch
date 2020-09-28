@@ -34,7 +34,7 @@ API | Method | Description
 `/_snapshot/{repo}/{snapshot}/_restore` | POST | Restore a snapshot of a cluster.
 `/_snapshot/{repo}/{snapshot}/_status` | GET | Get a detailed description of the current state for each shard partitipcating in the snapshot.
 `/_cat/snapshots/{repo}` | GET | List snapshots of a repository.
-`/_cat/recovery` | GET | List all the recoveries including snapshot recoveries.
+`/_cat/recovery` | GET | List all the recoveries including snapshot recoveries, including restores
 
 ### Create Snapshot Repository
 
