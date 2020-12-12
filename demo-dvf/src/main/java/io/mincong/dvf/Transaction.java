@@ -1,3 +1,128 @@
 package io.mincong.dvf;
 
-public interface Transaction {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
+import org.immutables.value.Value.Immutable;
+
+@Immutable
+public interface Transaction {
+  @JsonProperty("id_mutation")
+  String mutationId();
+
+  @JsonProperty("date_mutation")
+  LocalDate mutationDate();
+
+  @JsonProperty("numero_disposition")
+  String dispositionNumber();
+
+  @JsonProperty("nature_mutation")
+  String mutationNature();
+
+  @JsonProperty("valeur_fonciere")
+  double propertyValue();
+
+  @JsonProperty("adresse_numero")
+  String addressNumber();
+
+  @JsonProperty("adresse_suffixe")
+  String addressSuffix();
+
+  @JsonProperty("adresse_nom_voie")
+  String addressRoadName();
+
+  @JsonProperty("adresse_code_voie")
+  String addressRoadCode();
+
+  @JsonProperty("code_postal")
+  String postalCode();
+
+  @JsonProperty("code_commune")
+  String communeCode();
+
+  @JsonProperty("nom_commune")
+  String communeName();
+
+  @JsonProperty("code_departement")
+  String departmentCode();
+
+  @JsonProperty("ancien_code_commune")
+  String oldCommuneCode();
+
+  @JsonProperty("ancien_nom_commune")
+  String oldCommuneName();
+
+  @JsonProperty("id_parcelle")
+  String plotId();
+
+  @JsonProperty("ancien_id_parcelle")
+  String oldPlotId();
+
+  @JsonProperty("numero_volume")
+  String volumeNumber();
+
+  @JsonProperty("lot1_numero")
+  String numberLot1();
+
+  @JsonProperty("lot1_surface_carrez")
+  double surfaceSquareLot1();
+
+  @JsonProperty("lot2_numero")
+  String numberLot2();
+
+  @JsonProperty("lot2_surface_carrez")
+  double surfaceSquareLot2();
+
+  @JsonProperty("lot3_numero")
+  String numberLot3();
+
+  @JsonProperty("lot3_surface_carrez")
+  double surfaceSquareLot3();
+
+  @JsonProperty("lot4_numero")
+  String numberLot4();
+
+  @JsonProperty("lot4_surface_carrez")
+  double surfaceSquareLot4();
+
+  @JsonProperty("lot5_numero")
+  String numberLot5();
+
+  @JsonProperty("lot5_surface_carrez")
+  double surfaceSquareLot5();
+
+  @JsonProperty("nombre_lots")
+  int numberOfLots();
+
+  @JsonProperty("code_type_local")
+  String localTypeCode();
+
+  @JsonProperty("type_local")
+  String localType();
+
+  @JsonProperty("surface_reelle_bati")
+  double realBuiltUpArea();
+
+  @JsonProperty("nombre_pieces_principales")
+  int principlePiecesCount();
+
+  @JsonProperty("code_nature_culture")
+  String natureCultureCode();
+
+  @JsonProperty("nature_culture")
+  String natureCulture();
+
+  @JsonProperty("code_nature_culture_speciale")
+  String specialNatureCultureCode();
+
+  @JsonProperty("nature_culture_speciale")
+  String specialNatureCulture();
+
+  @JsonProperty("surface_terrain")
+  String landSurface();
+
+  @JsonProperty("longitude")
+  double longitude();
+
+  @JsonProperty("latitude")
+  double latitude();
+}
