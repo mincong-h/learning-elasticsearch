@@ -39,6 +39,7 @@
     <module>mapping</module>
     <module>snapshot</module>
     <module>search</module>
+    <module>demo-dvf</module>
   </modules>
 
   <dependencyManagement>
