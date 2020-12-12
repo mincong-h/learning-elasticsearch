@@ -12,4 +12,10 @@
   <artifactId>es-demo-dvf</artifactId>
   <name>Elasticsearch Demos - Project DVF</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+    </dependency>
+  </dependencies>
 </project>
