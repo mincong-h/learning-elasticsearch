@@ -50,7 +50,7 @@ public class TransactionReaderTest {
           .natureCulture("terres")
           .specialNatureCultureCode("") // FIXME optional
           .specialNatureCulture("") // FIXME optional
-          .landSurface("1061") // FIXME type
+          .landSurface(1061)
           .longitude(5.323522)
           .latitude(46.171899)
           .build();
@@ -94,7 +94,7 @@ public class TransactionReaderTest {
           .natureCulture("terrains a bâtir")
           .specialNatureCultureCode("") // FIXME optional
           .specialNatureCulture("") // FIXME optional
-          .landSurface("610") // FIXME type
+          .landSurface(610)
           .longitude(5.226197)
           .latitude(46.184538)
           .build();
@@ -138,7 +138,7 @@ public class TransactionReaderTest {
           .natureCulture("terrains a bâtir")
           .specialNatureCultureCode("") // FIXME optional
           .specialNatureCulture("") // FIXME optional
-          .landSurface("600") // FIXME type
+          .landSurface(600)
           .longitude(Optional.empty())
           .latitude(Optional.empty())
           .build();

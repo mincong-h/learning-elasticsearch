@@ -166,7 +166,7 @@ public interface Transaction {
   String specialNatureCulture();
 
   @JsonProperty("surface_terrain")
-  String landSurface();
+  double landSurface();
 
   @JsonProperty("longitude")
   Optional<Double> longitude();
