@@ -2,7 +2,7 @@ package io.mincong.dvf.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.mincong.dvf.model.*;
+import io.mincong.dvf.model.ImmutableTransaction;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -76,24 +76,24 @@ public class TransactionReaderTest {
           .oldPlotId("")
           .volumeNumber("")
           .numberLot1("")
-          .surfaceSquareLot1(0.0) // FIXME optional
-          .numberLot2("") // FIXME optional
-          .surfaceSquareLot2(0.0) // FIXME optional
-          .numberLot3("") // FIXME optional
-          .surfaceSquareLot3(0.0) // FIXME optional
-          .numberLot4("") // FIXME optional
-          .surfaceSquareLot4(0.0) // FIXME optional
-          .numberLot5("") // FIXME optional
-          .surfaceSquareLot5(0.0) // FIXME optional
+          .surfaceSquareLot1(Optional.empty())
+          .numberLot2("")
+          .surfaceSquareLot2(Optional.empty())
+          .numberLot3("")
+          .surfaceSquareLot3(Optional.empty())
+          .numberLot4("")
+          .surfaceSquareLot4(Optional.empty())
+          .numberLot5("")
+          .surfaceSquareLot5(Optional.empty())
           .numberOfLots(0)
           .localTypeCode("")
           .localType("")
-          .realBuiltUpArea(0.0) // FIXME optional
-          .principlePiecesCount(0) // FIXME optional
+          .realBuiltUpArea(Optional.empty())
+          .principlePiecesCount(Optional.empty())
           .natureCultureCode("AB")
           .natureCulture("terrains a bâtir")
-          .specialNatureCultureCode("") // FIXME optional
-          .specialNatureCulture("") // FIXME optional
+          .specialNatureCultureCode("")
+          .specialNatureCulture("")
           .landSurface(610)
           .longitude(5.226197)
           .latitude(46.184538)
@@ -120,24 +120,24 @@ public class TransactionReaderTest {
           .oldPlotId("")
           .volumeNumber("")
           .numberLot1("")
-          .surfaceSquareLot1(0.0) // FIXME optional
-          .numberLot2("") // FIXME optional
-          .surfaceSquareLot2(0.0) // FIXME optional
-          .numberLot3("") // FIXME optional
-          .surfaceSquareLot3(0.0) // FIXME optional
-          .numberLot4("") // FIXME optional
-          .surfaceSquareLot4(0.0) // FIXME optional
-          .numberLot5("") // FIXME optional
-          .surfaceSquareLot5(0.0) // FIXME optional
+          .surfaceSquareLot1(Optional.empty())
+          .numberLot2("")
+          .surfaceSquareLot2(Optional.empty())
+          .numberLot3("")
+          .surfaceSquareLot3(Optional.empty())
+          .numberLot4("")
+          .surfaceSquareLot4(Optional.empty())
+          .numberLot5("")
+          .surfaceSquareLot5(Optional.empty())
           .numberOfLots(0)
           .localTypeCode("")
           .localType("")
-          .realBuiltUpArea(0.0) // FIXME optional
-          .principlePiecesCount(0) // FIXME optional
+          .realBuiltUpArea(Optional.empty())
+          .principlePiecesCount(Optional.empty())
           .natureCultureCode("AB")
           .natureCulture("terrains a bâtir")
-          .specialNatureCultureCode("") // FIXME optional
-          .specialNatureCulture("") // FIXME optional
+          .specialNatureCultureCode("")
+          .specialNatureCulture("")
           .landSurface(600)
           .longitude(Optional.empty())
           .latitude(Optional.empty())
@@ -154,6 +154,9 @@ public class TransactionReaderTest {
   @Test
   public void testTransaction() throws Exception {
     var reader = new TransactionReader();
-    assertThat(reader.readCsv(csvPath)).contains(transaction1, transaction2, transaction3);
+    assertThat(reader.readCsv(csvPath))
+        .contains(transaction1)
+        .contains(transaction2)
+        .contains(transaction3);
   }
 }
