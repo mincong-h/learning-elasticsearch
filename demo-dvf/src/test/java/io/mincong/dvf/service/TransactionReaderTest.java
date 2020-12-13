@@ -98,6 +98,50 @@ public class TransactionReaderTest {
           .latitude(46.184538)
           .build();
 
+  private final ImmutableTransaction transaction3 =
+      ImmutableTransaction.builder()
+          .mutationId("2020-3")
+          .mutationDate(LocalDate.of(2020, 1, 14))
+          .dispositionNumber("000001")
+          .mutationNature("Vente")
+          .propertyValue(89000)
+          .addressNumber("")
+          .addressSuffix("")
+          .addressRoadName("VACAGNOLE")
+          .addressRoadCode("B112")
+          .postalCode("01340")
+          .communeCode("01024")
+          .communeName("Attignat")
+          .departmentCode("01")
+          .oldCommuneCode("")
+          .oldCommuneName("")
+          .plotId("01024000AL0120")
+          .oldPlotId("")
+          .volumeNumber("")
+          .numberLot1("")
+          .surfaceSquareLot1(0.0) // FIXME optional
+          .numberLot2("") // FIXME optional
+          .surfaceSquareLot2(0.0) // FIXME optional
+          .numberLot3("") // FIXME optional
+          .surfaceSquareLot3(0.0) // FIXME optional
+          .numberLot4("") // FIXME optional
+          .surfaceSquareLot4(0.0) // FIXME optional
+          .numberLot5("") // FIXME optional
+          .surfaceSquareLot5(0.0) // FIXME optional
+          .numberOfLots(0)
+          .localTypeCode("")
+          .localType("")
+          .realBuiltUpArea(0.0) // FIXME optional
+          .principlePiecesCount(0) // FIXME optional
+          .natureCultureCode("AB")
+          .natureCulture("terrains a bâtir")
+          .specialNatureCultureCode("") // FIXME optional
+          .specialNatureCulture("") // FIXME optional
+          .landSurface("600") // FIXME type
+          .longitude(0) // FIXME optional
+          .latitude(0) // FIXME optional
+          .build();
+
   private Path csvPath;
 
   @Before
@@ -109,6 +153,6 @@ public class TransactionReaderTest {
   @Test
   public void testTransaction() throws Exception {
     var reader = new TransactionReader();
-    assertThat(reader.readCsv(csvPath)).contains(transaction1, transaction2);
+    assertThat(reader.readCsv(csvPath)).contains(transaction1, transaction2, transaction3);
   }
 }
