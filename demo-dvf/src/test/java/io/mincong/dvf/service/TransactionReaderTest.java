@@ -2,8 +2,7 @@ package io.mincong.dvf.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.mincong.dvf.model.ImmutableTransaction;
-import io.mincong.dvf.model.Transaction;
+import io.mincong.dvf.model.*;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import org.junit.Before;
@@ -13,7 +12,7 @@ public class TransactionReaderTest {
 
   private Path csvPath;
 
-  private Transaction transaction1 =
+  private ImmutableTransaction transaction1 =
       ImmutableTransaction.builder()
           .mutationId("2020-1")
           .mutationDate(LocalDate.of(2020, 1, 7))
@@ -59,13 +58,13 @@ public class TransactionReaderTest {
 
   @Before
   public void setUp() {
-    ClassLoader classLoader = getClass().getClassLoader();
+    var classLoader = getClass().getClassLoader();
     csvPath = Path.of(classLoader.getResource("dvf-samples.csv").getFile());
   }
 
   @Test
   public void testTransaction() throws Exception {
     var reader = new TransactionReader();
-    assertThat(reader.readCsv(csvPath)).isEmpty();
+    assertThat(reader.readCsv(csvPath)).contains(transaction1);
   }
 }
