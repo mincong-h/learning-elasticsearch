@@ -112,31 +112,31 @@ public interface Transaction {
   String numberLot1();
 
   @JsonProperty("lot1_surface_carrez")
-  double surfaceSquareLot1();
+  Optional<Double> surfaceSquareLot1();
 
   @JsonProperty("lot2_numero")
   String numberLot2();
 
   @JsonProperty("lot2_surface_carrez")
-  double surfaceSquareLot2();
+  Optional<Double> surfaceSquareLot2();
 
   @JsonProperty("lot3_numero")
   String numberLot3();
 
   @JsonProperty("lot3_surface_carrez")
-  double surfaceSquareLot3();
+  Optional<Double> surfaceSquareLot3();
 
   @JsonProperty("lot4_numero")
   String numberLot4();
 
   @JsonProperty("lot4_surface_carrez")
-  double surfaceSquareLot4();
+  Optional<Double> surfaceSquareLot4();
 
   @JsonProperty("lot5_numero")
   String numberLot5();
 
   @JsonProperty("lot5_surface_carrez")
-  double surfaceSquareLot5();
+  Optional<Double> surfaceSquareLot5();
 
   @JsonProperty("nombre_lots")
   int numberOfLots();
@@ -148,10 +148,10 @@ public interface Transaction {
   String localType();
 
   @JsonProperty("surface_reelle_bati")
-  double realBuiltUpArea();
+  Optional<Double> realBuiltUpArea();
 
   @JsonProperty("nombre_pieces_principales")
-  int principlePiecesCount();
+  Optional<Integer> principlePiecesCount();
 
   @JsonProperty("code_nature_culture")
   String natureCultureCode();

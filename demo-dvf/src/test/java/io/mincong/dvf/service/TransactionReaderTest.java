@@ -32,24 +32,24 @@ public class TransactionReaderTest {
           .oldPlotId("")
           .volumeNumber("")
           .numberLot1("")
-          .surfaceSquareLot1(0.0) // FIXME optional
-          .numberLot2("") // FIXME optional
-          .surfaceSquareLot2(0.0) // FIXME optional
-          .numberLot3("") // FIXME optional
-          .surfaceSquareLot3(0.0) // FIXME optional
-          .numberLot4("") // FIXME optional
-          .surfaceSquareLot4(0.0) // FIXME optional
-          .numberLot5("") // FIXME optional
-          .surfaceSquareLot5(0.0) // FIXME optional
+          .surfaceSquareLot1(Optional.empty())
+          .numberLot2("")
+          .surfaceSquareLot2(Optional.empty())
+          .numberLot3("")
+          .surfaceSquareLot3(Optional.empty())
+          .numberLot4("")
+          .surfaceSquareLot4(Optional.empty())
+          .numberLot5("")
+          .surfaceSquareLot5(Optional.empty())
           .numberOfLots(0)
           .localTypeCode("")
           .localType("")
-          .realBuiltUpArea(0.0) // FIXME optional
-          .principlePiecesCount(0) // FIXME optional
+          .realBuiltUpArea(Optional.empty())
+          .principlePiecesCount(Optional.empty())
           .natureCultureCode("T")
           .natureCulture("terres")
-          .specialNatureCultureCode("") // FIXME optional
-          .specialNatureCulture("") // FIXME optional
+          .specialNatureCultureCode("")
+          .specialNatureCulture("")
           .landSurface(1061)
           .longitude(5.323522)
           .latitude(46.171899)
