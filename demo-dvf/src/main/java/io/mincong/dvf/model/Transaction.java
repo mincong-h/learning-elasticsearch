@@ -1,4 +1,4 @@
-package io.mincong.dvf;
+package io.mincong.dvf.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
