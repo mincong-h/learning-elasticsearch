@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.immutables.value.Value.Immutable;
 
 @Immutable
@@ -168,8 +169,8 @@ public interface Transaction {
   String landSurface();
 
   @JsonProperty("longitude")
-  double longitude();
+  Optional<Double> longitude();
 
   @JsonProperty("latitude")
-  double latitude();
+  Optional<Double> latitude();
 }

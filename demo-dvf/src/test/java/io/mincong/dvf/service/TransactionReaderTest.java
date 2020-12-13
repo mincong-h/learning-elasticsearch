@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.mincong.dvf.model.*;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -138,8 +139,8 @@ public class TransactionReaderTest {
           .specialNatureCultureCode("") // FIXME optional
           .specialNatureCulture("") // FIXME optional
           .landSurface("600") // FIXME type
-          .longitude(0) // FIXME optional
-          .latitude(0) // FIXME optional
+          .longitude(Optional.empty())
+          .latitude(Optional.empty())
           .build();
 
   private Path csvPath;
