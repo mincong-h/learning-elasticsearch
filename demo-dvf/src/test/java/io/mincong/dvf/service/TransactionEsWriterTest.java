@@ -55,19 +55,16 @@ public class TransactionEsWriterTest extends ESRestTestCase {
     var writer = new TransactionEsWriter(restClient);
 
     // When
-    writer.write(Stream.of(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3)).get(10, SECONDS);
+    var ids = writer.write(Stream.of(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3)).get(10, SECONDS);
 
     // Then
     var objectMapper = Jackson.newObjectMapper();
-    var request =
-        new MultiGetRequest()
-            .add(TransactionEsWriter.INDEX_NAME, TRANSACTION_1.id())
-            .add(TransactionEsWriter.INDEX_NAME, TRANSACTION_2.id())
-            .add(TransactionEsWriter.INDEX_NAME, TRANSACTION_3.id());
+    var request = new MultiGetRequest();
+    ids.forEach(id -> request.add(TransactionEsWriter.INDEX_NAME, id));
     var response = restClient.mget(request, RequestOptions.DEFAULT);
     Assertions.assertThat(response.getResponses())
         .extracting(MultiGetItemResponse::getResponse)
         .extracting(r -> objectMapper.readValue(r.getSourceAsString(), ImmutableTransaction.class))
-        .containsExactly(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3);
+        .containsExactlyInAnyOrder(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3);
   }
 }
