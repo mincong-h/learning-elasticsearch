@@ -4,128 +4,181 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.immutables.value.Value.Immutable;
 
 @Immutable
 @JsonSerialize(as = ImmutableTransaction.class)
 @JsonDeserialize(as = ImmutableTransaction.class)
-public interface Transaction {
+public abstract class Transaction {
+
+  /** See https://www.elastic.co/guide/en/elasticsearch/reference/7.9/mapping-types.html */
+  private static final Map<String, Object> mappings = new HashMap<>();
+
+  public static Map<String, Object> esMappings() {
+    return Map.of("properties", Map.copyOf(mappings));
+  }
 
   @JsonProperty("id_mutation")
-  String mutationId();
+  public abstract String mutationId();
 
   @JsonProperty("date_mutation")
-  LocalDate mutationDate();
+  public abstract LocalDate mutationDate();
+
+  static {
+    mappings.put("date_mutation", Map.of("type", "date"));
+  }
 
   @JsonProperty("numero_disposition")
-  String dispositionNumber();
+  public abstract String dispositionNumber();
 
   @JsonProperty("nature_mutation")
-  String mutationNature();
+  public abstract String mutationNature();
 
   @JsonProperty("valeur_fonciere")
-  double propertyValue();
+  public abstract double propertyValue();
 
   @JsonProperty("adresse_numero")
-  String addressNumber();
+  public abstract String addressNumber();
 
   @JsonProperty("adresse_suffixe")
-  String addressSuffix();
+  public abstract String addressSuffix();
 
   @JsonProperty("adresse_nom_voie")
-  String addressRoadName();
+  public abstract String addressRoadName();
 
   @JsonProperty("adresse_code_voie")
-  String addressRoadCode();
+  public abstract String addressRoadCode();
 
   @JsonProperty("code_postal")
-  String postalCode();
+  public abstract String postalCode();
 
   @JsonProperty("code_commune")
-  String communeCode();
+  public abstract String communeCode();
 
   @JsonProperty("nom_commune")
-  String communeName();
+  public abstract String communeName();
 
   @JsonProperty("code_departement")
-  String departmentCode();
+  public abstract String departmentCode();
 
   @JsonProperty("ancien_code_commune")
-  String oldCommuneCode();
+  public abstract String oldCommuneCode();
 
   @JsonProperty("ancien_nom_commune")
-  String oldCommuneName();
+  public abstract String oldCommuneName();
 
   @JsonProperty("id_parcelle")
-  String plotId();
+  public abstract String plotId();
 
   @JsonProperty("ancien_id_parcelle")
-  String oldPlotId();
+  public abstract String oldPlotId();
 
   @JsonProperty("numero_volume")
-  String volumeNumber();
+  public abstract String volumeNumber();
 
   @JsonProperty("lot1_numero")
-  String numberLot1();
+  public abstract String numberLot1();
 
   @JsonProperty("lot1_surface_carrez")
-  Optional<Double> surfaceSquareLot1();
+  public abstract Optional<Double> surfaceSquareLot1();
+
+  static {
+    mappings.put("lot1_surface_carrez", Map.of("type", "double"));
+  }
 
   @JsonProperty("lot2_numero")
-  String numberLot2();
+  public abstract String numberLot2();
 
   @JsonProperty("lot2_surface_carrez")
-  Optional<Double> surfaceSquareLot2();
+  public abstract Optional<Double> surfaceSquareLot2();
+
+  static {
+    mappings.put("lot2_surface_carrez", Map.of("type", "double"));
+  }
 
   @JsonProperty("lot3_numero")
-  String numberLot3();
+  public abstract String numberLot3();
 
   @JsonProperty("lot3_surface_carrez")
-  Optional<Double> surfaceSquareLot3();
+  public abstract Optional<Double> surfaceSquareLot3();
+
+  static {
+    mappings.put("lot4_surface_carrez", Map.of("type", "double"));
+  }
 
   @JsonProperty("lot4_numero")
-  String numberLot4();
+  public abstract String numberLot4();
 
   @JsonProperty("lot4_surface_carrez")
-  Optional<Double> surfaceSquareLot4();
+  public abstract Optional<Double> surfaceSquareLot4();
+
+  static {
+    mappings.put("lot4_surface_carrez", Map.of("type", "double"));
+  }
 
   @JsonProperty("lot5_numero")
-  String numberLot5();
+  public abstract String numberLot5();
 
   @JsonProperty("lot5_surface_carrez")
-  Optional<Double> surfaceSquareLot5();
+  public abstract Optional<Double> surfaceSquareLot5();
+
+  static {
+    mappings.put("lot5_surface_carrez", Map.of("type", "double"));
+  }
 
   @JsonProperty("nombre_lots")
-  int lotsCount();
+  public abstract int lotsCount();
+
+  static {
+    mappings.put("nombre_lots", Map.of("type", "integer"));
+  }
 
   @JsonProperty("code_type_local")
-  String localTypeCode();
+  public abstract String localTypeCode();
 
   @JsonProperty("type_local")
-  String localType();
+  public abstract String localType();
 
   @JsonProperty("surface_reelle_bati")
-  Optional<Double> realBuiltUpArea();
+  public abstract Optional<Double> realBuiltUpArea();
+
+  static {
+    mappings.put("surface_reelle_bati", Map.of("type", "double"));
+  }
 
   @JsonProperty("nombre_pieces_principales")
-  Optional<Integer> principlePiecesCount();
+  public abstract Optional<Integer> principlePiecesCount();
+
+  static {
+    mappings.put("nombre_pieces_principales", Map.of("type", "integer"));
+  }
 
   @JsonProperty("code_nature_culture")
-  String natureCultureCode();
+  public abstract String natureCultureCode();
 
   @JsonProperty("nature_culture")
-  String natureCulture();
+  public abstract String natureCulture();
 
   @JsonProperty("code_nature_culture_speciale")
-  String specialNatureCultureCode();
+  public abstract String specialNatureCultureCode();
 
   @JsonProperty("nature_culture_speciale")
-  String specialNatureCulture();
+  public abstract String specialNatureCulture();
 
   @JsonProperty("surface_terrain")
-  double landSurface();
+  public abstract double landSurface();
+
+  static {
+    mappings.put("surface_terrain", Map.of("type", "double"));
+  }
 
   @JsonProperty("location")
-  Optional<Location> location();
+  public abstract Optional<Location> location();
+
+  static {
+    mappings.put("location", Map.of("type", "geo_point"));
+  }
 }

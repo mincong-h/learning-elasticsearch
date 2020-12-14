@@ -2,6 +2,7 @@ package io.mincong.dvf.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,21 +15,30 @@ public class Main {
 
   public static void main(String[] args) {
     var main = new Main();
+    // FIXME ERROR StatusLogger Log4j2 could not find a logging implementation.
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     try (var restClient = new RestHighLevelClient(builder)) {
-      main.run(restClient);
+      main.run(restClient).join();
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     }
   }
 
-  public void run(RestHighLevelClient restClient) {
+  public CompletableFuture<?> run(RestHighLevelClient restClient) {
     var csvReader = new TransactionCsvReader();
     var esWriter = new TransactionEsWriter(restClient);
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(10);
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(100);
 
-    esWriter.createIndex();
-    esWriter.write(transactions);
-    logger.info("Finished");
+    return esWriter
+        .createIndex()
+        .thenCompose(ignored -> esWriter.write(transactions))
+        .whenComplete(
+            (ids, ex) -> {
+              if (ex != null) {
+                logger.error("Failed to complete", ex);
+              } else {
+                logger.info("Finished, indexed {} documents", ids);
+              }
+            });
   }
 }
