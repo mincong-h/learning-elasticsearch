@@ -45,8 +45,7 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(1061)
-          .longitude(5.323522)
-          .latitude(46.171899)
+          .location(ImmutableLocation.of(Optional.of(5.323522), Optional.of(46.171899)))
           .build();
 
   public static final ImmutableTransaction TRANSACTION_2 =
@@ -89,8 +88,7 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(610)
-          .longitude(5.226197)
-          .latitude(46.184538)
+          .location(ImmutableLocation.of(Optional.of(5.226197), Optional.of(46.184538)))
           .build();
 
   public static final ImmutableTransaction TRANSACTION_3 =
@@ -133,8 +131,7 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(600)
-          .longitude(Optional.empty())
-          .latitude(Optional.empty())
+          .location(ImmutableLocation.of(Optional.empty(), Optional.empty()))
           .build();
 
   public static final ImmutableTransaction TRANSACTION_5 =
@@ -177,7 +174,6 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(242)
-          .longitude(5.219902)
-          .latitude(46.196484)
+          .location(ImmutableLocation.of(Optional.of(5.219902), Optional.of(46.196484)))
           .build();
 }

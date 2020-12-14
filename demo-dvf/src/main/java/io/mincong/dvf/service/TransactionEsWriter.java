@@ -3,8 +3,7 @@ package io.mincong.dvf.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mincong.dvf.model.ImmutableTransaction;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +49,8 @@ public class TransactionEsWriter {
   }
 
   public CompletableFuture<AcknowledgedResponse> createIndex() {
-    var request = new CreateIndexRequest(INDEX_NAME);
+    var request = new CreateIndexRequest(INDEX_NAME).mapping(newMappings());
+
     var cf = new CompletableFuture<AcknowledgedResponse>();
     client
         .indices()
@@ -71,6 +71,14 @@ public class TransactionEsWriter {
             logger.error("Creation of index {} is NOT acknowledged.", INDEX_NAME);
           }
         });
+  }
+
+  private Map<String, Object> newMappings() {
+    var properties = new HashMap<String, Object>();
+
+    properties.put("location", Map.of("type", "geo_point"));
+
+    return Map.of("properties", properties);
   }
 
   private CompletableFuture<String> indexAsync(ImmutableTransaction transaction) {

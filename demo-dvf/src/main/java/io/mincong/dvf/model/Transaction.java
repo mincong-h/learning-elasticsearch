@@ -2,6 +2,7 @@ package io.mincong.dvf.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDate;
@@ -50,8 +51,9 @@ import org.immutables.value.Value.Immutable;
   "code_nature_culture_speciale",
   "nature_culture_speciale",
   "surface_terrain",
-  "longitude",
-  "latitude"
+  "location",
+  //  "longitude",
+  //  "latitude"
 })
 public interface Transaction {
 
@@ -169,9 +171,6 @@ public interface Transaction {
   @JsonProperty("surface_terrain")
   double landSurface();
 
-  @JsonProperty("longitude")
-  Optional<Double> longitude();
-
-  @JsonProperty("latitude")
-  Optional<Double> latitude();
+  @JsonUnwrapped()
+  Location location();
 }
