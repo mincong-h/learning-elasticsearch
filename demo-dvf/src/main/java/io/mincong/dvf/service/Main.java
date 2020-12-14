@@ -15,8 +15,8 @@ public class Main {
 
   public static void main(String[] args) {
     var main = new Main();
-    // FIXME ERROR StatusLogger Log4j2 could not find a logging implementation.
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+    logger.info("Start creating REST high-level client...");
     try (var restClient = new RestHighLevelClient(builder)) {
       main.run(restClient).join();
     } catch (IOException e) {
@@ -31,13 +31,14 @@ public class Main {
 
     return esWriter
         .createIndex()
+        .thenRun(() -> logger.info("Start writing transaction..."))
         .thenCompose(ignored -> esWriter.write(transactions))
         .whenComplete(
             (ids, ex) -> {
               if (ex != null) {
                 logger.error("Failed to complete", ex);
               } else {
-                logger.info("Finished, indexed {} documents", ids);
+                logger.info("Finished, indexed {} documents", ids.size());
               }
             });
   }

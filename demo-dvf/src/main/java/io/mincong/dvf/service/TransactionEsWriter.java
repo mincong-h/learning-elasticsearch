@@ -75,6 +75,7 @@ public class TransactionEsWriter {
   }
 
   private CompletableFuture<String> indexAsync(ImmutableTransaction transaction) {
+    logger.info("Indexing transaction {}", transaction);
     String json;
 
     try {

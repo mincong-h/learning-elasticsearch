@@ -104,7 +104,6 @@
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${apache.log4j.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
