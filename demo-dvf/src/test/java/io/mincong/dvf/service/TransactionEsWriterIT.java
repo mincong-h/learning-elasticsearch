@@ -50,12 +50,12 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   }
 
   @Test
-  public void testPutMapping() throws Exception {
+  public void testCreateIndex() throws Exception {
     // Given
     var writer = new TransactionEsWriter(restClient);
 
     // When
-    var response = writer.putMappings().get(10, SECONDS);
+    var response = writer.createIndex().get(10, SECONDS);
 
     // Then
     Assertions.assertThat(response.isAcknowledged()).isTrue();
@@ -65,6 +65,7 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   public void testWrite() throws Exception {
     // Given
     var writer = new TransactionEsWriter(restClient);
+    writer.createIndex().get(10, SECONDS);
 
     // When
     var ids = writer.write(Stream.of(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3)).get(10, SECONDS);

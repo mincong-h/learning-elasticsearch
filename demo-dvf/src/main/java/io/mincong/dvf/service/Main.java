@@ -27,7 +27,7 @@ public class Main {
     var esWriter = new TransactionEsWriter(restClient);
     var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(10);
 
-    esWriter.putMappings();
+    esWriter.createIndex();
     esWriter.write(transactions);
     logger.info("Finished");
   }
