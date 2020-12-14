@@ -14,8 +14,10 @@ import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.PutMappingRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 
 public class TransactionEsWriter {
@@ -45,6 +47,30 @@ public class TransactionEsWriter {
               }
               return ids;
             });
+  }
+
+  public CompletableFuture<AcknowledgedResponse> putMappings() {
+    var request = new PutMappingRequest(INDEX_NAME);
+    var cf = new CompletableFuture<AcknowledgedResponse>();
+    client
+        .indices()
+        .putMappingAsync(
+            request,
+            RequestOptions.DEFAULT,
+            ActionListener.wrap(cf::complete, cf::completeExceptionally));
+
+    return cf.whenComplete(
+        (response, ex) -> {
+          if (ex != null) {
+            logger.error("Failed to put mappings for index " + INDEX_NAME, ex);
+            return;
+          }
+          if (response.isAcknowledged()) {
+            logger.info("Put mappings for index {} acknowledged", INDEX_NAME);
+          } else {
+            logger.error("Put mappings for index {} was not acknowledged.", INDEX_NAME);
+          }
+        });
   }
 
   private CompletableFuture<String> indexAsync(ImmutableTransaction transaction) {

@@ -50,6 +50,18 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   }
 
   @Test
+  public void testPutMapping() throws Exception {
+    // Given
+    var writer = new TransactionEsWriter(restClient);
+
+    // When
+    var response = writer.putMappings().get(10, SECONDS);
+
+    // Then
+    Assertions.assertThat(response.isAcknowledged()).isTrue();
+  }
+
+  @Test
   public void testWrite() throws Exception {
     // Given
     var writer = new TransactionEsWriter(restClient);
