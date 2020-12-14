@@ -1,11 +1,13 @@
 package io.mincong.dvf.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.immutables.value.Value.Derived;
 import org.immutables.value.Value.Immutable;
 
 @Immutable
@@ -54,6 +56,12 @@ import org.immutables.value.Value.Immutable;
   "latitude"
 })
 public interface Transaction {
+  @JsonIgnore
+  @Derived
+  default String id() {
+    return mutationId() + '.' + plotId();
+  }
+
   @JsonProperty("id_mutation")
   String mutationId();
 
