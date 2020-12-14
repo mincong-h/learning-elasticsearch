@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TransactionReaderTest {
+public class TransactionCsvReaderTest {
 
   private Path csvPath;
 
@@ -19,7 +19,7 @@ public class TransactionReaderTest {
 
   @Test
   public void testTransaction() {
-    var reader = new TransactionReader();
+    var reader = new TransactionCsvReader();
     assertThat(reader.readCsv(csvPath))
         .hasSize(9)
         .contains(TRANSACTION_1)

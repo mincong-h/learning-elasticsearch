@@ -12,11 +12,11 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class TransactionReader {
+public class TransactionCsvReader {
 
   private final ObjectReader objectReader;
 
-  public TransactionReader() {
+  public TransactionCsvReader() {
     var csvMapper = Jackson.newCsvMapper();
     var csvSchema = csvMapper.schemaFor(Transaction.class).withHeader();
     this.objectReader = csvMapper.readerFor(Transaction.class).with(csvSchema);

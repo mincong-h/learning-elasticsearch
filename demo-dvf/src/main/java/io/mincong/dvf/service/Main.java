@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
   public static void main(String[] args) {
-    var reader = new TransactionReader();
+    var reader = new TransactionCsvReader();
     var map = new ConcurrentHashMap<String, String>();
     var count = new AtomicInteger();
     reader
