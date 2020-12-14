@@ -1,5 +1,7 @@
 package io.mincong.dvf.service;
 
+import static java.util.Spliterator.ORDERED;
+
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
@@ -10,7 +12,9 @@ import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class TransactionReader {
 
@@ -25,10 +29,10 @@ public class TransactionReader {
     this.objectReader = csvMapper.readerFor(Transaction.class).with(csvSchema);
   }
 
-  public List<ImmutableTransaction> readCsv(Path path) {
+  public Stream<ImmutableTransaction> readCsv(Path path) {
     try {
       MappingIterator<ImmutableTransaction> iterator = objectReader.readValues(path.toFile());
-      return iterator.readAll();
+      return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, ORDERED), false);
     } catch (IOException e) {
       throw new IllegalStateException("Failed to read file " + path, e);
     }
