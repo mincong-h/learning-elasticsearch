@@ -16,7 +16,7 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.test.rest.ESRestTestCase;
 import org.junit.*;
 
-public class TransactionEsWriterTest extends ESRestTestCase {
+public class TransactionEsWriterIT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
