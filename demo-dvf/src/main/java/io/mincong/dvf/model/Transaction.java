@@ -139,7 +139,7 @@ public interface Transaction {
   Optional<Double> surfaceSquareLot5();
 
   @JsonProperty("nombre_lots")
-  int numberOfLots();
+  int lotsCount();
 
   @JsonProperty("code_type_local")
   String localTypeCode();
