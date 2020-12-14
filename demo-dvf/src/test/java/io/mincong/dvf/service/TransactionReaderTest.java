@@ -143,6 +143,50 @@ public class TransactionReaderTest {
           .latitude(Optional.empty())
           .build();
 
+  private final ImmutableTransaction transaction5 =
+      ImmutableTransaction.builder()
+          .mutationId("2020-4")
+          .mutationDate(LocalDate.of(2020, 1, 22))
+          .dispositionNumber("000001")
+          .mutationNature("Vente")
+          .propertyValue(209950)
+          .addressNumber("11")
+          .addressSuffix("")
+          .addressRoadName("RUE REYER")
+          .addressRoadCode("3340")
+          .postalCode("01000")
+          .communeCode("01053")
+          .communeName("Bourg-en-Bresse")
+          .departmentCode("01")
+          .oldCommuneCode("")
+          .oldCommuneName("")
+          .plotId("01053000AL0074")
+          .oldPlotId("")
+          .volumeNumber("")
+          .numberLot1("")
+          .surfaceSquareLot1(Optional.empty())
+          .numberLot2("")
+          .surfaceSquareLot2(Optional.empty())
+          .numberLot3("")
+          .surfaceSquareLot3(Optional.empty())
+          .numberLot4("")
+          .surfaceSquareLot4(Optional.empty())
+          .numberLot5("")
+          .surfaceSquareLot5(Optional.empty())
+          .numberOfLots(0)
+          .localTypeCode("1")
+          .localType("Maison")
+          .realBuiltUpArea(78)
+          .principlePiecesCount(5)
+          .natureCultureCode("S")
+          .natureCulture("sols")
+          .specialNatureCultureCode("")
+          .specialNatureCulture("")
+          .landSurface(242)
+          .longitude(5.219902)
+          .latitude(46.196484)
+          .build();
+
   private Path csvPath;
 
   @Before
@@ -155,8 +199,10 @@ public class TransactionReaderTest {
   public void testTransaction() throws Exception {
     var reader = new TransactionReader();
     assertThat(reader.readCsv(csvPath))
+        .hasSize(9)
         .contains(transaction1)
         .contains(transaction2)
-        .contains(transaction3);
+        .contains(transaction3)
+        .contains(transaction5);
   }
 }
