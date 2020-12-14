@@ -1,23 +1,27 @@
 package io.mincong.dvf.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.Optional;
 import org.immutables.value.Value.Immutable;
-import org.immutables.value.Value.Style;
 
+/**
+ * @see <a
+ *     href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/geo-point.html">Geo-point
+ *     field type</a>
+ */
 @Immutable
-@Style(allParameters = true)
-@JsonPropertyOrder({"longitude", "latitude"})
 @JsonSerialize(as = ImmutableLocation.class)
 @JsonDeserialize(as = ImmutableLocation.class)
 public interface Location {
 
-  @JsonProperty("longitude")
-  Optional<Double> longitude();
+  static Location of(double longitude, double latitude) {
+    return ImmutableLocation.builder().longitude(longitude).latitude(latitude).build();
+  }
 
-  @JsonProperty("latitude")
-  Optional<Double> latitude();
+  @JsonProperty("lon") // Name "lon" is required by Elasticsearch
+  double longitude();
+
+  @JsonProperty("lat") // Name "lat" is required by Elasticsearch
+  double latitude();
 }

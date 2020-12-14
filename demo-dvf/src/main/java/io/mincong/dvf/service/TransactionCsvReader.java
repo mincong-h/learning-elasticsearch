@@ -5,7 +5,8 @@ import static java.util.Spliterator.ORDERED;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import io.mincong.dvf.model.ImmutableTransaction;
-import io.mincong.dvf.model.Transaction;
+import io.mincong.dvf.model.ImmutableTransactionRow;
+import io.mincong.dvf.model.TransactionRow;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Spliterators;
@@ -18,14 +19,15 @@ public class TransactionCsvReader {
 
   public TransactionCsvReader() {
     var csvMapper = Jackson.newCsvMapper();
-    var csvSchema = csvMapper.schemaFor(Transaction.class).withHeader();
-    this.objectReader = csvMapper.readerFor(Transaction.class).with(csvSchema);
+    var csvSchema = csvMapper.schemaFor(TransactionRow.class).withHeader();
+    this.objectReader = csvMapper.readerFor(TransactionRow.class).with(csvSchema);
   }
 
   public Stream<ImmutableTransaction> readCsv(Path path) {
     try {
-      MappingIterator<ImmutableTransaction> iterator = objectReader.readValues(path.toFile());
-      return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, ORDERED), false);
+      MappingIterator<ImmutableTransactionRow> iterator = objectReader.readValues(path.toFile());
+      return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, ORDERED), false)
+          .map(TransactionRow::toTransactionObj);
     } catch (IOException e) {
       throw new IllegalStateException("Failed to read file " + path, e);
     }

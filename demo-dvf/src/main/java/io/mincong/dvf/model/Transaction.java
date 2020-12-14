@@ -1,8 +1,6 @@
 package io.mincong.dvf.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.time.LocalDate;
@@ -12,49 +10,6 @@ import org.immutables.value.Value.Immutable;
 @Immutable
 @JsonSerialize(as = ImmutableTransaction.class)
 @JsonDeserialize(as = ImmutableTransaction.class)
-@JsonPropertyOrder({
-  "id_mutation",
-  "date_mutation",
-  "numero_disposition",
-  "nature_mutation",
-  "valeur_fonciere",
-  "adresse_numero",
-  "adresse_suffixe",
-  "adresse_nom_voie",
-  "adresse_code_voie",
-  "code_postal",
-  "code_commune",
-  "nom_commune",
-  "code_departement",
-  "ancien_code_commune",
-  "ancien_nom_commune",
-  "id_parcelle",
-  "ancien_id_parcelle",
-  "numero_volume",
-  "lot1_numero",
-  "lot1_surface_carrez",
-  "lot2_numero",
-  "lot2_surface_carrez",
-  "lot3_numero",
-  "lot3_surface_carrez",
-  "lot4_numero",
-  "lot4_surface_carrez",
-  "lot5_numero",
-  "lot5_surface_carrez",
-  "nombre_lots",
-  "code_type_local",
-  "type_local",
-  "surface_reelle_bati",
-  "nombre_pieces_principales",
-  "code_nature_culture",
-  "nature_culture",
-  "code_nature_culture_speciale",
-  "nature_culture_speciale",
-  "surface_terrain",
-  "location",
-  //  "longitude",
-  //  "latitude"
-})
 public interface Transaction {
 
   @JsonProperty("id_mutation")
@@ -171,6 +126,6 @@ public interface Transaction {
   @JsonProperty("surface_terrain")
   double landSurface();
 
-  @JsonUnwrapped()
-  Location location();
+  @JsonProperty("location")
+  Optional<Location> location();
 }

@@ -22,9 +22,6 @@ public class TransactionCsvReaderTest {
     var reader = new TransactionCsvReader();
     assertThat(reader.readCsv(csvPath))
         .hasSize(9)
-        .contains(TRANSACTION_1)
-        .contains(TRANSACTION_2)
-        .contains(TRANSACTION_3)
-        .contains(TRANSACTION_5);
+        .contains(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_5);
   }
 }
