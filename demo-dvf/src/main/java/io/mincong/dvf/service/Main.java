@@ -2,7 +2,9 @@ package io.mincong.dvf.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.CompletableFuture;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.*;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,20 +27,22 @@ public class Main {
   }
 
   public CompletableFuture<?> run(RestHighLevelClient restClient) {
+    var start = Instant.now();
     var csvReader = new TransactionCsvReader();
     var esWriter = new TransactionEsWriter(restClient);
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(100);
 
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH)); // .limit(100);
+    esWriter.createIndex();
+    logger.info("Start writing transaction...");
     return esWriter
-        .createIndex()
-        .thenRun(() -> logger.info("Start writing transaction..."))
-        .thenCompose(ignored -> esWriter.write(transactions))
+        .write(transactions)
         .whenComplete(
             (ids, ex) -> {
               if (ex != null) {
                 logger.error("Failed to complete", ex);
               } else {
-                logger.info("Finished, indexed {} documents", ids.size());
+                var duration = Duration.between(start, Instant.now());
+                logger.info("Finished, indexed {} documents in {}", ids.size(), duration);
               }
             });
   }

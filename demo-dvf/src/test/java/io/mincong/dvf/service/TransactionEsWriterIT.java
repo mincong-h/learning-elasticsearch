@@ -12,7 +12,6 @@ import org.elasticsearch.action.get.MultiGetRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.test.rest.ESRestTestCase;
 import org.junit.*;
 
@@ -37,10 +36,6 @@ public class TransactionEsWriterIT extends ESRestTestCase {
 
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     restClient = new RestHighLevelClient(builder);
-
-    var createRequest = new CreateIndexRequest("my_index");
-    var response = restClient.indices().create(createRequest, RequestOptions.DEFAULT);
-    Assertions.assertThat(response.isAcknowledged()).isTrue();
   }
 
   @After
@@ -54,18 +49,15 @@ public class TransactionEsWriterIT extends ESRestTestCase {
     // Given
     var writer = new TransactionEsWriter(restClient);
 
-    // When
-    var response = writer.createIndex().get(10, SECONDS);
-
-    // Then
-    Assertions.assertThat(response.isAcknowledged()).isTrue();
+    // When, Then
+    Assertions.assertThatCode(writer::createIndex).doesNotThrowAnyException();
   }
 
   @Test
   public void testWrite() throws Exception {
     // Given
     var writer = new TransactionEsWriter(restClient);
-    writer.createIndex().get(10, SECONDS);
+    writer.createIndex();
 
     // When
     var ids = writer.write(Stream.of(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3)).get(10, SECONDS);
