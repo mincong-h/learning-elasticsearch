@@ -1,5 +1,13 @@
 # DVF
 
+## Mappings
+
+> Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [code_postal] in order to load field data by uninverting the inverted index. Note that this can use significant memory.]]; nested: ElasticsearchException[Elasticsearch exception [type=illegal_argument_exception, reason=Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [code_postal] in order to load field data by uninverting the inverted index. Note that this can use significant memory.]];
+## Search
+
+Metric aggregations:
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html>
+
 ## Troubleshooting
 
 ### Out Of Memory

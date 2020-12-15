@@ -26,6 +26,10 @@ public abstract class Transaction {
   @JsonProperty("id_mutation")
   public abstract String mutationId();
 
+  static {
+    mappings.put("id_mutation", Map.of("type", "keyword"));
+  }
+
   @JsonProperty("date_mutation")
   public abstract LocalDate mutationDate();
 
@@ -54,11 +58,23 @@ public abstract class Transaction {
   @JsonProperty("adresse_code_voie")
   public abstract String addressRoadCode();
 
+  static {
+    mappings.put("adresse_code_voie", Map.of("type", "keyword"));
+  }
+
   @JsonProperty("code_postal")
   public abstract String postalCode();
 
+  static {
+    mappings.put("code_postal", Map.of("type", "keyword"));
+  }
+
   @JsonProperty("code_commune")
   public abstract String communeCode();
+
+  static {
+    mappings.put("code_commune", Map.of("type", "keyword"));
+  }
 
   @JsonProperty("nom_commune")
   public abstract String communeName();
@@ -66,8 +82,16 @@ public abstract class Transaction {
   @JsonProperty("code_departement")
   public abstract String departmentCode();
 
+  static {
+    mappings.put("code_departement", Map.of("type", "keyword"));
+  }
+
   @JsonProperty("ancien_code_commune")
   public abstract String oldCommuneCode();
+
+  static {
+    mappings.put("ancien_code_commune", Map.of("type", "keyword"));
+  }
 
   @JsonProperty("ancien_nom_commune")
   public abstract String oldCommuneName();
@@ -140,6 +164,10 @@ public abstract class Transaction {
 
   @JsonProperty("code_type_local")
   public abstract String localTypeCode();
+
+  static {
+    mappings.put("code_type_local", Map.of("type", "keyword"));
+  }
 
   @JsonProperty("type_local")
   public abstract String localType();
