@@ -5,7 +5,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
-import java.util.stream.Stream;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.get.MultiGetItemResponse;
@@ -62,7 +61,7 @@ public class TransactionEsWriterIT extends ESRestTestCase {
     writer.createIndex();
 
     // When
-    var ids = writer.write(Stream.of(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3)).get(10, SECONDS);
+    var ids = writer.write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);
 
     // Then
     var objectMapper = Jackson.newObjectMapper();

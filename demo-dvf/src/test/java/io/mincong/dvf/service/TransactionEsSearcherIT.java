@@ -4,7 +4,6 @@ import static io.mincong.dvf.model.TestModels.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.Map;
-import java.util.stream.Stream;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
@@ -39,7 +38,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
     var writer = new TransactionEsWriter(restClient, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
     writer
-        .write(Stream.of(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4))
+        .write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
         .get(10, SECONDS)
         .forEach(id -> logger.info("Transaction " + id));
   }

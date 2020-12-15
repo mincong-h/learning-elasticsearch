@@ -4,6 +4,7 @@ import static io.mincong.dvf.model.TestModels.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
+import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,7 @@ public class TransactionCsvReaderTest {
     var reader = new TransactionCsvReader();
     assertThat(reader.readCsv(csvPath))
         .hasSize(9)
+        .flatExtracting(Function.identity())
         .contains(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4, TRANSACTION_5);
   }
 }

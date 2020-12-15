@@ -9,6 +9,7 @@ import io.mincong.dvf.model.ImmutableTransactionRow;
 import io.mincong.dvf.model.TransactionRow;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -23,11 +24,13 @@ public class TransactionCsvReader {
     this.objectReader = csvMapper.readerFor(TransactionRow.class).with(csvSchema);
   }
 
-  public Stream<ImmutableTransaction> readCsv(Path path) {
+  public Stream<List<ImmutableTransaction>> readCsv(Path path) {
     try {
       MappingIterator<ImmutableTransactionRow> iterator = objectReader.readValues(path.toFile());
       return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, ORDERED), false)
-          .map(TransactionRow::toTransactionObj);
+          .map(TransactionRow::toTransactionObj)
+          // TODO batching
+          .map(List::of);
     } catch (IOException e) {
       throw new IllegalStateException("Failed to read file " + path, e);
     }
