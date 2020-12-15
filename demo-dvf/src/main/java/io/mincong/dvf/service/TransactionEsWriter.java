@@ -68,6 +68,7 @@ public class TransactionEsWriter {
     logger.info("Creation of index {} is acknowledged", INDEX_NAME);
   }
 
+  // FIXME this is too slow
   private Optional<String> indexAsync(ImmutableTransaction transaction) {
     logger.info("Indexing transaction {}: {}", counter.getAndIncrement(), transaction);
     String json;

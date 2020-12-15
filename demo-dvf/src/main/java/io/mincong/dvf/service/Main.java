@@ -31,7 +31,7 @@ public class Main {
     var csvReader = new TransactionCsvReader();
     var esWriter = new TransactionEsWriter(restClient);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)); // .limit(100);
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(1_000); // total: 827,106
     esWriter.createIndex();
     logger.info("Start writing transaction...");
     return esWriter

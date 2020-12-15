@@ -1,6 +1,6 @@
 #!/bin/bash
 
-esdata="/Volumes/Samsung_T5/dvf/docker/volume-es"
+esdata="${HOME}/dvf-volume-es"
 
 if [ ! -d "$esdata" ]
 then
