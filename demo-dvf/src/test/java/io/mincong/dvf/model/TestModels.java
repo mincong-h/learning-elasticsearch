@@ -5,8 +5,8 @@ import java.util.Optional;
 
 public class TestModels {
 
-  public static final ImmutableTransactionRow TRANSACTION_1_ROW =
-      ImmutableTransactionRow.builder()
+  public static final ImmutableTransaction TRANSACTION_1 =
+      ImmutableTransaction.builder()
           .mutationId("2020-1")
           .mutationDate(LocalDate.of(2020, 1, 7))
           .dispositionNumber("000001")
@@ -45,14 +45,11 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(1061)
-          .longitude(5.323522)
-          .latitude(46.171899)
+          .location(Location.of(5.323522, 46.171899))
           .build();
 
-  public static final ImmutableTransaction TRANSACTION_1 = TRANSACTION_1_ROW.toTransactionObj();
-
-  public static final ImmutableTransactionRow TRANSACTION_2_ROW =
-      ImmutableTransactionRow.builder()
+  public static final ImmutableTransaction TRANSACTION_2 =
+      ImmutableTransaction.builder()
           .mutationId("2020-2")
           .mutationDate(LocalDate.of(2020, 1, 7))
           .dispositionNumber("000001")
@@ -91,14 +88,11 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(610)
-          .longitude(5.226197)
-          .latitude(46.184538)
+          .location(Location.of(5.226197, 46.184538))
           .build();
 
-  public static final ImmutableTransaction TRANSACTION_2 = TRANSACTION_2_ROW.toTransactionObj();
-
-  public static final ImmutableTransactionRow TRANSACTION_3_ROW =
-      ImmutableTransactionRow.builder()
+  public static final ImmutableTransaction TRANSACTION_3 =
+      ImmutableTransaction.builder()
           .mutationId("2020-3")
           .mutationDate(LocalDate.of(2020, 1, 14))
           .dispositionNumber("000001")
@@ -137,14 +131,54 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(600)
-          .longitude(Optional.empty())
-          .latitude(Optional.empty())
+          .location(Optional.empty())
           .build();
 
-  public static final ImmutableTransaction TRANSACTION_3 = TRANSACTION_3_ROW.toTransactionObj();
+  public static final ImmutableTransaction TRANSACTION_4 =
+      ImmutableTransaction.builder()
+          .mutationId("2020-3")
+          .mutationDate(LocalDate.of(2020, 1, 14))
+          .dispositionNumber("000001")
+          .mutationNature("Vente")
+          .propertyValue(89000)
+          .addressNumber("")
+          .addressSuffix("")
+          .addressRoadName("VACAGNOLE")
+          .addressRoadCode("B112")
+          .postalCode("01340")
+          .communeCode("01024")
+          .communeName("Attignat")
+          .departmentCode("01")
+          .oldCommuneCode("")
+          .oldCommuneName("")
+          .plotId("01024000AL0132")
+          .oldPlotId("")
+          .volumeNumber("")
+          .numberLot1("")
+          .surfaceSquareLot1(Optional.empty())
+          .numberLot2("")
+          .surfaceSquareLot2(Optional.empty())
+          .numberLot3("")
+          .surfaceSquareLot3(Optional.empty())
+          .numberLot4("")
+          .surfaceSquareLot4(Optional.empty())
+          .numberLot5("")
+          .surfaceSquareLot5(Optional.empty())
+          .lotsCount(0)
+          .localTypeCode("")
+          .localType("")
+          .realBuiltUpArea(Optional.empty())
+          .principlePiecesCount(Optional.empty())
+          .natureCultureCode("AB")
+          .natureCulture("terrains a bâtir")
+          .specialNatureCultureCode("")
+          .specialNatureCulture("")
+          .landSurface(491)
+          .location(Optional.empty())
+          .build();
 
-  public static final ImmutableTransactionRow TRANSACTION_5_ROW =
-      ImmutableTransactionRow.builder()
+  public static final ImmutableTransaction TRANSACTION_5 =
+      ImmutableTransaction.builder()
           .mutationId("2020-4")
           .mutationDate(LocalDate.of(2020, 1, 22))
           .dispositionNumber("000001")
@@ -183,9 +217,6 @@ public class TestModels {
           .specialNatureCultureCode("")
           .specialNatureCulture("")
           .landSurface(242)
-          .longitude(5.219902)
-          .latitude(46.196484)
+          .location(Location.of(5.219902, 46.196484))
           .build();
-
-  public static final ImmutableTransaction TRANSACTION_5 = TRANSACTION_5_ROW.toTransactionObj();
 }
