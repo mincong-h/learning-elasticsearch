@@ -60,11 +60,12 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
 
     // Then
     Assertions.assertThat(sum.getValue())
-        .isEqualTo(172000.0)
+        .isEqualTo(261_000.0)
         .isEqualTo(
             TRANSACTION_1.propertyValue()
                 + TRANSACTION_2.propertyValue()
-                + TRANSACTION_3.propertyValue());
+                + TRANSACTION_3.propertyValue()
+                + TRANSACTION_4.propertyValue());
   }
 
   @Test
