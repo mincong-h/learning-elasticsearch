@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.*;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilders;
 
 public class Main {
   private static final Logger logger = LogManager.getLogger(Main.class);
@@ -21,13 +24,14 @@ public class Main {
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
     try (var restClient = new RestHighLevelClient(builder)) {
-      main.run(restClient).join();
+      //      main.indexTransactions(restClient).join();
+      main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     }
   }
 
-  public CompletableFuture<?> run(RestHighLevelClient restClient) {
+  public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient) {
     var start = Instant.now();
     var csvReader = new TransactionCsvReader();
     var esWriter = new TransactionEsWriter(restClient, RefreshPolicy.NONE);
@@ -46,5 +50,16 @@ public class Main {
                 logger.info("Finished, indexed {} documents in {}", ids.size(), duration);
               }
             });
+  }
+
+  public void search(RestHighLevelClient restClient) {
+    var searcher = new TransactionEsSearcher(restClient);
+    logger.info("Total property value: {}", searcher.sumAggregate("property_value").getValue());
+    logger.info(
+        "Transactions activity per postal code:\n{}",
+        searcher.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
+            .collect(Collectors.joining("\n")));
   }
 }
