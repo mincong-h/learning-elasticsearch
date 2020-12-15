@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -22,17 +23,18 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 public class TransactionEsWriter {
 
-  static final String INDEX_NAME = "transactions";
   private static final Logger logger = LogManager.getLogger(TransactionEsWriter.class);
 
   private final RestHighLevelClient client;
   private final ObjectMapper objectMapper;
   private final AtomicInteger counter;
+  private final RefreshPolicy refreshPolicy;
 
-  public TransactionEsWriter(RestHighLevelClient client) {
+  public TransactionEsWriter(RestHighLevelClient client, RefreshPolicy refreshPolicy) {
     this.client = client;
     this.objectMapper = Jackson.newObjectMapper();
     this.counter = new AtomicInteger(0);
+    this.refreshPolicy = refreshPolicy;
   }
 
   public CompletableFuture<List<String>> write(Stream<ImmutableTransaction> transactions) {
@@ -54,18 +56,18 @@ public class TransactionEsWriter {
   }
 
   public void createIndex() {
-    var request = new CreateIndexRequest(INDEX_NAME).mapping(Transaction.esMappings());
+    var request = new CreateIndexRequest(Transaction.INDEX_NAME).mapping(Transaction.esMappings());
     CreateIndexResponse response;
     try {
       response = client.indices().create(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
-      throw new IllegalStateException("Failed to create index " + INDEX_NAME, e);
+      throw new IllegalStateException("Failed to create index " + Transaction.INDEX_NAME, e);
     }
     if (!response.isAcknowledged()) {
       throw new IllegalStateException(
-          "Failed to create index " + INDEX_NAME + ": response was not acknowledged");
+          "Failed to create index " + Transaction.INDEX_NAME + ": response was not acknowledged");
     }
-    logger.info("Creation of index {} is acknowledged", INDEX_NAME);
+    logger.info("Creation of index {} is acknowledged", Transaction.INDEX_NAME);
   }
 
   // FIXME this is too slow
@@ -80,7 +82,10 @@ public class TransactionEsWriter {
       return Optional.empty();
     }
 
-    var request = new IndexRequest(INDEX_NAME).source(json, XContentType.JSON);
+    var request =
+        new IndexRequest(Transaction.INDEX_NAME)
+            .source(json, XContentType.JSON)
+            .setRefreshPolicy(refreshPolicy);
     try {
       var response = client.index(request, RequestOptions.DEFAULT);
       logger.info("Transaction {}: OK", response.getId());

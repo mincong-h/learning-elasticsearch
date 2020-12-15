@@ -4,11 +4,13 @@ import static io.mincong.dvf.model.TestModels.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import io.mincong.dvf.model.ImmutableTransaction;
+import io.mincong.dvf.model.Transaction;
 import java.util.stream.Stream;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetRequest;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -47,7 +49,7 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   @Test
   public void testCreateIndex() throws Exception {
     // Given
-    var writer = new TransactionEsWriter(restClient);
+    var writer = new TransactionEsWriter(restClient, RefreshPolicy.IMMEDIATE);
 
     // When, Then
     Assertions.assertThatCode(writer::createIndex).doesNotThrowAnyException();
@@ -56,7 +58,7 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   @Test
   public void testWrite() throws Exception {
     // Given
-    var writer = new TransactionEsWriter(restClient);
+    var writer = new TransactionEsWriter(restClient, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
 
     // When
@@ -65,7 +67,7 @@ public class TransactionEsWriterIT extends ESRestTestCase {
     // Then
     var objectMapper = Jackson.newObjectMapper();
     var request = new MultiGetRequest();
-    ids.forEach(id -> request.add(TransactionEsWriter.INDEX_NAME, id));
+    ids.forEach(id -> request.add(Transaction.INDEX_NAME, id));
     var response = restClient.mget(request, RequestOptions.DEFAULT);
     Assertions.assertThat(response.getResponses())
         .extracting(MultiGetItemResponse::getResponse)

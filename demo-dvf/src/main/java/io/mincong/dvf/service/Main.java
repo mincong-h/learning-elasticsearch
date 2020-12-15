@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 
@@ -29,7 +30,7 @@ public class Main {
   public CompletableFuture<?> run(RestHighLevelClient restClient) {
     var start = Instant.now();
     var csvReader = new TransactionCsvReader();
-    var esWriter = new TransactionEsWriter(restClient);
+    var esWriter = new TransactionEsWriter(restClient, RefreshPolicy.NONE);
 
     var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(1_000); // total: 827,106
     esWriter.createIndex();
