@@ -67,7 +67,7 @@ public class TransactionEsSearcher {
   public Map<String, Long> transactionByPostalCode(QueryBuilder queryBuilder) {
     var sourceBuilder =
         new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.terms("postal_code_agg").field("code_postal"))
+            .aggregation(AggregationBuilders.terms("postal_code_agg").field("postal_code"))
             .query(QueryBuilders.matchAllQuery());
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);

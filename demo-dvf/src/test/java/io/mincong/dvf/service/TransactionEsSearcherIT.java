@@ -56,7 +56,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
     var searcher = new TransactionEsSearcher(restClient);
 
     // When
-    var sum = searcher.sumAggregate("valeur_fonciere");
+    var sum = searcher.sumAggregate("property_value");
 
     // Then
     Assertions.assertThat(sum.getValue())

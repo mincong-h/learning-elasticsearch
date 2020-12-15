@@ -23,186 +23,198 @@ public abstract class Transaction {
     return Map.of("properties", Map.copyOf(mappings));
   }
 
-  @JsonProperty("id_mutation")
+  @JsonProperty("mutation_id")
   public abstract String mutationId();
 
   static {
-    mappings.put("id_mutation", Map.of("type", "keyword"));
+    mappings.put("mutation_id", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("date_mutation")
+  @JsonProperty("mutation_date")
   public abstract LocalDate mutationDate();
 
   static {
-    mappings.put("date_mutation", Map.of("type", "date"));
+    mappings.put("mutation_date", Map.of("type", "date"));
   }
 
-  @JsonProperty("numero_disposition")
+  @JsonProperty("disposition_number")
   public abstract String dispositionNumber();
 
-  @JsonProperty("nature_mutation")
+  @JsonProperty("mutation_nature")
   public abstract String mutationNature();
 
-  @JsonProperty("valeur_fonciere")
+  @JsonProperty("property_value")
   public abstract double propertyValue();
 
-  @JsonProperty("adresse_numero")
+  @JsonProperty("address_number")
   public abstract String addressNumber();
 
-  @JsonProperty("adresse_suffixe")
+  @JsonProperty("address_suffix")
   public abstract String addressSuffix();
 
-  @JsonProperty("adresse_nom_voie")
+  @JsonProperty("address_road_name")
   public abstract String addressRoadName();
 
-  @JsonProperty("adresse_code_voie")
+  @JsonProperty("address_road_code")
   public abstract String addressRoadCode();
 
   static {
-    mappings.put("adresse_code_voie", Map.of("type", "keyword"));
+    mappings.put("address_road_code", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("code_postal")
+  @JsonProperty("postal_code")
   public abstract String postalCode();
 
   static {
-    mappings.put("code_postal", Map.of("type", "keyword"));
+    mappings.put("postal_code", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("code_commune")
+  @JsonProperty("commune_code")
   public abstract String communeCode();
 
   static {
-    mappings.put("code_commune", Map.of("type", "keyword"));
+    mappings.put("commune_code", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("nom_commune")
+  @JsonProperty("commune_name")
   public abstract String communeName();
 
-  @JsonProperty("code_departement")
+  @JsonProperty("department_code")
   public abstract String departmentCode();
 
   static {
-    mappings.put("code_departement", Map.of("type", "keyword"));
+    mappings.put("department_code", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("ancien_code_commune")
+  @JsonProperty("old_commune_code")
   public abstract String oldCommuneCode();
 
   static {
-    mappings.put("ancien_code_commune", Map.of("type", "keyword"));
+    mappings.put("old_commune_code", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("ancien_nom_commune")
+  @JsonProperty("old_commune_name")
   public abstract String oldCommuneName();
 
-  @JsonProperty("id_parcelle")
+  @JsonProperty("plot_id")
   public abstract String plotId();
 
-  @JsonProperty("ancien_id_parcelle")
+  static {
+    mappings.put("plot_id", Map.of("type", "keyword"));
+  }
+
+  @JsonProperty("old_plot_id")
   public abstract String oldPlotId();
 
-  @JsonProperty("numero_volume")
+  static {
+    mappings.put("old_plot_id", Map.of("type", "keyword"));
+  }
+
+  @JsonProperty("volume_number")
   public abstract String volumeNumber();
 
-  @JsonProperty("lot1_numero")
+  @JsonProperty("number_lot1")
   public abstract String numberLot1();
 
-  @JsonProperty("lot1_surface_carrez")
+  @JsonProperty("surface_lot1")
   public abstract Optional<Double> surfaceSquareLot1();
 
   static {
-    mappings.put("lot1_surface_carrez", Map.of("type", "double"));
+    mappings.put("surface_lot1", Map.of("type", "double"));
   }
 
-  @JsonProperty("lot2_numero")
+  @JsonProperty("number_lot2")
   public abstract String numberLot2();
 
-  @JsonProperty("lot2_surface_carrez")
+  @JsonProperty("surface_lot2")
   public abstract Optional<Double> surfaceSquareLot2();
 
   static {
-    mappings.put("lot2_surface_carrez", Map.of("type", "double"));
+    mappings.put("surface_log2", Map.of("type", "double"));
   }
 
-  @JsonProperty("lot3_numero")
+  @JsonProperty("number_lot3")
   public abstract String numberLot3();
 
-  @JsonProperty("lot3_surface_carrez")
+  @JsonProperty("surface_lot3")
   public abstract Optional<Double> surfaceSquareLot3();
 
   static {
-    mappings.put("lot4_surface_carrez", Map.of("type", "double"));
+    mappings.put("surface_lot3", Map.of("type", "double"));
   }
 
-  @JsonProperty("lot4_numero")
+  @JsonProperty("number_lot4")
   public abstract String numberLot4();
 
-  @JsonProperty("lot4_surface_carrez")
+  @JsonProperty("surface_lot4")
   public abstract Optional<Double> surfaceSquareLot4();
 
   static {
-    mappings.put("lot4_surface_carrez", Map.of("type", "double"));
+    mappings.put("surface_lot4", Map.of("type", "double"));
   }
 
-  @JsonProperty("lot5_numero")
+  @JsonProperty("number_lot5")
   public abstract String numberLot5();
 
-  @JsonProperty("lot5_surface_carrez")
+  @JsonProperty("surface_lot5")
   public abstract Optional<Double> surfaceSquareLot5();
 
   static {
-    mappings.put("lot5_surface_carrez", Map.of("type", "double"));
+    mappings.put("surface_lot5", Map.of("type", "double"));
   }
 
-  @JsonProperty("nombre_lots")
+  @JsonProperty("lots_count")
   public abstract int lotsCount();
 
   static {
-    mappings.put("nombre_lots", Map.of("type", "integer"));
+    mappings.put("lots_count", Map.of("type", "integer"));
   }
 
-  @JsonProperty("code_type_local")
+  @JsonProperty("local_code_type")
   public abstract String localTypeCode();
 
   static {
-    mappings.put("code_type_local", Map.of("type", "keyword"));
+    mappings.put("local_code_type", Map.of("type", "keyword"));
   }
 
-  @JsonProperty("type_local")
+  @JsonProperty("local_type")
   public abstract String localType();
 
-  @JsonProperty("surface_reelle_bati")
+  @JsonProperty("real_built_up_area")
   public abstract Optional<Double> realBuiltUpArea();
 
   static {
-    mappings.put("surface_reelle_bati", Map.of("type", "double"));
+    mappings.put("real_built_up_area", Map.of("type", "double"));
   }
 
-  @JsonProperty("nombre_pieces_principales")
+  @JsonProperty("principle_pieces_count")
   public abstract Optional<Integer> principlePiecesCount();
 
   static {
-    mappings.put("nombre_pieces_principales", Map.of("type", "integer"));
+    mappings.put("principle_pieces_count", Map.of("type", "integer"));
   }
 
-  @JsonProperty("code_nature_culture")
+  @JsonProperty("nature_culture_code")
   public abstract String natureCultureCode();
 
   @JsonProperty("nature_culture")
   public abstract String natureCulture();
 
-  @JsonProperty("code_nature_culture_speciale")
+  @JsonProperty("special_nature_culture_code")
   public abstract String specialNatureCultureCode();
 
-  @JsonProperty("nature_culture_speciale")
+  static {
+    mappings.put("special_nature_culture_code", Map.of("type", "keyword"));
+  }
+
+  @JsonProperty("special_nature_culture")
   public abstract String specialNatureCulture();
 
-  @JsonProperty("surface_terrain")
+  @JsonProperty("land_surface")
   public abstract double landSurface();
 
   static {
-    mappings.put("surface_terrain", Map.of("type", "double"));
+    mappings.put("land_surface", Map.of("type", "double"));
   }
 
   @JsonProperty("location")
