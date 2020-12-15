@@ -13,7 +13,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 public class Main {
   private static final Logger logger = LogManager.getLogger(Main.class);
-  private static final String CSV_PATH = "/Users/mincong/github/dvf/downloads/full.2020.csv";
+  private static final String CSV_PATH = "/Volumes/Samsung_T5/dvf/downloads/full.2020.csv";
 
   public static void main(String[] args) {
     var main = new Main();
