@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,11 +32,14 @@ public class TransactionEsWriter {
   private final ObjectMapper objectMapper;
   private final AtomicInteger counter;
   private final RefreshPolicy refreshPolicy;
+  private final Executor executor;
 
-  public TransactionEsWriter(RestHighLevelClient client, RefreshPolicy refreshPolicy) {
+  public TransactionEsWriter(
+      RestHighLevelClient client, Executor executor, RefreshPolicy refreshPolicy) {
     this.client = client;
     this.objectMapper = Jackson.newObjectMapper();
     this.counter = new AtomicInteger(0);
+    this.executor = executor;
     this.refreshPolicy = refreshPolicy;
   }
 
@@ -43,20 +48,18 @@ public class TransactionEsWriter {
   }
 
   public CompletableFuture<List<String>> write(Stream<List<ImmutableTransaction>> transactions) {
-    // TODO batch requests
-    var ids = transactions.map(this::indexAsync).flatMap(List::stream).collect(Collectors.toList());
-    return CompletableFuture.completedFuture(ids);
-    //    return CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
-    //        .thenApply(
-    //            ignored -> {
-    //              List<String> ids = new ArrayList<>();
-    //              for (var cf : cfs) {
-    //                if (cf.isDone()) {
-    //                  ids.add(cf.join());
-    //                }
-    //              }
-    //              return ids;
-    //            });
+    var cfs = transactions.map(this::indexAsync).collect(Collectors.toList());
+    return CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
+        .thenApply(
+            ignored -> {
+              List<String> ids = new ArrayList<>();
+              for (var cf : cfs) {
+                if (cf.isDone()) {
+                  ids.addAll(cf.join());
+                }
+              }
+              return ids;
+            });
   }
 
   public void createIndex() {
@@ -74,8 +77,11 @@ public class TransactionEsWriter {
     logger.info("Creation of index {} is acknowledged", Transaction.INDEX_NAME);
   }
 
-  // FIXME this is too slow
-  private List<String> indexAsync(List<ImmutableTransaction> transactions) {
+  private CompletableFuture<List<String>> indexAsync(List<ImmutableTransaction> transactions) {
+    return CompletableFuture.supplyAsync(() -> index(transactions), executor);
+  }
+
+  private List<String> index(List<ImmutableTransaction> transactions) {
     logger.info(
         "Indexing transaction {}: {}",
         counter.getAndIncrement(),

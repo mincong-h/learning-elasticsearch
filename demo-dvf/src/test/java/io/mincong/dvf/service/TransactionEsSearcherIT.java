@@ -4,6 +4,8 @@ import static io.mincong.dvf.model.TestModels.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
@@ -26,6 +28,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
   }
 
   private RestHighLevelClient restClient;
+  private ExecutorService executor;
 
   @Before
   @Override
@@ -35,7 +38,8 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     restClient = new RestHighLevelClient(builder);
 
-    var writer = new TransactionEsWriter(restClient, RefreshPolicy.IMMEDIATE);
+    executor = Executors.newSingleThreadExecutor();
+    var writer = new TransactionEsWriter(restClient, executor, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
     writer
         .write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
@@ -46,6 +50,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
   @After
   public void tearDown() throws Exception {
     restClient.close();
+    executor.shutdownNow();
     super.tearDown();
   }
 

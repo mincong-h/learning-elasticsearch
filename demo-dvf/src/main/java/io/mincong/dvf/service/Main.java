@@ -6,6 +6,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
@@ -23,18 +25,21 @@ public class Main {
     var main = new Main();
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
+    var executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     try (var restClient = new RestHighLevelClient(builder)) {
-      //      main.indexTransactions(restClient).join();
+      main.indexTransactions(restClient, executor).join();
       main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
+    } finally {
+      executor.shutdown();
     }
   }
 
-  public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient) {
+  public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient, Executor executor) {
     var start = Instant.now();
     var csvReader = new TransactionCsvReader();
-    var esWriter = new TransactionEsWriter(restClient, RefreshPolicy.NONE);
+    var esWriter = new TransactionEsWriter(restClient, executor, RefreshPolicy.NONE);
 
     var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(1_000); // total: 827,106
     esWriter.createIndex();

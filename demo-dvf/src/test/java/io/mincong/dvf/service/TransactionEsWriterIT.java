@@ -5,6 +5,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
+import java.util.concurrent.Executors;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.get.MultiGetItemResponse;
@@ -48,7 +49,9 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   @Test
   public void testCreateIndex() throws Exception {
     // Given
-    var writer = new TransactionEsWriter(restClient, RefreshPolicy.IMMEDIATE);
+    var writer =
+        new TransactionEsWriter(
+            restClient, Executors.newSingleThreadExecutor(), RefreshPolicy.IMMEDIATE);
 
     // When, Then
     Assertions.assertThatCode(writer::createIndex).doesNotThrowAnyException();
@@ -57,7 +60,9 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   @Test
   public void testWrite() throws Exception {
     // Given
-    var writer = new TransactionEsWriter(restClient, RefreshPolicy.IMMEDIATE);
+    var writer =
+        new TransactionEsWriter(
+            restClient, Executors.newSingleThreadExecutor(), RefreshPolicy.IMMEDIATE);
     writer.createIndex();
 
     // When
