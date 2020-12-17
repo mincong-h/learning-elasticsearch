@@ -15,19 +15,20 @@ import java.util.stream.StreamSupport;
 
 public class TransactionCsvReader {
 
-  private static final int BULK_SIZE = 1_000;
   private final ObjectReader objectReader;
+  private final int bulkSize;
 
-  public TransactionCsvReader() {
+  public TransactionCsvReader(int bulkSize) {
     var csvMapper = Jackson.newCsvMapper();
     var csvSchema = csvMapper.schemaFor(TransactionRow.class).withHeader();
     this.objectReader = csvMapper.readerFor(TransactionRow.class).with(csvSchema);
+    this.bulkSize = bulkSize;
   }
 
   public Stream<List<ImmutableTransaction>> readCsv(Path path) {
     try {
       Iterator<ImmutableTransactionRow> iterator = objectReader.readValues(path.toFile());
-      var bulkIterator = new BulkIterator<>(iterator, BULK_SIZE);
+      var bulkIterator = new BulkIterator<>(iterator, bulkSize);
       return StreamSupport.stream(Spliterators.spliteratorUnknownSize(bulkIterator, ORDERED), false)
           .map(
               rows ->

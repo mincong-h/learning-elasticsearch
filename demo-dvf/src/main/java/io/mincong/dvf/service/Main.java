@@ -21,6 +21,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 public class Main {
   private static final Logger logger = LogManager.getLogger(Main.class);
   private static final String CSV_PATH = "/Volumes/Samsung_T5/dvf/downloads/full.2020.csv";
+  private static final int BULK_SIZE = 1000;
 
   public static void main(String[] args) {
     var main = new Main();
@@ -29,7 +30,7 @@ public class Main {
     var executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     try (var restClient = new RestHighLevelClient(builder)) {
       main.indexTransactions(restClient, executor).join();
-      main.search(restClient);
+      //      main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
@@ -39,12 +40,14 @@ public class Main {
 
   public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient, Executor executor) {
     var start = Instant.now();
-    var csvReader = new TransactionCsvReader();
+    var csvReader = new TransactionCsvReader(BULK_SIZE);
+    //    var esWriter =
+    //        new TransactionBulkEsWriter(
+    //            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.NONE);
     var esWriter =
-        new TransactionBulkEsWriter(
-            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.NONE);
+        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(1_000); // total: 827,106
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(10);
     esWriter.createIndex();
     logger.info("Start writing transaction...");
     return esWriter
@@ -55,7 +58,12 @@ public class Main {
                 logger.error("Failed to complete", ex);
               } else {
                 var duration = Duration.between(start, Instant.now());
-                logger.info("Finished, indexed {} documents in {}", ids.size(), duration);
+                var speed = String.format("%.2f", ids.size() * 1.0 / duration.toSeconds());
+                logger.info(
+                    "Finished, indexed {} documents in {} (speed: {} docs/s)",
+                    ids.size(),
+                    duration,
+                    speed);
               }
             });
   }

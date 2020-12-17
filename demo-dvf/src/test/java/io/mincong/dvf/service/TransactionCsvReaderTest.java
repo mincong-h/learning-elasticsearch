@@ -23,7 +23,7 @@ public class TransactionCsvReaderTest {
 
   @Test
   public void testTransaction() {
-    var reader = new TransactionCsvReader();
+    var reader = new TransactionCsvReader(2000);
     assertThat(reader.readCsv(csvPath))
         .hasSize(1)
         .flatExtracting(Function.identity())
