@@ -66,7 +66,7 @@ public class TransactionEsWriterIT extends ESRestTestCase {
     writer.createIndex();
 
     // When
-    var ids = writer.write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);
+    var ids = writer.writeAsync(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);
 
     // Then
     var objectMapper = Jackson.newObjectMapper();

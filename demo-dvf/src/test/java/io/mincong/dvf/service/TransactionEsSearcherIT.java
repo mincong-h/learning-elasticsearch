@@ -42,7 +42,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
     var writer = new TransactionEsWriter(restClient, executor, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
     writer
-        .write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
+        .writeAsync(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
         .get(10, SECONDS)
         .forEach(id -> logger.info("Transaction " + id));
   }

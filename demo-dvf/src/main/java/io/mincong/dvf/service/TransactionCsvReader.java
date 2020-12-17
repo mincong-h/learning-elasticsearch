@@ -2,7 +2,6 @@ package io.mincong.dvf.service;
 
 import static java.util.Spliterator.ORDERED;
 
-import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.ImmutableTransactionRow;
@@ -27,7 +26,7 @@ public class TransactionCsvReader {
 
   public Stream<List<ImmutableTransaction>> readCsv(Path path) {
     try {
-      MappingIterator<ImmutableTransactionRow> iterator = objectReader.readValues(path.toFile());
+      Iterator<ImmutableTransactionRow> iterator = objectReader.readValues(path.toFile());
       var bulkIterator = new BulkIterator<>(iterator, BULK_SIZE);
       return StreamSupport.stream(Spliterators.spliteratorUnknownSize(bulkIterator, ORDERED), false)
           .map(

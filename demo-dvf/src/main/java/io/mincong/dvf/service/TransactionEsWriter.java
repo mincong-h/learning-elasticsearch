@@ -43,11 +43,12 @@ public class TransactionEsWriter {
     this.refreshPolicy = refreshPolicy;
   }
 
-  public CompletableFuture<List<String>> write(ImmutableTransaction... transactions) {
-    return write(Stream.of(List.of(transactions)));
+  public CompletableFuture<List<String>> writeAsync(ImmutableTransaction... transactions) {
+    return writeAsync(Stream.of(List.of(transactions)));
   }
 
-  public CompletableFuture<List<String>> write(Stream<List<ImmutableTransaction>> transactions) {
+  public CompletableFuture<List<String>> writeAsync(
+      Stream<List<ImmutableTransaction>> transactions) {
     var cfs = transactions.map(this::indexAsync).collect(Collectors.toList());
     return CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
         .thenApply(

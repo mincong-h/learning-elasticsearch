@@ -45,7 +45,7 @@ public class Main {
     esWriter.createIndex();
     logger.info("Start writing transaction...");
     return esWriter
-        .write(transactions)
+        .writeAsync(transactions)
         .whenComplete(
             (ids, ex) -> {
               if (ex != null) {
