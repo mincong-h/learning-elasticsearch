@@ -52,15 +52,14 @@ public abstract class TransactionEsWriterAbstractIT extends ESRestTestCase {
     var writer = newEsWriter();
 
     // When, Then
-    Assertions.assertThatCode(() -> writer.createIndex(Transaction.INDEX_NAME))
-        .doesNotThrowAnyException();
+    Assertions.assertThatCode(writer::createIndex).doesNotThrowAnyException();
   }
 
   @Test
   public void testWrite() throws Exception {
     // Given
     var writer = newEsWriter();
-    writer.createIndex(Transaction.INDEX_NAME);
+    writer.createIndex();
 
     // When
     var ids = writer.write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);

@@ -1,5 +1,6 @@
 package io.mincong.dvf.service;
 
+import io.mincong.dvf.model.Transaction;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
@@ -26,6 +27,7 @@ public class TransactionBulkEsWriterIT extends TransactionEsWriterAbstractIT {
 
   @Override
   protected EsWriter newEsWriter() {
-    return new TransactionBulkEsWriter(restClient, executor, RefreshPolicy.IMMEDIATE);
+    return new TransactionBulkEsWriter(
+        restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.IMMEDIATE);
   }
 }

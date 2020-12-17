@@ -33,10 +33,15 @@ public class TransactionBulkEsWriter implements EsWriter {
   private final AtomicInteger counter;
   private final RefreshPolicy refreshPolicy;
   private final Executor executor;
+  private final String indexName;
 
   public TransactionBulkEsWriter(
-      RestHighLevelClient client, Executor executor, RefreshPolicy refreshPolicy) {
+      RestHighLevelClient client,
+      String indexName,
+      Executor executor,
+      RefreshPolicy refreshPolicy) {
     this.client = client;
+    this.indexName = indexName;
     this.objectMapper = Jackson.newObjectMapper();
     this.counter = new AtomicInteger(0);
     this.executor = executor;
@@ -60,7 +65,7 @@ public class TransactionBulkEsWriter implements EsWriter {
   }
 
   @Override
-  public void createIndex(String indexName) {
+  public void createIndex() {
     var request = new CreateIndexRequest(indexName).mapping(Transaction.esMappings());
     CreateIndexResponse response;
     try {
@@ -92,7 +97,7 @@ public class TransactionBulkEsWriter implements EsWriter {
     for (var transaction : transactions) {
       try {
         var json = objectMapper.writeValueAsString(transaction);
-        bulkRequest.add(new IndexRequest(Transaction.INDEX_NAME).source(json, XContentType.JSON));
+        bulkRequest.add(new IndexRequest(indexName).source(json, XContentType.JSON));
       } catch (JsonProcessingException e) {
         // This should never happen
         throw new IllegalStateException("Failed to serialize transaction " + transaction, e);
@@ -105,8 +110,15 @@ public class TransactionBulkEsWriter implements EsWriter {
           .map(BulkItemResponse::getId)
           .collect(Collectors.toList());
     } catch (IOException e) {
-      logger.error("Transaction: FAILED", e);
-      return List.of();
+      var msg =
+          String.format(
+              "Failed to index %d transactions: %s",
+              transactions.size(),
+              transactions.stream()
+                  .map(ImmutableTransaction::mutationId)
+                  .collect(Collectors.joining(",")));
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
     }
   }
 }

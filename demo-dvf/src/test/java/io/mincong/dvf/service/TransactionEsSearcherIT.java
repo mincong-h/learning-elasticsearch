@@ -40,8 +40,10 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
     restClient = new RestHighLevelClient(builder);
 
     executor = Executors.newSingleThreadExecutor();
-    var writer = new TransactionBulkEsWriter(restClient, executor, RefreshPolicy.IMMEDIATE);
-    writer.createIndex(Transaction.INDEX_NAME);
+    var writer =
+        new TransactionBulkEsWriter(
+            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.IMMEDIATE);
+    writer.createIndex();
     writer
         .write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
         .get(10, SECONDS)

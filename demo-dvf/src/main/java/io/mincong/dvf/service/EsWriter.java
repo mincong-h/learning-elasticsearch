@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public interface EsWriter {
-  void createIndex(String name);
+  void createIndex();
 
   default CompletableFuture<List<String>> write(ImmutableTransaction... items) {
     return write(Stream.of(List.of(items)));

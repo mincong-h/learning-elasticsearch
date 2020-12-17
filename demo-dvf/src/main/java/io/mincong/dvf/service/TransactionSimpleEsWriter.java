@@ -29,9 +29,12 @@ public class TransactionSimpleEsWriter implements EsWriter {
   private final ObjectMapper objectMapper;
   private final AtomicInteger counter;
   private final RefreshPolicy refreshPolicy;
+  private final String indexName;
 
-  public TransactionSimpleEsWriter(RestHighLevelClient client, RefreshPolicy refreshPolicy) {
+  public TransactionSimpleEsWriter(
+      RestHighLevelClient client, String indexName, RefreshPolicy refreshPolicy) {
     this.client = client;
+    this.indexName = indexName;
     this.objectMapper = Jackson.newObjectMapper();
     this.counter = new AtomicInteger(0);
     this.refreshPolicy = refreshPolicy;
@@ -54,7 +57,7 @@ public class TransactionSimpleEsWriter implements EsWriter {
   }
 
   @Override
-  public void createIndex(String indexName) {
+  public void createIndex() {
     var request = new CreateIndexRequest(indexName).mapping(Transaction.esMappings());
     CreateIndexResponse response;
     try {
@@ -81,9 +84,7 @@ public class TransactionSimpleEsWriter implements EsWriter {
       return CompletableFuture.failedFuture(e);
     }
     var request =
-        new IndexRequest(Transaction.INDEX_NAME)
-            .source(json, XContentType.JSON)
-            .setRefreshPolicy(refreshPolicy);
+        new IndexRequest(indexName).source(json, XContentType.JSON).setRefreshPolicy(refreshPolicy);
     try {
       var response = client.index(request, RequestOptions.DEFAULT);
       return CompletableFuture.completedFuture(List.of(response.getId()));
