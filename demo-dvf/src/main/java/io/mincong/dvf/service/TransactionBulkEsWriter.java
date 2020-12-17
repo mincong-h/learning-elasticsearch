@@ -24,9 +24,9 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.common.xcontent.XContentType;
 
-public class TransactionEsWriter {
+public class TransactionBulkEsWriter implements EsWriter {
 
-  private static final Logger logger = LogManager.getLogger(TransactionEsWriter.class);
+  private static final Logger logger = LogManager.getLogger(TransactionBulkEsWriter.class);
 
   private final RestHighLevelClient client;
   private final ObjectMapper objectMapper;
@@ -34,7 +34,7 @@ public class TransactionEsWriter {
   private final RefreshPolicy refreshPolicy;
   private final Executor executor;
 
-  public TransactionEsWriter(
+  public TransactionBulkEsWriter(
       RestHighLevelClient client, Executor executor, RefreshPolicy refreshPolicy) {
     this.client = client;
     this.objectMapper = Jackson.newObjectMapper();
@@ -43,12 +43,8 @@ public class TransactionEsWriter {
     this.refreshPolicy = refreshPolicy;
   }
 
-  public CompletableFuture<List<String>> writeAsync(ImmutableTransaction... transactions) {
-    return writeAsync(Stream.of(List.of(transactions)));
-  }
-
-  public CompletableFuture<List<String>> writeAsync(
-      Stream<List<ImmutableTransaction>> transactions) {
+  @Override
+  public CompletableFuture<List<String>> write(Stream<List<ImmutableTransaction>> transactions) {
     var cfs = transactions.map(this::indexAsync).collect(Collectors.toList());
     return CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
         .thenApply(
@@ -63,19 +59,20 @@ public class TransactionEsWriter {
             });
   }
 
-  public void createIndex() {
-    var request = new CreateIndexRequest(Transaction.INDEX_NAME).mapping(Transaction.esMappings());
+  @Override
+  public void createIndex(String indexName) {
+    var request = new CreateIndexRequest(indexName).mapping(Transaction.esMappings());
     CreateIndexResponse response;
     try {
       response = client.indices().create(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
-      throw new IllegalStateException("Failed to create index " + Transaction.INDEX_NAME, e);
+      throw new IllegalStateException("Failed to create index " + indexName, e);
     }
     if (!response.isAcknowledged()) {
       throw new IllegalStateException(
-          "Failed to create index " + Transaction.INDEX_NAME + ": response was not acknowledged");
+          "Failed to create index " + indexName + ": response was not acknowledged");
     }
-    logger.info("Creation of index {} is acknowledged", Transaction.INDEX_NAME);
+    logger.info("Creation of index {} is acknowledged", indexName);
   }
 
   private CompletableFuture<List<String>> indexAsync(List<ImmutableTransaction> transactions) {

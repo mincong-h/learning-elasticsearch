@@ -5,19 +5,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
-import java.util.concurrent.Executors;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetRequest;
-import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.test.rest.ESRestTestCase;
 import org.junit.*;
 
-public class TransactionEsWriterIT extends ESRestTestCase {
+public abstract class TransactionEsWriterAbstractIT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
@@ -29,7 +27,9 @@ public class TransactionEsWriterIT extends ESRestTestCase {
     System.clearProperty("tests.rest.cluster");
   }
 
-  private RestHighLevelClient restClient;
+  protected RestHighLevelClient restClient;
+
+  protected abstract EsWriter newEsWriter();
 
   @Before
   @Override
@@ -49,24 +49,21 @@ public class TransactionEsWriterIT extends ESRestTestCase {
   @Test
   public void testCreateIndex() throws Exception {
     // Given
-    var writer =
-        new TransactionEsWriter(
-            restClient, Executors.newSingleThreadExecutor(), RefreshPolicy.IMMEDIATE);
+    var writer = newEsWriter();
 
     // When, Then
-    Assertions.assertThatCode(writer::createIndex).doesNotThrowAnyException();
+    Assertions.assertThatCode(() -> writer.createIndex(Transaction.INDEX_NAME))
+        .doesNotThrowAnyException();
   }
 
   @Test
   public void testWrite() throws Exception {
     // Given
-    var writer =
-        new TransactionEsWriter(
-            restClient, Executors.newSingleThreadExecutor(), RefreshPolicy.IMMEDIATE);
-    writer.createIndex();
+    var writer = newEsWriter();
+    writer.createIndex(Transaction.INDEX_NAME);
 
     // When
-    var ids = writer.writeAsync(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);
+    var ids = writer.write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);
 
     // Then
     var objectMapper = Jackson.newObjectMapper();

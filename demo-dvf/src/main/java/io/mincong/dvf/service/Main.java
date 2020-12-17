@@ -1,5 +1,6 @@
 package io.mincong.dvf.service;
 
+import io.mincong.dvf.model.Transaction;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -39,13 +40,13 @@ public class Main {
   public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient, Executor executor) {
     var start = Instant.now();
     var csvReader = new TransactionCsvReader();
-    var esWriter = new TransactionEsWriter(restClient, executor, RefreshPolicy.NONE);
+    var esWriter = new TransactionBulkEsWriter(restClient, executor, RefreshPolicy.NONE);
 
     var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(1_000); // total: 827,106
-    esWriter.createIndex();
+    esWriter.createIndex(Transaction.INDEX_NAME);
     logger.info("Start writing transaction...");
     return esWriter
-        .writeAsync(transactions)
+        .write(transactions)
         .whenComplete(
             (ids, ex) -> {
               if (ex != null) {

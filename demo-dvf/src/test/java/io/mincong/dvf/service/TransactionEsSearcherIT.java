@@ -3,6 +3,7 @@ package io.mincong.dvf.service;
 import static io.mincong.dvf.model.TestModels.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import io.mincong.dvf.model.Transaction;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,10 +40,10 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
     restClient = new RestHighLevelClient(builder);
 
     executor = Executors.newSingleThreadExecutor();
-    var writer = new TransactionEsWriter(restClient, executor, RefreshPolicy.IMMEDIATE);
-    writer.createIndex();
+    var writer = new TransactionBulkEsWriter(restClient, executor, RefreshPolicy.IMMEDIATE);
+    writer.createIndex(Transaction.INDEX_NAME);
     writer
-        .writeAsync(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
+        .write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
         .get(10, SECONDS)
         .forEach(id -> logger.info("Transaction " + id));
   }
