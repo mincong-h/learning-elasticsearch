@@ -54,12 +54,12 @@ public class TransactionCsvReader {
 
     @Override
     public List<T> next() {
+      if (!hasNext()) {
+        throw new NoSuchElementException();
+      }
       var results = new ArrayList<T>(bulkSize);
       while (hasNext() && results.size() < bulkSize) {
         results.add(iterator.next());
-      }
-      if (results.isEmpty()) {
-        throw new NoSuchElementException();
       }
       return results;
     }
