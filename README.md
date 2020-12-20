@@ -32,6 +32,8 @@ Articles wrote using code of this repository:
 - [GC in Elasticsearch](https://mincong.io/2020/08/30/gc-in-elasticsearch/)
 - [18 Allocation Deciders in Elasticsearch](https://mincong.io/2020/09/27/shard-allocation/)
 - [Using Java Time in Different Frameworks](https://mincong.io/2020/10/25/java-time/)
+- [DVF: Indexing New Documents](https://mincong.io/2020/12/16/dvf-indexing/)
+- [DVF: Indexing Optimization](https://mincong.io/2020/12/17/dvf-indexing-optimization/)
 
 ## Resources
 
