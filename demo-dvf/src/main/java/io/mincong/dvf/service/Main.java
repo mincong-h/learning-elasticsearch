@@ -20,14 +20,15 @@ import org.elasticsearch.index.query.QueryBuilders;
 
 public class Main {
   private static final Logger logger = LogManager.getLogger(Main.class);
-  private static final String CSV_PATH = "/Volumes/Samsung_T5/dvf/downloads/full.2020.csv";
+  private static final String CSV_PATH = "/Users/minconghuang/github/dvf/downloads/full.2020.csv";
   private static final int BULK_SIZE = 1000;
+  private static final int THREADS = Runtime.getRuntime().availableProcessors() * 2;
 
   public static void main(String[] args) {
     var main = new Main();
-    var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+    var builder = RestClient.builder(new HttpHost("kira", 9200, "http"));
     logger.info("Start creating REST high-level client...");
-    var executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    var executor = Executors.newFixedThreadPool(THREADS);
     try (var restClient = new RestHighLevelClient(builder)) {
       main.indexTransactions(restClient, executor).join();
       //      main.search(restClient);
@@ -41,13 +42,13 @@ public class Main {
   public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient, Executor executor) {
     var start = Instant.now();
     var csvReader = new TransactionCsvReader(BULK_SIZE);
-    //    var esWriter =
-    //        new TransactionBulkEsWriter(
-    //            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.NONE);
     var esWriter =
-        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
+        new TransactionBulkEsWriter(
+            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.NONE);
+    //    var esWriter =
+    //        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(10);
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH));
     esWriter.createIndex();
     logger.info("Start writing transaction...");
     return esWriter
