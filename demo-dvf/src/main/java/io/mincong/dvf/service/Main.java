@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -31,6 +33,7 @@ public class Main {
     var executor = Executors.newFixedThreadPool(THREADS);
     try (var restClient = new RestHighLevelClient(builder)) {
       main.indexTransactions(restClient, executor).join();
+      main.forceMerge(restClient);
       //      main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
@@ -67,6 +70,17 @@ public class Main {
                     speed);
               }
             });
+  }
+
+  public void forceMerge(RestHighLevelClient restClient) {
+    logger.info("Start force merge");
+    try {
+      var request = new ForceMergeRequest(Transaction.INDEX_NAME).maxNumSegments(1);
+      var response = restClient.indices().forcemerge(request, RequestOptions.DEFAULT);
+      logger.info("Force merge response: {}", response);
+    } catch (IOException e) {
+      logger.error("Failed to perform force-merge for index " + Transaction.INDEX_NAME, e);
+    }
   }
 
   public void search(RestHighLevelClient restClient) {
