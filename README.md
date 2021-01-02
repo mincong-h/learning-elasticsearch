@@ -34,6 +34,7 @@ Articles wrote using code of this repository:
 - [Using Java Time in Different Frameworks](https://mincong.io/2020/10/25/java-time/)
 - [DVF: Indexing New Documents](https://mincong.io/2020/12/16/dvf-indexing/)
 - [DVF: Indexing Optimization](https://mincong.io/2020/12/17/dvf-indexing-optimization/)
+- [DVF: Storage Optimization](https://mincong.io/2020/12/25/dvf-storage-optimization/)
 
 ## Resources
 
