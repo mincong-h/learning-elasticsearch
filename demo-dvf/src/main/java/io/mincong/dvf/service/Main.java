@@ -15,6 +15,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequest;
 import org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotRequest;
+import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RequestOptions;
@@ -159,9 +161,8 @@ public class Main {
    * @param restClient
    */
   public void snapshot(RestHighLevelClient restClient) {
-    logger.info("Start creating snapshot");
     try {
-
+      logger.info("Start creating snapshot repository");
       var putRepoRequest =
           new PutRepositoryRequest()
               .name(REPO_NAME)
@@ -170,11 +171,30 @@ public class Main {
       var putRepoResponse =
           restClient.snapshot().createRepository(putRepoRequest, RequestOptions.DEFAULT);
       logger.info("Repository created: {}", putRepoResponse);
+      logger.info("Start creating snapshot");
       var createSnapshotRequest =
-          new CreateSnapshotRequest().snapshot("transactions.2021-01-10").repository(REPO_NAME);
+          new CreateSnapshotRequest()
+              .repository(REPO_NAME)
+              .snapshot("transactions.2021-01-10")
+              .waitForCompletion(true)
+              .includeGlobalState(false);
       var createSnapshotResponse =
           restClient.snapshot().create(createSnapshotRequest, RequestOptions.DEFAULT);
       logger.info("Snapshot created: {}", createSnapshotResponse);
+
+      var deleteIndexRequest = new DeleteIndexRequest().indices("transactions");
+      var deletionIndexResponse =
+          restClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
+      logger.info("Index deleted: {}", deletionIndexResponse);
+
+      var restoreSnapshotRequest =
+          new RestoreSnapshotRequest()
+              .repository(REPO_NAME)
+              .waitForCompletion(true)
+              .snapshot("transactions.2021-01-10");
+      var restoreSnapshotResponse =
+          restClient.snapshot().restore(restoreSnapshotRequest, RequestOptions.DEFAULT);
+      logger.info("Index restored: {}", restoreSnapshotResponse);
     } catch (IOException e) {
       logger.error("Failed to handle snapshot", e);
     }
