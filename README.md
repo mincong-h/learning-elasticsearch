@@ -35,6 +35,7 @@ Articles wrote using code of this repository:
 - [DVF: Indexing New Documents](https://mincong.io/2020/12/16/dvf-indexing/)
 - [DVF: Indexing Optimization](https://mincong.io/2020/12/17/dvf-indexing-optimization/)
 - [DVF: Storage Optimization](https://mincong.io/2020/12/25/dvf-storage-optimization/)
+- [DVF: Snapshot And Restore](https://mincong.io/2021/01/10/dvf-snapshot-and-restore/)
 
 ## Resources
 
