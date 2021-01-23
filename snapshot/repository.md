@@ -131,4 +131,44 @@ tree .
 3 directories, 23 files
 ```
 
+File `index-4` contains the names of all the snapshots in the repository.
 
+```
+cat index-4 | jq
+```
+
+```json
+{
+  "snapshots": [
+    {
+      "name": "transactions.2021-01-10",
+      "uuid": "DsseRXnjTwC_tcV0-VgAww",
+      "state": 1,
+      "index_metadata_lookup": {
+        "toVoOSewT8eO7PbggT7SaA": "umyNu_9iRE65F5RYKcS21A-_na_-1-3-1"
+      },
+      "version": "7.10.1"
+    }
+  ],
+  "indices": {
+    "transactions": {
+      "id": "toVoOSewT8eO7PbggT7SaA",
+      "snapshots": [
+        "DsseRXnjTwC_tcV0-VgAww"
+      ],
+      "shard_generations": [
+        "qXJ7Ux1WSH6w8jELeKiwPA"
+      ]
+    }
+  },
+  "min_version": "7.9.0",
+  "index_metadata_identifiers": {
+    "umyNu_9iRE65F5RYKcS21A-_na_-1-3-1": "l2TmEHcBch0uJWW8rNjp"
+  }
+}
+```
+
+## References
+
+- Konrad Beiske, "Snapshot And Restore", Elasticsearch, 2014.
+  <https://www.elastic.co/fr/blog/found-elasticsearch-snapshot-and-restore>
