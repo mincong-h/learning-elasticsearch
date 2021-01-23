@@ -186,6 +186,14 @@ cat index-4 | jq
 }
 ```
 
+## Next Steps
+
+How to go further?
+
+- Find or implement a tool to translate SMILE JSON to normal JSON then inspect
+  the JSON content. We can do that using Jackson "jackson-dataformat-smile", see
+  <https://github.com/FasterXML/jackson-dataformats-binary>
+
 ## References
 
 - Konrad Beiske, "Snapshot And Restore", Elasticsearch, 2014.
