@@ -137,7 +137,7 @@ File `index-4` contains the names of all the snapshots in the repository.
 cat index-4 | jq
 ```
 
-```json
+```js
 {
   "snapshots": [
     {
@@ -145,6 +145,10 @@ cat index-4 | jq
       "uuid": "DsseRXnjTwC_tcV0-VgAww",
       "state": 1,
       "index_metadata_lookup": {
+        /*
+         * Index/metadata lookup table, where the key is the index ID and the
+         * value is ???
+         */
         "toVoOSewT8eO7PbggT7SaA": "umyNu_9iRE65F5RYKcS21A-_na_-1-3-1"
       },
       "version": "7.10.1"
@@ -152,6 +156,12 @@ cat index-4 | jq
   ],
   "indices": {
     "transactions": {
+      /*
+       * This ID is for index "transactions" in the snapshot repository.
+       *
+       * Questions:
+       *   - Do we have the timestamps related to this index?
+       */
       "id": "toVoOSewT8eO7PbggT7SaA",
       "snapshots": [
         "DsseRXnjTwC_tcV0-VgAww"
@@ -163,6 +173,14 @@ cat index-4 | jq
   },
   "min_version": "7.9.0",
   "index_metadata_identifiers": {
+    /*
+     * l2TmEHcBch0uJWW8rNjp is the ID of the metadata inside the snapshot
+     * transactions.2021-01-10 (DsseRXnjTwC_tcV0-VgAww). The relative path
+     * inside the repository dvf for this file is:
+     *
+     *     indices/toVoOSewT8eO7PbggT7SaA/meta-l2TmEHcBch0uJWW8rNjp.dat
+     *
+     */
     "umyNu_9iRE65F5RYKcS21A-_na_-1-3-1": "l2TmEHcBch0uJWW8rNjp"
   }
 }
