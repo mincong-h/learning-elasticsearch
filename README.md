@@ -51,7 +51,19 @@ Book:
 
 - Radu Gheorghe, Matthew Lee hinman, Roy Russo, "Elasticsearch in Action", Manning, 2016.
 
+GitHub:
+
+- Awesome Search<br>
+  https://github.com/frutik/awesome-search
+- 互联网 Java 工程师进阶知识完全扫盲 / Elasticsearch<br>
+  https://github.com/doocs/advanced-java
+
 Blogs:
+
+- Code 972, A blog about BigData, Cloud and Search technologies by Itamar Syn-Hershko<br>
+  <https://code972.com/blog>
+
+Articles:
 
 - Nico Tonozzi and Dumitru Daniliuc, "Reducing search indexing latency to one second", _Twitter_, 2020.<br>
   <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
