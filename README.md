@@ -47,6 +47,10 @@ Elasticsearch documentation:
 - [Java Testing Framework](https://www.elastic.co/guide/en/elasticsearch/reference/current/testing-framework.html)
 - [REST APIs](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html)
 
+Certifications:
+
+- [Elastic Certified Engineer](https://www.elastic.co/training/elastic-certified-engineer-exam)
+
 Book:
 
 - Radu Gheorghe, Matthew Lee hinman, Roy Russo, "Elasticsearch in Action", Manning, 2016.
