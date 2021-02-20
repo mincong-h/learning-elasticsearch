@@ -65,6 +65,8 @@ Blogs:
 
 Articles:
 
+- Michael McCandless, "Visualizing Lucene's segment merges", 2011.<br>
+  <http://blog.mikemccandless.com/2011/02/visualizing-lucenes-segment-merges.html>
 - Nico Tonozzi and Dumitru Daniliuc, "Reducing search indexing latency to one second", _Twitter_, 2020.<br>
   <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
 - Prabin Meitei M, "Garbage Collection in Elasticsearch and the G1GC", _Medium_, 2018.<br>
