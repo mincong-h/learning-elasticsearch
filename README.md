@@ -54,6 +54,8 @@ Certifications:
 Book:
 
 - Radu Gheorghe, Matthew Lee hinman, Roy Russo, "Elasticsearch in Action", Manning, 2016.
+- Clinton Gormley and Zachary Tong, "Elasticsearch: The Definitive Guide", O'Reilly Media, 2014 - 2015.<br>
+  <https://www.elastic.co/guide/en/elasticsearch/guide/2.x/index.html>
 
 GitHub:
 
