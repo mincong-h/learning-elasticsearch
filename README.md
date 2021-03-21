@@ -9,6 +9,8 @@ unexpected.
 
 The fastest way to test any basic Elasticsearch feature is to start a Docker image with the desired Elasticsearch version:
 
+<!-- MANAGED_BLOCK_RUN_ES_START -->
+
 ```sh
 docker run \
   --rm \
@@ -16,6 +18,8 @@ docker run \
   -p 9200:9200 \
   docker.elastic.co/elasticsearch/elasticsearch:7.8.0
 ```
+
+<!-- MANAGED_BLOCK_RUN_ES_END -->
 
 ## Articles
 
