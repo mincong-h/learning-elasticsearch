@@ -28,4 +28,24 @@ do
     echo "${filepath} done"
 done
 
+NEW_BLOCK=$(cat <<EOF
+<!-- MANAGED_BLOCK_RUN_ES_START -->
+
+\`\`\`sh
+docker run \\
+  --rm \\
+  -e discovery.type=single-node \\
+  -p 9200:9200 \\
+  docker.elastic.co/elasticsearch/elasticsearch:${new_version}
+\`\`\`
+
+<!-- MANAGED_BLOCK_RUN_ES_END -->
+EOF
+)
+
+start=$(grep -n MANAGED_BLOCK_RUN_ES_START README.md | cut -f 1 -d :)
+end=$(grep -n MANAGED_BLOCK_RUN_ES_END README.md | cut -f 1 -d :)
+# echo -e "$NEW_BLOCK"
+sed -i '' "${start},${end}d" README.md
+
 echo "Finished."
