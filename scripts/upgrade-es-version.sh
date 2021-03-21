@@ -32,5 +32,6 @@ done
 start=$(grep -n MANAGED_BLOCK_RUN_ES_START README.md | cut -f 1 -d :)
 end=$(grep -n MANAGED_BLOCK_RUN_ES_END README.md | cut -f 1 -d :)
 sed -i '' "${start},${end}s/${old_version}/${new_version}/g" README.md
+echo "✅ README.md"
 
 echo "Finished."
