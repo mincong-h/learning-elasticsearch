@@ -9,6 +9,8 @@ unexpected.
 
 The fastest way to test any basic Elasticsearch feature is to start a Docker image with the desired Elasticsearch version:
 
+<!-- MANAGED_BLOCK_RUN_ES_START -->
+
 ```sh
 docker run \
   --rm \
@@ -16,6 +18,8 @@ docker run \
   -p 9200:9200 \
   docker.elastic.co/elasticsearch/elasticsearch:7.8.0
 ```
+
+<!-- MANAGED_BLOCK_RUN_ES_END -->
 
 ## Articles
 
@@ -77,3 +81,14 @@ Articles:
   <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
 - Prabin Meitei M, "Garbage Collection in Elasticsearch and the G1GC", _Medium_, 2018.<br>
   <https://medium.com/naukri-engineering/garbage-collection-in-elasticsearch-and-the-g1gc-16b79a447181>
+
+## Development
+
+Upgrade Elasticsearch version, e.g 7.8.0 -> 7.10.0:
+
+```sh
+> scripts/upgrade-es-version.sh 7.8.0 7.10.0
+✅ pom.xml
+✅ cluster/src/test/resources/docker-compose.yml
+Finished.
+```
