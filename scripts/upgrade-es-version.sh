@@ -20,33 +20,17 @@ then
     exit 1
 fi
 
+# Update configuration files
 filepaths=($(rg --files-with-matches --glob "**/*.{xml,yml}" CURRENT_ES_VERSION))
-
 for filepath in "${filepaths[@]}"
 do
     sed -i '' -e "s/${old_version}/${new_version}/g" $filepath
     echo "${filepath} done"
 done
 
-NEW_BLOCK=$(cat <<EOF
-<!-- MANAGED_BLOCK_RUN_ES_START -->
-
-\`\`\`sh
-docker run \\
-  --rm \\
-  -e discovery.type=single-node \\
-  -p 9200:9200 \\
-  docker.elastic.co/elasticsearch/elasticsearch:${new_version}
-\`\`\`
-
-<!-- MANAGED_BLOCK_RUN_ES_END -->
-EOF
-)
-
+# Update README
 start=$(grep -n MANAGED_BLOCK_RUN_ES_START README.md | cut -f 1 -d :)
 end=$(grep -n MANAGED_BLOCK_RUN_ES_END README.md | cut -f 1 -d :)
-# echo -e "$NEW_BLOCK"
 sed -i '' "${start},${end}s/${old_version}/${new_version}/g" README.md
-#sed -i '' "${start}a${NEW_BLOCK}"
 
 echo "Finished."
