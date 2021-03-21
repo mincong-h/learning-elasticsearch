@@ -46,6 +46,7 @@ EOF
 start=$(grep -n MANAGED_BLOCK_RUN_ES_START README.md | cut -f 1 -d :)
 end=$(grep -n MANAGED_BLOCK_RUN_ES_END README.md | cut -f 1 -d :)
 # echo -e "$NEW_BLOCK"
-sed -i '' "${start},${end}d" README.md
+sed -i '' "${start},${end}s/${old_version}/${new_version}/g" README.md
+#sed -i '' "${start}a${NEW_BLOCK}"
 
 echo "Finished."
