@@ -25,7 +25,7 @@ filepaths=($(rg --files-with-matches --glob "**/*.{xml,yml}" CURRENT_ES_VERSION)
 for filepath in "${filepaths[@]}"
 do
     sed -i '' -e "s/${old_version}/${new_version}/g" $filepath
-    echo "${filepath} done"
+    echo "✅ ${filepath}"
 done
 
 # Update README
