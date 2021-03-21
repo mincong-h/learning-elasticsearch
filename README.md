@@ -88,4 +88,7 @@ Upgrade Elasticsearch version, e.g 7.8.0 -> 7.10.0:
 
 ```sh
 > scripts/upgrade-es-version.sh 7.8.0 7.10.0
+✅ pom.xml
+✅ cluster/src/test/resources/docker-compose.yml
+Finished.
 ```
