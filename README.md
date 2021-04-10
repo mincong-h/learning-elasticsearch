@@ -16,7 +16,7 @@ docker run \
   --rm \
   -e discovery.type=single-node \
   -p 9200:9200 \
-  docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+  docker.elastic.co/elasticsearch/elasticsearch:7.12.0
 ```
 
 <!-- MANAGED_BLOCK_RUN_ES_END -->
@@ -91,5 +91,6 @@ Upgrade Elasticsearch version, e.g 7.8.0 -> 7.10.0:
 > scripts/upgrade-es-version.sh 7.8.0 7.10.0
 ✅ pom.xml
 ✅ cluster/src/test/resources/docker-compose.yml
+✅ README.md
 Finished.
 ```
