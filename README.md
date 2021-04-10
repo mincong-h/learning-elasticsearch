@@ -16,7 +16,7 @@ docker run \
   --rm \
   -e discovery.type=single-node \
   -p 9200:9200 \
-  docker.elastic.co/elasticsearch/elasticsearch:7.11.2
+  docker.elastic.co/elasticsearch/elasticsearch:7.12.0
 ```
 
 <!-- MANAGED_BLOCK_RUN_ES_END -->
