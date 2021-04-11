@@ -49,17 +49,29 @@ public class ReadPathAggregationDemo {
   }
 
   public void runParisAnalysis(TransactionEsAggregator aggregator) {
-    var stats = aggregator.parisStats();
-    logger.info("== Requesting analytics for Paris:");
+    var overviewStats = aggregator.parisStatsOverview();
+    logger.info("== Requesting analytics for Paris - Overview:");
     logger.info(
         "Property values are between {} and {} (avg: {})",
-        String.format("%,.1f€", stats.min),
-        String.format("%,.1f€", stats.max),
-        String.format("%,.1f€", stats.avg));
+        String.format("%,.1f€", overviewStats.min),
+        String.format("%,.1f€", overviewStats.max),
+        String.format("%,.1f€", overviewStats.avg));
     logger.info(
         "Property values total market value is {} ({} transactions)",
-        String.format("%,.1f€", stats.sum),
-        String.format("%,d", stats.count));
+        String.format("%,.1f€", overviewStats.sum),
+        String.format("%,d", overviewStats.count));
+
+    logger.info("== Requesting analytics for Paris - Per Postal Code:");
+    var statsPerPostalCode = aggregator.parisStatsPerPostalCode();
+    statsPerPostalCode.forEach(
+        (postalCode, stats) -> {
+          logger.info(
+              "- {}: property values are between {} and {} (avg: {})",
+              postalCode,
+              String.format("%,.1f€", stats.min),
+              String.format("%,.1f€", stats.max),
+              String.format("%,.1f€", stats.avg));
+        });
   }
 
   private void runBucketAggregations(TransactionEsAggregator aggregator) {

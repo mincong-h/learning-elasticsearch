@@ -3,6 +3,8 @@ package io.mincong.dvf.service;
 import io.mincong.dvf.model.Transaction;
 import java.io.IOException;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +15,9 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.ParsedMultiBucketAggregation;
+import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms.ParsedBucket;
 import org.elasticsearch.search.aggregations.metrics.*;
@@ -246,7 +250,7 @@ public class TransactionEsAggregator {
    * }
    * </pre>
    */
-  public PropertyValueStats parisStats() {
+  public PropertyValueStats parisStatsOverview() {
     var fieldName = Transaction.FIELD_PROPERTY_VALUE;
     var minAggregationName = fieldName + "/min";
     var sumAggregationName = fieldName + "/avg";
@@ -289,6 +293,140 @@ public class TransactionEsAggregator {
         ((Max) results.get(maxAggregationName)).getValue(),
         ((Sum) results.get(sumAggregationName)).getValue(),
         ((ValueCount) results.get(countAggregationName)).getValue());
+  }
+
+  /**
+   * This is a sub-aggregation. See
+   * https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-aggregations.html
+   *
+   * <p>Equivalent to HTTP request:
+   *
+   * <pre>
+   * {
+   *     "query": {
+   *         "wildcard": {
+   *             "postal_code": {
+   *                 "value": "75*",
+   *                 "boost": 1.0,
+   *                 "rewrite": "constant_score"
+   *             }
+   *         },
+   *         "match": {
+   *             "mutation_nature": {
+   *                 "query": "Vente"
+   *             }
+   *         },
+   *         "match": {
+   *             "local_type": {
+   *                 "query": "Appartement"
+   *             }
+   *         }
+   *     },
+   *     "aggs": {
+   *         "postal-code-aggregation": {
+   *             "terms": {
+   *                 "field": "property_value"
+   *             },
+   *             "aggs": {
+   *                 "property_value/min": {
+   *                     "min": {
+   *                         "field": "property_value"
+   *                     }
+   *                 },
+   *                 "property_value/avg": {
+   *                     "avg": {
+   *                         "field": "property_value"
+   *                     }
+   *                 },
+   *                 "property_value/max": {
+   *                     "max": {
+   *                         "field": "property_value"
+   *                     }
+   *                 },
+   *                 "property_value/sum": {
+   *                     "sum": {
+   *                         "field": "property_value"
+   *                     }
+   *                 },
+   *                 "property_value/count": {
+   *                     "count": {
+   *                         "field": "property_value"
+   *                     }
+   *                 }
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   *
+   * @return a map of stats where the key is the postal code and the value is its related
+   *     statistics.
+   */
+  public SortedMap<String, PropertyValueStats> parisStatsPerPostalCode() {
+    var termsAggregationName = "postal-code-aggregation";
+
+    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
+    var minAggregationName = fieldName + "/min";
+    var sumAggregationName = fieldName + "/avg";
+    var maxAggregationName = fieldName + "/max";
+    var avgAggregationName = fieldName + "/sum";
+    var countAggregationName = fieldName + "/count";
+
+    var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
+    var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
+    var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
+    var query =
+        QueryBuilders.boolQuery()
+            .filter(postalCodeQuery)
+            .filter(mutationNatureQuery)
+            .filter(localTypeQuery);
+
+    var termsAggregation =
+        AggregationBuilders.terms(termsAggregationName)
+            .field(Transaction.FIELD_POSTAL_CODE)
+            .size(20)
+            .subAggregation(AggregationBuilders.min(minAggregationName).field(fieldName))
+            .subAggregation(AggregationBuilders.avg(avgAggregationName).field(fieldName))
+            .subAggregation(AggregationBuilders.max(maxAggregationName).field(fieldName))
+            .subAggregation(AggregationBuilders.sum(sumAggregationName).field(fieldName))
+            .subAggregation(AggregationBuilders.count(countAggregationName).field(fieldName));
+
+    var sourceBuilder = new SearchSourceBuilder().aggregation(termsAggregation).query(query);
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    SearchResponse response;
+    try {
+      response = client.search(request, RequestOptions.DEFAULT);
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + fieldName;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+    var terms = (ParsedStringTerms) response.getAggregations().asMap().get(termsAggregationName);
+    return terms.getBuckets().stream()
+        .collect(
+            Collectors.toMap(
+                MultiBucketsAggregation.Bucket::getKeyAsString,
+                bucket -> toStats(bucket.getAggregations()),
+                (k1, k2) -> k1,
+                TreeMap::new));
+  }
+
+  private PropertyValueStats toStats(Aggregations aggregations) {
+    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
+    var minAggregationName = fieldName + "/min";
+    var sumAggregationName = fieldName + "/avg";
+    var maxAggregationName = fieldName + "/max";
+    var avgAggregationName = fieldName + "/sum";
+    var countAggregationName = fieldName + "/count";
+
+    return new PropertyValueStats(
+        ((Min) aggregations.get(minAggregationName)).getValue(),
+        ((Avg) aggregations.get(avgAggregationName)).getValue(),
+        ((Max) aggregations.get(maxAggregationName)).getValue(),
+        ((Sum) aggregations.get(sumAggregationName)).getValue(),
+        ((ValueCount) aggregations.get(countAggregationName)).getValue());
   }
 
   public Map<String, Long> transactionByPostalCode(QueryBuilder queryBuilder) {
