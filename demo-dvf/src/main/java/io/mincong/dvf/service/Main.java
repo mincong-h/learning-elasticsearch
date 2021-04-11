@@ -56,10 +56,10 @@ public class Main {
     logger.info("Start creating REST high-level client...");
     var executor = Executors.newFixedThreadPool(THREADS);
     try (var restClient = new RestHighLevelClient(builder)) {
-      main.indexTransactions(restClient, executor).join();
-      main.forceMerge(restClient);
-      main.snapshot(restClient);
-      //      main.search(restClient);
+      //      main.indexTransactions(restClient, executor).join();
+      //      main.forceMerge(restClient);
+      //      main.snapshot(restClient);
+      main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
