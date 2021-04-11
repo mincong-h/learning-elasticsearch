@@ -192,6 +192,86 @@ public class TransactionEsAggregator {
         ((ValueCount) results.get(countAggregationName)).getValue());
   }
 
+  /**
+   * Equivalent to HTTP request:
+   *
+   * <pre>
+   * {
+   *     "query": {
+   *         "match": {
+   *             "postal_code": {
+   *                 "query": "75001"
+   *             }
+   *         }
+   *     },
+   *     "aggs": {
+   *         "property_value/min": {
+   *             "min": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/avg": {
+   *             "avg": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/max": {
+   *             "max": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/sum": {
+   *             "sum": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/count": {
+   *             "count": {
+   *                 "field": "property_value"
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   */
+  public PropertyValueStats parisStats() {
+    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
+    var minAggregationName = fieldName + "/min";
+    var sumAggregationName = fieldName + "/avg";
+    var maxAggregationName = fieldName + "/max";
+    var avgAggregationName = fieldName + "/sum";
+    var countAggregationName = fieldName + "/count";
+
+    var query = QueryBuilders.matchQuery(Transaction.FIELD_POSTAL_CODE, "75001");
+
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .aggregation(AggregationBuilders.sum(sumAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.avg(avgAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.min(minAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.max(maxAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.count(countAggregationName).field(fieldName))
+            .query(query);
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    SearchResponse response;
+    try {
+      response = client.search(request, RequestOptions.DEFAULT);
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + fieldName;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+    var results = response.getAggregations().asMap();
+    return new PropertyValueStats(
+        ((Min) results.get(minAggregationName)).getValue(),
+        ((Avg) results.get(avgAggregationName)).getValue(),
+        ((Max) results.get(maxAggregationName)).getValue(),
+        ((Sum) results.get(sumAggregationName)).getValue(),
+        ((ValueCount) results.get(countAggregationName)).getValue());
+  }
+
   public Map<String, Long> transactionByPostalCode(QueryBuilder queryBuilder) {
     var sourceBuilder =
         new SearchSourceBuilder()
