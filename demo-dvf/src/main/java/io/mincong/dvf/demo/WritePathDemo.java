@@ -58,7 +58,6 @@ public class WritePathDemo {
       indexTransactions(restClient, executor).join();
       forceMerge(restClient);
       snapshot(restClient);
-      //            main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
