@@ -16,7 +16,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.test.rest.ESRestTestCase;
 import org.junit.*;
 
-public class TransactionEsSearcherIT extends ESRestTestCase {
+public class TransactionEsAggregatorIT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
@@ -60,7 +60,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
   @Test
   public void testSumAggregation() {
     // Given
-    var searcher = new TransactionEsSearcher(restClient);
+    var searcher = new TransactionEsAggregator(restClient);
 
     // When
     var sum = searcher.sumAggregate("property_value");
@@ -78,7 +78,7 @@ public class TransactionEsSearcherIT extends ESRestTestCase {
   @Test
   public void testPostalCode() {
     // Given
-    var searcher = new TransactionEsSearcher(restClient);
+    var searcher = new TransactionEsAggregator(restClient);
 
     // When
     var stats = searcher.transactionByPostalCode(QueryBuilders.matchAllQuery());

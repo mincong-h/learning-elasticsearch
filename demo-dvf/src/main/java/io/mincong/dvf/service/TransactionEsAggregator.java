@@ -19,11 +19,11 @@ import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms.Pars
 import org.elasticsearch.search.aggregations.metrics.Sum;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-public class TransactionEsSearcher {
-  private static final Logger logger = LogManager.getLogger(TransactionEsSearcher.class);
+public class TransactionEsAggregator {
+  private static final Logger logger = LogManager.getLogger(TransactionEsAggregator.class);
   private final RestHighLevelClient client;
 
-  public TransactionEsSearcher(RestHighLevelClient client) {
+  public TransactionEsAggregator(RestHighLevelClient client) {
     this.client = client;
   }
 

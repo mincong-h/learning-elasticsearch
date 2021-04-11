@@ -1,6 +1,6 @@
 package io.mincong.dvf.demo;
 
-import io.mincong.dvf.service.TransactionEsSearcher;
+import io.mincong.dvf.service.TransactionEsAggregator;
 import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ public class ReadPathAggregationDemo {
   }
 
   public void search(RestHighLevelClient restClient) {
-    var searcher = new TransactionEsSearcher(restClient);
+    var searcher = new TransactionEsAggregator(restClient);
     logger.info("Total property value: {}", searcher.sumAggregate("property_value").getValue());
     logger.info(
         "Transactions activity per postal code:\n{}",
