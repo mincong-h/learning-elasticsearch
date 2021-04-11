@@ -3,7 +3,6 @@ package io.mincong.dvf.demo;
 import io.mincong.dvf.model.Transaction;
 import io.mincong.dvf.service.TransactionBulkEsWriter;
 import io.mincong.dvf.service.TransactionCsvReader;
-import io.mincong.dvf.service.TransactionEsSearcher;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,10 +23,9 @@ import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
 
 public class WritePathDemo {
-  private static final Logger logger = LogManager.getLogger(Main.class);
+  private static final Logger logger = LogManager.getLogger(WritePathDemo.class);
 
   private static final String CSV_PATH = "/Users/minconghuang/github/dvf/downloads/full.2020.csv";
 
@@ -208,16 +205,5 @@ public class WritePathDemo {
     } catch (IOException e) {
       logger.error("Failed to handle snapshot", e);
     }
-  }
-
-  public void search(RestHighLevelClient restClient) {
-    var searcher = new TransactionEsSearcher(restClient);
-    logger.info("Total property value: {}", searcher.sumAggregate("property_value").getValue());
-    logger.info(
-        "Transactions activity per postal code:\n{}",
-        searcher.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
-            .collect(Collectors.joining("\n")));
   }
 }
