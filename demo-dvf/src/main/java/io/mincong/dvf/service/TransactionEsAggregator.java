@@ -198,9 +198,21 @@ public class TransactionEsAggregator {
    * <pre>
    * {
    *     "query": {
-   *         "match": {
+   *         "wildcard": {
    *             "postal_code": {
-   *                 "query": "75001"
+   *                 "value": "75*",
+   *                 "boost": 1.0,
+   *                 "rewrite": "constant_score"
+   *             }
+   *         },
+   *         "match": {
+   *             "mutation_nature": {
+   *                 "query": "Vente"
+   *             }
+   *         },
+   *         "match": {
+   *             "local_type": {
+   *                 "query": "Appartement"
    *             }
    *         }
    *     },
@@ -242,7 +254,14 @@ public class TransactionEsAggregator {
     var avgAggregationName = fieldName + "/sum";
     var countAggregationName = fieldName + "/count";
 
-    var query = QueryBuilders.matchQuery(Transaction.FIELD_POSTAL_CODE, "75001");
+    var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
+    var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
+    var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
+    var query =
+        QueryBuilders.boolQuery()
+            .filter(postalCodeQuery)
+            .filter(mutationNatureQuery)
+            .filter(localTypeQuery);
 
     var sourceBuilder =
         new SearchSourceBuilder()
