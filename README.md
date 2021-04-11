@@ -23,7 +23,7 @@ docker run \
 
 ## Articles
 
-Articles wrote using code of this repository:
+Articles wrote using code of this repository and other related repositories:
 
 - [Testing Elasticsearch With Docker And Java High Level REST Client](https://mincong.io/2020/04/05/testing-elasticsearch-with-docker-and-java-client/)
 - [Testing Elasticsearch with ESSingleNodeTestCase](https://mincong.io/2019/11/24/essinglenodetestcase/)
@@ -41,6 +41,7 @@ Articles wrote using code of this repository:
 - [DVF: Storage Optimization](https://mincong.io/2020/12/25/dvf-storage-optimization/)
 - [DVF: Snapshot And Restore](https://mincong.io/2021/01/10/dvf-snapshot-and-restore/)
 - [Disk Watermarks In Elasticsearch](https://mincong.io/2021/04/10/disk-watermarks-in-elasticsearch/)
+- [Elasticsearch: Generate Configuration With Python Jinja 2](https://mincong.io/2021/04/11/elasticsearch-generate-configuration-with-python-jinja2/)
 
 ## Resources
 
