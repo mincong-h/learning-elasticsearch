@@ -48,6 +48,7 @@ public class ReadPathAggregationDemo {
   }
 
   private void runBucketAggregations(TransactionEsAggregator aggregator) {
+    logger.info("== Requesting bucket aggregations:");
     logger.info(
         "Transactions activity per postal code:\n{}",
         aggregator.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
