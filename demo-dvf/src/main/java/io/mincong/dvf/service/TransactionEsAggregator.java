@@ -16,7 +16,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.ParsedMultiBucketAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms.ParsedBucket;
-import org.elasticsearch.search.aggregations.metrics.Sum;
+import org.elasticsearch.search.aggregations.metrics.*;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 /**
@@ -50,19 +50,21 @@ public class TransactionEsAggregator {
    *         "match_all": {}
    *     },
    *     "aggs": {
-   *         "total": {
+   *         "property_value/sum": {
    *             "sum": {
-   *                 "field": "${field_name}"
+   *                 "field": "property_value"
    *             }
    *         }
    *     }
    * }
    * </pre>
    */
-  public Sum sumAggregate(String fieldName) {
+  public Sum propertyValueSum() {
+    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
+    var aggregationName = fieldName + "/sum";
     var sourceBuilder =
         new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.sum("total").field(fieldName))
+            .aggregation(AggregationBuilders.sum(aggregationName).field(fieldName))
             .query(QueryBuilders.matchAllQuery());
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
@@ -75,7 +77,119 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-    return (Sum) response.getAggregations().asMap().get("total");
+    return (Sum) response.getAggregations().asMap().get(aggregationName);
+  }
+
+  /**
+   * Equivalent to HTTP request:
+   *
+   * <pre>
+   * {
+   *     "query": {
+   *         "match_all": {}
+   *     },
+   *     "aggs": {
+   *         "property_value/avg": {
+   *             "avg": {
+   *                 "field": "property_value"
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   */
+  public Avg propertyValueAvg() {
+    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
+    var aggregationName = fieldName + "/avg";
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .aggregation(AggregationBuilders.avg(aggregationName).field(fieldName))
+            .query(QueryBuilders.matchAllQuery());
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    SearchResponse response;
+    try {
+      response = client.search(request, RequestOptions.DEFAULT);
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + fieldName;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+    return (Avg) response.getAggregations().asMap().get(aggregationName);
+  }
+
+  /**
+   * Equivalent to HTTP request:
+   *
+   * <pre>
+   * {
+   *     "query": {
+   *         "match_all": {}
+   *     },
+   *     "aggs": {
+   *         "property_value/min": {
+   *             "min": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/avg": {
+   *             "avg": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/max": {
+   *             "max": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/sum": {
+   *             "sum": {
+   *                 "field": "property_value"
+   *             }
+   *         },
+   *         "property_value/count": {
+   *             "count": {
+   *                 "field": "property_value"
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   */
+  public PropertyValueStats aggregations() {
+    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
+    var minAggregationName = fieldName + "/min";
+    var sumAggregationName = fieldName + "/avg";
+    var maxAggregationName = fieldName + "/max";
+    var avgAggregationName = fieldName + "/sum";
+    var countAggregationName = fieldName + "/count";
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .aggregation(AggregationBuilders.sum(sumAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.avg(avgAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.min(minAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.max(maxAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.count(countAggregationName).field(fieldName))
+            .query(QueryBuilders.matchAllQuery());
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    SearchResponse response;
+    try {
+      response = client.search(request, RequestOptions.DEFAULT);
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + fieldName;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+    var results = response.getAggregations().asMap();
+    return new PropertyValueStats(
+        ((Min) results.get(minAggregationName)).getValue(),
+        ((Avg) results.get(avgAggregationName)).getValue(),
+        ((Max) results.get(maxAggregationName)).getValue(),
+        ((Sum) results.get(sumAggregationName)).getValue(),
+        ((ValueCount) results.get(countAggregationName)).getValue());
   }
 
   public Map<String, Long> transactionByPostalCode(QueryBuilder queryBuilder) {
@@ -101,5 +215,22 @@ public class TransactionEsAggregator {
             Collectors.toMap(
                 ParsedBucket::getKeyAsString,
                 ParsedMultiBucketAggregation.ParsedBucket::getDocCount));
+  }
+
+  public static class PropertyValueStats {
+
+    public final double min;
+    public final double avg;
+    public final double max;
+    public final double sum;
+    public final long count;
+
+    private PropertyValueStats(double min, double avg, double max, double sum, long count) {
+      this.min = min;
+      this.avg = avg;
+      this.max = max;
+      this.sum = sum;
+      this.count = count;
+    }
   }
 }

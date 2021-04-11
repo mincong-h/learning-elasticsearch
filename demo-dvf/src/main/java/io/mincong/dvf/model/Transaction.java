@@ -16,6 +16,8 @@ public abstract class Transaction {
 
   public static final String INDEX_NAME = "transactions";
 
+  public static final String FIELD_PROPERTY_VALUE = "property_value";
+
   /** See https://www.elastic.co/guide/en/elasticsearch/reference/7.9/mapping-types.html */
   private static final Map<String, Object> mappings = new HashMap<>();
 

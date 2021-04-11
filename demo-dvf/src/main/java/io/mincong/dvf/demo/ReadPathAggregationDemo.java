@@ -19,18 +19,38 @@ public class ReadPathAggregationDemo {
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
     try (var restClient = new RestHighLevelClient(builder)) {
-      search(restClient);
+      var aggregator = new TransactionEsAggregator(restClient);
+      runMetricAggregations(aggregator);
+      runBucketAggregations(aggregator);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     }
   }
 
-  public void search(RestHighLevelClient restClient) {
-    var searcher = new TransactionEsAggregator(restClient);
-    logger.info("Total property value: {}", searcher.sumAggregate("property_value").getValue());
+  public void runMetricAggregations(TransactionEsAggregator aggregator) {
+    var sum = aggregator.propertyValueSum().getValue();
+    var avg = aggregator.propertyValueAvg().getValue();
+    logger.info("== Requesting single metric aggregation:");
+    logger.info("Sum of property value: {}", String.format("%,.1f€", sum));
+    logger.info("Avg of property value: {}", String.format("%,.1f€", avg));
+
+    var stats = aggregator.aggregations();
+    logger.info("== Requesting multiple metric aggregations:");
+    logger.info(
+        "Property values are between {} and {} (avg: {})",
+        String.format("%,.1f€", stats.min),
+        String.format("%,.1f€", stats.max),
+        String.format("%,.1f€", stats.avg));
+    logger.info(
+        "Property values total market value is {} ({} transactions)",
+        String.format("%,.1f€", stats.sum),
+        String.format("%,d", stats.count));
+  }
+
+  private void runBucketAggregations(TransactionEsAggregator aggregator) {
     logger.info(
         "Transactions activity per postal code:\n{}",
-        searcher.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
+        aggregator.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
             .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
             .collect(Collectors.joining("\n")));

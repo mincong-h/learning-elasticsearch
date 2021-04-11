@@ -63,7 +63,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
     var searcher = new TransactionEsAggregator(restClient);
 
     // When
-    var sum = searcher.sumAggregate("property_value");
+    var sum = searcher.propertyValueSum();
 
     // Then
     Assertions.assertThat(sum.getValue())
