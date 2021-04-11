@@ -19,6 +19,20 @@ import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms.Pars
 import org.elasticsearch.search.aggregations.metrics.Sum;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
+/**
+ * Elasticsearch - Aggregations
+ * https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-aggregations.html
+ *
+ * <p>Elasticsearch organizes aggregations into three categories:
+ *
+ * <ul>
+ *   <li>Metric aggregations that calculate metrics, such as a sum or average, from field values.
+ *   <li>Bucket aggregations that group documents into buckets, also called bins, based on field
+ *       values, ranges, or other criteria.
+ *   <li>Pipeline aggregations that take input from other aggregations instead of documents or
+ *       fields.
+ * </ul>
+ */
 public class TransactionEsAggregator {
   private static final Logger logger = LogManager.getLogger(TransactionEsAggregator.class);
   private final RestHighLevelClient client;
