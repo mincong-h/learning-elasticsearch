@@ -30,6 +30,7 @@ public class Main {
   private static final String CSV_PATH = "/Users/minconghuang/github/dvf/downloads/full.2020.csv";
 
   private static final String REPO_NAME = "dvf";
+
   /**
    * This the location of the backup.
    *
@@ -44,7 +45,10 @@ public class Main {
   private static final String BACKUP_LOCATION = REPO_NAME;
 
   private static final int BULK_SIZE = 1000;
+
   private static final int THREADS = Runtime.getRuntime().availableProcessors() * 2;
+
+  private static final long INDEX_BULK_LIMIT = -1;
 
   public static void main(String[] args) {
     var main = new Main();
@@ -52,10 +56,10 @@ public class Main {
     logger.info("Start creating REST high-level client...");
     var executor = Executors.newFixedThreadPool(THREADS);
     try (var restClient = new RestHighLevelClient(builder)) {
-      //      main.indexTransactions(restClient, executor).join();
-      //      main.forceMerge(restClient);
-      //      main.snapshot(restClient);
-      main.search(restClient);
+      main.indexTransactions(restClient, executor).join();
+      main.forceMerge(restClient);
+      main.snapshot(restClient);
+      //      main.search(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
@@ -72,7 +76,11 @@ public class Main {
     //    var esWriter =
     //        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(10);
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH));
+    if (INDEX_BULK_LIMIT > 0) {
+      transactions = transactions.limit(INDEX_BULK_LIMIT);
+    }
+
     esWriter.createIndex();
     logger.info("Start writing transaction...");
     return esWriter
