@@ -54,34 +54,33 @@ public class TransactionEsAggregator {
    *         "match_all": {}
    *     },
    *     "aggs": {
-   *         "property_value/sum": {
-   *             "sum": {
-   *                 "field": "property_value"
+   *         "mutation_id/count": {
+   *             "count": {
+   *                 "field": "mutation_id"
    *             }
    *         }
    *     }
    * }
    * </pre>
    */
-  public Sum propertyValueSum() {
-    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var aggregationName = fieldName + "/sum";
+  public ValueCount mutationIdsCount() {
+    var fieldName = Transaction.FIELD_MUTATION_ID;
+    var aggregationName = fieldName + "/count";
     var sourceBuilder =
         new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.sum(aggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.count(aggregationName).field(fieldName))
             .query(QueryBuilders.matchAllQuery());
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
 
-    SearchResponse response;
     try {
-      response = client.search(request, RequestOptions.DEFAULT);
+      var searchResponse = client.search(request, RequestOptions.DEFAULT);
+      return (ValueCount) searchResponse.getAggregations().asMap().get(aggregationName);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-    return (Sum) response.getAggregations().asMap().get(aggregationName);
   }
 
   /**

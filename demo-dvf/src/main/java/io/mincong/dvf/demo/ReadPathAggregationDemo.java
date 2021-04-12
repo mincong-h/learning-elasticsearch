@@ -29,11 +29,9 @@ public class ReadPathAggregationDemo {
   }
 
   public void runMetricAggregations(TransactionEsAggregator aggregator) {
-    var sum = aggregator.propertyValueSum().getValue();
-    var avg = aggregator.propertyValueAvg().getValue();
+    var count = aggregator.mutationIdsCount().getValue();
     logger.info("== Requesting single metric aggregation:");
-    logger.info("Sum of property value: {}", String.format("%,.1f€", sum));
-    logger.info("Avg of property value: {}", String.format("%,.1f€", avg));
+    logger.info("Number of mutations: {}", String.format("%,d", count));
 
     var stats = aggregator.aggregations();
     logger.info("== Requesting multiple metric aggregations:");

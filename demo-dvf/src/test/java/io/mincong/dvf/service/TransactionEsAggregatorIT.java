@@ -3,6 +3,7 @@ package io.mincong.dvf.service;
 import static io.mincong.dvf.model.TestModels.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +29,10 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
     System.clearProperty("tests.rest.cluster");
   }
 
+  private final ImmutableTransaction[] transactions = {
+    TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4
+  };
+
   private RestHighLevelClient restClient;
   private ExecutorService executor;
 
@@ -44,10 +49,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
         new TransactionBulkEsWriter(
             restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
-    writer
-        .write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4)
-        .get(10, SECONDS)
-        .forEach(id -> logger.info("Transaction " + id));
+    writer.write(transactions).get(10, SECONDS).forEach(id -> logger.info("Transaction " + id));
   }
 
   @After
@@ -58,21 +60,15 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
   }
 
   @Test
-  public void testSumAggregation() {
+  public void testCountValueAggregation() {
     // Given
     var searcher = new TransactionEsAggregator(restClient);
 
     // When
-    var sum = searcher.propertyValueSum();
+    var valueCount = searcher.mutationIdsCount();
 
     // Then
-    Assertions.assertThat(sum.getValue())
-        .isEqualTo(261_000.0)
-        .isEqualTo(
-            TRANSACTION_1.propertyValue()
-                + TRANSACTION_2.propertyValue()
-                + TRANSACTION_3.propertyValue()
-                + TRANSACTION_4.propertyValue());
+    Assertions.assertThat(valueCount.getValue()).isEqualTo(transactions.length);
   }
 
   @Test

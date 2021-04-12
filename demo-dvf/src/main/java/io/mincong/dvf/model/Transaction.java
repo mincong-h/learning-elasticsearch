@@ -16,6 +16,8 @@ public abstract class Transaction {
 
   public static final String INDEX_NAME = "transactions";
 
+  public static final String FIELD_MUTATION_ID = "mutation_id";
+
   public static final String FIELD_PROPERTY_VALUE = "property_value";
 
   public static final String FIELD_POSTAL_CODE = "postal_code";
