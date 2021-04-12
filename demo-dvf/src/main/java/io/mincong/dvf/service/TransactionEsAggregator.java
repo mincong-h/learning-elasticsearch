@@ -174,7 +174,7 @@ public class TransactionEsAggregator {
    *     "runtime_mappings": {
    *         "price_m2": {
    *             "type": "double",
-   *             "script": "emit(doc['property_value'].value * doc['real_built_up_area'].value)"
+   *             "script": "if (doc['property_value'].size() > 0 && doc['real_built_up_area'].size() > 0) { emit(doc['property_value'].value / doc['real_built_up_area'].value); } else { emit(0); }"
    *         }
    *     },
    *     "aggs": {
@@ -196,8 +196,20 @@ public class TransactionEsAggregator {
     var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
     var query = QueryBuilders.boolQuery().filter(mutationNatureQuery).filter(localTypeQuery);
 
+    // Add check to avoid script exception (error 400):
+    // "A document doesn't have a value for a field! Use doc[<field>].size()==0 to check if a
+    // document is missing a field!"
+    Map<String, Object> runtimeMappings =
+        Map.of(
+            fieldName,
+            Map.of(
+                "type",
+                "double",
+                "script",
+                "if (doc['property_value'].size() > 0 && doc['real_built_up_area'].size() > 0) { emit(doc['property_value'].value / doc['real_built_up_area'].value); } else { emit(0); }"));
     var sourceBuilder =
         new SearchSourceBuilder()
+            .runtimeMappings(runtimeMappings)
             .aggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName))
             .query(query);
 
