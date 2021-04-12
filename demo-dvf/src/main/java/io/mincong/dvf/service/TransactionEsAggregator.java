@@ -198,7 +198,7 @@ public class TransactionEsAggregator {
    * </pre>
    */
   // TODO rename PropertyValueStats
-  public PropertyValueStats priceStats() {
+  public PropertyValueStats priceM2Stats() {
     var fieldName = "price_m2";
     var statsAggregationName = fieldName + "/stats";
 
@@ -242,6 +242,97 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
+  }
+
+  /**
+   * Equivalent to HTTP request:
+   *
+   * <pre>
+   * {
+   *     "query": {
+   *         "match": {
+   *             "mutation_nature": {
+   *                 "query": "Vente"
+   *             }
+   *         },
+   *         "match": {
+   *             "local_type": {
+   *                 "query": "Appartement"
+   *             }
+   *         },
+   *         "range": {
+   *             "property_value": {
+   *                 "gt": 0
+   *             }
+   *         },
+   *         "range": {
+   *             "real_built_up_area": {
+   *                 "gt": 0
+   *             }
+   *         }
+   *     },
+   *     "runtime_mappings": {
+   *         "price_m2": {
+   *             "type": "double",
+   *             "script": "emit(doc['property_value'].value / doc['real_built_up_area'].value)"
+   *         }
+   *     },
+   *     "aggs": {
+   *         "price_m2/outlier": {
+   *             "percentiles": {
+   *                 "field": "price_m2"
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   */
+  public Percentiles priceM2Percentiles() {
+    var fieldName = "price_m2";
+    var percentilesAggregationName = fieldName + "/outlier";
+
+    var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
+    var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
+
+    // Add queries to avoid script exception (error 400) in painless script:
+    // "A document doesn't have a value for a field! Use doc[<field>].size()==0 to check if a
+    // document is missing a field!"
+    var propertyValueQuery = QueryBuilders.rangeQuery(Transaction.FIELD_PROPERTY_VALUE).gt(0);
+    var propertyBuiltUpAreaQuery =
+        QueryBuilders.rangeQuery(Transaction.FIELD_REAL_BUILT_UP_AREA).gt(0);
+    var query =
+        QueryBuilders.boolQuery()
+            .filter(mutationNatureQuery)
+            .filter(localTypeQuery)
+            .filter(propertyValueQuery)
+            .filter(propertyBuiltUpAreaQuery);
+
+    Map<String, Object> runtimeMappings =
+        Map.of(
+            fieldName,
+            Map.of(
+                "type",
+                "double",
+                "script",
+                "emit(doc['property_value'].value / doc['real_built_up_area'].value)"));
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .runtimeMappings(runtimeMappings)
+            .aggregation(
+                AggregationBuilders.percentiles(percentilesAggregationName).field(fieldName))
+            .query(query);
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    SearchResponse response;
+    try {
+      response = client.search(request, RequestOptions.DEFAULT);
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + fieldName;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+    return response.getAggregations().get(percentilesAggregationName);
   }
 
   /**

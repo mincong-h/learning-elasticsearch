@@ -22,6 +22,7 @@ public class ReadPathAggregationDemo {
       runMetricAggregations(aggregator);
       runBucketAggregations(aggregator);
       runMetricScriptingStatsAggregations(aggregator);
+      runMetricScriptingPercentilesAggregations(aggregator);
       runParisAnalysis(aggregator);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
@@ -47,17 +48,24 @@ public class ReadPathAggregationDemo {
   }
 
   public void runMetricScriptingStatsAggregations(TransactionEsAggregator aggregator) {
-    var stats = aggregator.priceStats();
-    logger.info("== Requesting analytics for price/m2 - overview:");
+    var stats = aggregator.priceM2Stats();
+    logger.info("== Requesting analytics for price/m2 - Overview:");
     logger.info(
         "Property values are between {} and {} (avg: {})",
-        String.format("%,.1f€", stats.min),
-        String.format("%,.1f€", stats.max),
-        String.format("%,.1f€", stats.avg));
-    logger.info(
-        "Property values total market value is {} ({} transactions)",
-        String.format("%,.1f€", stats.sum),
-        String.format("%,d", stats.count));
+        String.format("%,.1f€/m2", stats.min),
+        String.format("%,.1f€/m2", stats.max),
+        String.format("%,.1f€/m2", stats.avg));
+    logger.info("There were {} mutations", String.format("%,d", stats.count));
+  }
+
+  public void runMetricScriptingPercentilesAggregations(TransactionEsAggregator aggregator) {
+    var stats = aggregator.priceM2Percentiles();
+    logger.info("== Requesting analytics for price/m2 - Percentiles:");
+    logger.info("p5: {}", String.format("%,.0f€/m2", stats.percentile(5.0)));
+    logger.info("p25: {}", String.format("%,.0f€/m2", stats.percentile(25.0)));
+    logger.info("p50: {}", String.format("%,.0f€/m2", stats.percentile(50.0)));
+    logger.info("p75: {}", String.format("%,.0f€/m2", stats.percentile(75.0)));
+    logger.info("p95: {}", String.format("%,.0f€/m2", stats.percentile(95.0)));
   }
 
   public void runParisAnalysis(TransactionEsAggregator aggregator) {
