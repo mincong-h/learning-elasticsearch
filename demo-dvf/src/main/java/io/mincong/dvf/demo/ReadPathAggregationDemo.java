@@ -70,27 +70,33 @@ public class ReadPathAggregationDemo {
     var overviewStats = aggregator.parisStatsOverview();
     logger.info("== Requesting analytics for Paris - Overview:");
     logger.info(
-        "Property values are between {} and {} (avg: {})",
-        String.format("%,.1f€", overviewStats.min),
-        String.format("%,.1f€", overviewStats.max),
-        String.format("%,.1f€", overviewStats.avg));
-    logger.info(
-        "Property values total market value is {} ({} transactions)",
-        String.format("%,.1f€", overviewStats.sum),
-        String.format("%,d", overviewStats.count));
+        "min: {}, avg: {}, max: {}, count: {}, sum: {}",
+        String.format("%,.0f€", overviewStats.min),
+        String.format("%,.0f€", overviewStats.avg),
+        String.format("%,.0f€", overviewStats.max),
+        String.format("%,d", overviewStats.count),
+        String.format("%,.0f€", overviewStats.sum));
 
     logger.info("== Requesting analytics for Paris - Per Postal Code:");
     var percentilesPerPostalCode = aggregator.parisPricePercentilesPerPostalCode();
-    percentilesPerPostalCode.forEach(
-        (postalCode, percentiles) -> {
-          logger.info(
-              "- {}: p5={}, p25={}, p50={}, p75={}, p95={}",
-              postalCode,
-              String.format("%,.0f€/m2", percentiles.percentile(5)),
-              String.format("%,.0f€/m2", percentiles.percentile(25)),
-              String.format("%,.0f€/m2", percentiles.percentile(50)),
-              String.format("%,.0f€/m2", percentiles.percentile(75)),
-              String.format("%,.0f€/m2", percentiles.percentile(95)));
-        });
+    var rows =
+        percentilesPerPostalCode.entrySet().stream()
+            .map(
+                entry -> {
+                  var postalCode = entry.getKey();
+                  var percentiles = entry.getValue();
+                  return String.format(
+                      "%s | %,.0f | %,.0f | %,.0f | %,.0f | %,.0f",
+                      postalCode,
+                      percentiles.percentile(5),
+                      percentiles.percentile(25),
+                      percentiles.percentile(50),
+                      percentiles.percentile(75),
+                      percentiles.percentile(95));
+                })
+            .collect(Collectors.joining("\n"));
+    logger.info(
+        "\nPostal Code | p5 (€) | p25 (€) | p50 (€) | p75 (€) | p95 (€)\n:---: | ---: | ---: | ---: | ---: | ---: |\n{}",
+        rows);
   }
 }
