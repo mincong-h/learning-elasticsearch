@@ -19,10 +19,12 @@ public class ReadPathAggregationDemo {
     logger.info("Start creating REST high-level client...");
     try (var restClient = new RestHighLevelClient(builder)) {
       var aggregator = new TransactionEsAggregator(restClient);
+
       runMetricAggregations(aggregator);
       runBucketAggregations(aggregator);
       runMetricScriptingStatsAggregations(aggregator);
       runMetricScriptingPercentilesAggregations(aggregator);
+
       runParisOverviewAnalysis(aggregator);
       runParisDistrictAnalysis(aggregator);
       runParisLotAnalysis(aggregator);
