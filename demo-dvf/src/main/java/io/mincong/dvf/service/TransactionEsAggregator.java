@@ -12,7 +12,6 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -428,7 +427,7 @@ public class TransactionEsAggregator {
         ((ValueCount) aggregations.get(countAggregationName)).getValue());
   }
 
-  public Map<String, Long> transactionByPostalCode(QueryBuilder queryBuilder) {
+  public Map<String, Long> mutationsByPostalCode() {
     var sourceBuilder =
         new SearchSourceBuilder()
             .aggregation(AggregationBuilders.terms("postal_code_agg").field("postal_code"))

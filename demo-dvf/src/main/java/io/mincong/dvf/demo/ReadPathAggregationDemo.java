@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
 
 public class ReadPathAggregationDemo {
 
@@ -76,7 +75,7 @@ public class ReadPathAggregationDemo {
     logger.info("== Requesting bucket aggregations:");
     logger.info(
         "Transactions activity per postal code:\n{}",
-        aggregator.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
+        aggregator.mutationsByPostalCode().entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
             .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
             .collect(Collectors.joining("\n")));

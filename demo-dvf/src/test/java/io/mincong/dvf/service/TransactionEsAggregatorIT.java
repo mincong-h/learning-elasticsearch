@@ -13,7 +13,6 @@ import org.assertj.core.api.Assertions;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.test.rest.ESRestTestCase;
 import org.junit.*;
 
@@ -77,7 +76,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
     var searcher = new TransactionEsAggregator(restClient);
 
     // When
-    var stats = searcher.transactionByPostalCode(QueryBuilders.matchAllQuery());
+    var stats = searcher.mutationsByPostalCode();
 
     // Then
     Assertions.assertThat(stats).isEqualTo(Map.of("01340", 2L, "01250", 1L, "01960", 1L));
