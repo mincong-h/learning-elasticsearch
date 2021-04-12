@@ -53,6 +53,7 @@ public class TransactionEsAggregator {
    *     "query": {
    *         "match_all": {}
    *     },
+   *     "size": 0,
    *     "aggs": {
    *         "mutation_id/count": {
    *             "value_count": {
@@ -68,6 +69,7 @@ public class TransactionEsAggregator {
     var aggregationName = fieldName + "/count";
     var sourceBuilder =
         new SearchSourceBuilder()
+            .size(0)
             .aggregation(AggregationBuilders.count(aggregationName).field(fieldName))
             .query(QueryBuilders.matchAllQuery());
 
