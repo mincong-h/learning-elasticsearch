@@ -312,11 +312,7 @@ public class TransactionEsAggregator {
    */
   public PropertyValueStats parisStatsOverview() {
     var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var minAggregationName = fieldName + "/min";
-    var sumAggregationName = fieldName + "/avg";
-    var maxAggregationName = fieldName + "/max";
-    var avgAggregationName = fieldName + "/sum";
-    var countAggregationName = fieldName + "/count";
+    var statsAggregationName = fieldName + "/stats";
 
     var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
@@ -329,11 +325,7 @@ public class TransactionEsAggregator {
 
     var sourceBuilder =
         new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.sum(sumAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.avg(avgAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.min(minAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.max(maxAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.count(countAggregationName).field(fieldName))
+            .aggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName))
             .query(query);
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
@@ -346,13 +338,8 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-    var results = response.getAggregations().asMap();
-    return new PropertyValueStats(
-        ((Min) results.get(minAggregationName)).getValue(),
-        ((Avg) results.get(avgAggregationName)).getValue(),
-        ((Max) results.get(maxAggregationName)).getValue(),
-        ((Sum) results.get(sumAggregationName)).getValue(),
-        ((ValueCount) results.get(countAggregationName)).getValue());
+    Stats results = response.getAggregations().get(statsAggregationName);
+    return new PropertyValueStats(results);
   }
 
   /**
@@ -567,14 +554,6 @@ public class TransactionEsAggregator {
       this.max = stats.getMax();
       this.sum = stats.getSum();
       this.count = stats.getCount();
-    }
-
-    private PropertyValueStats(double min, double avg, double max, double sum, long count) {
-      this.min = min;
-      this.avg = avg;
-      this.max = max;
-      this.sum = sum;
-      this.count = count;
     }
   }
 }
