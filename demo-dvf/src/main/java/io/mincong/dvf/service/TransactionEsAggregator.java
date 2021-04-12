@@ -256,60 +256,7 @@ public class TransactionEsAggregator {
     return response.getAggregations().get(percentilesAggregationName);
   }
 
-  /**
-   * Equivalent to HTTP request:
-   *
-   * <pre>
-   * {
-   *     "query": {
-   *         "wildcard": {
-   *             "postal_code": {
-   *                 "value": "75*",
-   *                 "boost": 1.0,
-   *                 "rewrite": "constant_score"
-   *             }
-   *         },
-   *         "match": {
-   *             "mutation_nature": {
-   *                 "query": "Vente"
-   *             }
-   *         },
-   *         "match": {
-   *             "local_type": {
-   *                 "query": "Appartement"
-   *             }
-   *         }
-   *     },
-   *     "aggs": {
-   *         "property_value/min": {
-   *             "min": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/avg": {
-   *             "avg": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/max": {
-   *             "max": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/sum": {
-   *             "sum": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/count": {
-   *             "count": {
-   *                 "field": "property_value"
-   *             }
-   *         }
-   *     }
-   * }
-   * </pre>
-   */
+  /** See request.paris.price-stats-overview.json */
   public PropertyValueStats parisStatsOverview() {
     var fieldName = Transaction.FIELD_PROPERTY_VALUE;
     var statsAggregationName = fieldName + "/stats";
