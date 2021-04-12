@@ -37,10 +37,10 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
  */
 public class TransactionEsAggregator {
   private static final Logger logger = LogManager.getLogger(TransactionEsAggregator.class);
-  private final RestHighLevelClient client;
+  private final RestHighLevelClient restClient;
 
-  public TransactionEsAggregator(RestHighLevelClient client) {
-    this.client = client;
+  public TransactionEsAggregator(RestHighLevelClient restClient) {
+    this.restClient = restClient;
   }
 
   /**
@@ -76,7 +76,7 @@ public class TransactionEsAggregator {
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
 
     try {
-      var response = client.search(request, RequestOptions.DEFAULT);
+      var response = restClient.search(request, RequestOptions.DEFAULT);
       return response.getAggregations().get(aggregationName);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
@@ -143,7 +143,7 @@ public class TransactionEsAggregator {
 
     SearchResponse response;
     try {
-      response = client.search(request, RequestOptions.DEFAULT);
+      response = restClient.search(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
@@ -239,7 +239,7 @@ public class TransactionEsAggregator {
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
 
     try {
-      var response = client.search(request, RequestOptions.DEFAULT);
+      var response = restClient.search(request, RequestOptions.DEFAULT);
       return new PropertyValueStats(response.getAggregations().get(statsAggregationName));
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
@@ -330,7 +330,7 @@ public class TransactionEsAggregator {
 
     SearchResponse response;
     try {
-      response = client.search(request, RequestOptions.DEFAULT);
+      response = restClient.search(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
@@ -423,7 +423,7 @@ public class TransactionEsAggregator {
 
     SearchResponse response;
     try {
-      response = client.search(request, RequestOptions.DEFAULT);
+      response = restClient.search(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
@@ -512,7 +512,7 @@ public class TransactionEsAggregator {
 
     SearchResponse response;
     try {
-      response = client.search(request, RequestOptions.DEFAULT);
+      response = restClient.search(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
@@ -539,7 +539,7 @@ public class TransactionEsAggregator {
 
     SearchResponse response;
     try {
-      response = client.search(request, RequestOptions.DEFAULT);
+      response = restClient.search(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation: " + sourceBuilder;
       logger.error(msg, e);
