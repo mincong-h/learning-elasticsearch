@@ -35,6 +35,16 @@ public class ReadPathAggregationDemo {
     logger.info("Number of mutations: {}", String.format("%,d", count));
   }
 
+  private void runBucketAggregations(TransactionEsAggregator aggregator) {
+    logger.info("== Requesting bucket aggregation:");
+    logger.info(
+        "Transactions activity per postal code:\n{}",
+        aggregator.mutationsByPostalCode().entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
+            .collect(Collectors.joining("\n")));
+  }
+
   public void runMetricScriptingStatsAggregations(TransactionEsAggregator aggregator) {
     var stats = aggregator.priceM2Stats();
     logger.info("== Requesting analytics for price/m2 - Overview:");
@@ -80,15 +90,5 @@ public class ReadPathAggregationDemo {
               String.format("%,.1f€", stats.max),
               String.format("%,.1f€", stats.avg));
         });
-  }
-
-  private void runBucketAggregations(TransactionEsAggregator aggregator) {
-    logger.info("== Requesting bucket aggregations:");
-    logger.info(
-        "Transactions activity per postal code:\n{}",
-        aggregator.mutationsByPostalCode().entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
-            .collect(Collectors.joining("\n")));
   }
 }
