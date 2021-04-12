@@ -76,8 +76,8 @@ public class TransactionEsAggregator {
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
 
     try {
-      var searchResponse = client.search(request, RequestOptions.DEFAULT);
-      return (ValueCount) searchResponse.getAggregations().asMap().get(aggregationName);
+      var response = client.search(request, RequestOptions.DEFAULT);
+      return response.getAggregations().get(aggregationName);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
