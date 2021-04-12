@@ -209,7 +209,7 @@ public class TransactionEsAggregator {
    */
   public Percentiles priceM2Percentiles() {
     var fieldName = "price_m2";
-    var percentilesAggregationName = fieldName + "/outlier";
+    var percentilesAggregationName = fieldName + "/percentiles";
 
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
     var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
@@ -384,7 +384,7 @@ public class TransactionEsAggregator {
    *     "aggs": {
    *         "postal-code-aggregation": {
    *             "terms": {
-   *                 "field": "property_value"
+   *                 "field": "property_value",
    *             },
    *             "aggs": {
    *                 "property_value/stats": {
@@ -401,11 +401,12 @@ public class TransactionEsAggregator {
    * @return a map of stats where the key is the postal code and the value is its related
    *     statistics.
    */
-  public SortedMap<String, PropertyValueStats> parisStatsPerPostalCode() {
+  // TODO update Javadoc
+  public SortedMap<String, Percentiles> parisPricePercentilesPerPostalCode() {
     var termsAggregationName = "postal-code-aggregation";
 
     var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var statsAggregationName = fieldName + "/stats";
+    var percentilesAggregationName = fieldName + "/percentiles";
 
     var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
@@ -420,7 +421,8 @@ public class TransactionEsAggregator {
         AggregationBuilders.terms(termsAggregationName)
             .field(Transaction.FIELD_POSTAL_CODE)
             .size(20)
-            .subAggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName));
+            .subAggregation(
+                AggregationBuilders.percentiles(percentilesAggregationName).field(fieldName));
 
     var sourceBuilder = new SearchSourceBuilder().aggregation(termsAggregation).query(query);
 
@@ -434,13 +436,12 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-    var terms = (ParsedStringTerms) response.getAggregations().asMap().get(termsAggregationName);
+    var terms = (ParsedStringTerms) response.getAggregations().get(termsAggregationName);
     return terms.getBuckets().stream()
         .collect(
             Collectors.toMap(
                 MultiBucketsAggregation.Bucket::getKeyAsString,
-                bucket ->
-                    new PropertyValueStats(bucket.getAggregations().get(statsAggregationName)),
+                bucket -> (Percentiles) bucket.getAggregations().get(percentilesAggregationName),
                 (k1, k2) -> k1,
                 TreeMap::new));
   }

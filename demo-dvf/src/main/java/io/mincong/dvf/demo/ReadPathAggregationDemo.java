@@ -80,15 +80,17 @@ public class ReadPathAggregationDemo {
         String.format("%,d", overviewStats.count));
 
     logger.info("== Requesting analytics for Paris - Per Postal Code:");
-    var statsPerPostalCode = aggregator.parisStatsPerPostalCode();
-    statsPerPostalCode.forEach(
-        (postalCode, stats) -> {
+    var percentilesPerPostalCode = aggregator.parisPricePercentilesPerPostalCode();
+    percentilesPerPostalCode.forEach(
+        (postalCode, percentiles) -> {
           logger.info(
-              "- {}: property values are between {} and {} (avg: {})",
+              "- {}: p5={}, p25={}, p50={}, p75={}, p95={}",
               postalCode,
-              String.format("%,.1f€", stats.min),
-              String.format("%,.1f€", stats.max),
-              String.format("%,.1f€", stats.avg));
+              String.format("%,.0f€/m2", percentiles.percentile(5)),
+              String.format("%,.0f€/m2", percentiles.percentile(25)),
+              String.format("%,.0f€/m2", percentiles.percentile(50)),
+              String.format("%,.0f€/m2", percentiles.percentile(75)),
+              String.format("%,.0f€/m2", percentiles.percentile(95)));
         });
   }
 }
