@@ -160,7 +160,16 @@ public class TransactionEsAggregator {
    * <pre>
    * {
    *     "query": {
-   *         "match_all": {}
+   *         "match": {
+   *             "mutation_nature": {
+   *                 "query": "Vente"
+   *             }
+   *         },
+   *         "match": {
+   *             "local_type": {
+   *                 "query": "Appartement"
+   *             }
+   *         }
    *     },
    *     "runtime_mappings": {
    *         "price_m2": {
@@ -183,10 +192,14 @@ public class TransactionEsAggregator {
     var fieldName = "price_m2";
     var statsAggregationName = fieldName + "/stats";
 
+    var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
+    var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
+    var query = QueryBuilders.boolQuery().filter(mutationNatureQuery).filter(localTypeQuery);
+
     var sourceBuilder =
         new SearchSourceBuilder()
             .aggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName))
-            .query(QueryBuilders.matchAllQuery());
+            .query(query);
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
 
