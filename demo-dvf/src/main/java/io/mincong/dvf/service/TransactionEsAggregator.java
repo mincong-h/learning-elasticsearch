@@ -14,7 +14,6 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.ParsedMultiBucketAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
@@ -326,28 +325,8 @@ public class TransactionEsAggregator {
    *                 "field": "property_value"
    *             },
    *             "aggs": {
-   *                 "property_value/min": {
-   *                     "min": {
-   *                         "field": "property_value"
-   *                     }
-   *                 },
-   *                 "property_value/avg": {
-   *                     "avg": {
-   *                         "field": "property_value"
-   *                     }
-   *                 },
-   *                 "property_value/max": {
-   *                     "max": {
-   *                         "field": "property_value"
-   *                     }
-   *                 },
-   *                 "property_value/sum": {
-   *                     "sum": {
-   *                         "field": "property_value"
-   *                     }
-   *                 },
-   *                 "property_value/count": {
-   *                     "count": {
+   *                 "property_value/stats": {
+   *                     "stats": {
    *                         "field": "property_value"
    *                     }
    *                 }
@@ -364,11 +343,7 @@ public class TransactionEsAggregator {
     var termsAggregationName = "postal-code-aggregation";
 
     var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var minAggregationName = fieldName + "/min";
-    var sumAggregationName = fieldName + "/avg";
-    var maxAggregationName = fieldName + "/max";
-    var avgAggregationName = fieldName + "/sum";
-    var countAggregationName = fieldName + "/count";
+    var statsAggregationName = fieldName + "/stats";
 
     var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
@@ -383,11 +358,7 @@ public class TransactionEsAggregator {
         AggregationBuilders.terms(termsAggregationName)
             .field(Transaction.FIELD_POSTAL_CODE)
             .size(20)
-            .subAggregation(AggregationBuilders.min(minAggregationName).field(fieldName))
-            .subAggregation(AggregationBuilders.avg(avgAggregationName).field(fieldName))
-            .subAggregation(AggregationBuilders.max(maxAggregationName).field(fieldName))
-            .subAggregation(AggregationBuilders.sum(sumAggregationName).field(fieldName))
-            .subAggregation(AggregationBuilders.count(countAggregationName).field(fieldName));
+            .subAggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName));
 
     var sourceBuilder = new SearchSourceBuilder().aggregation(termsAggregation).query(query);
 
@@ -406,25 +377,10 @@ public class TransactionEsAggregator {
         .collect(
             Collectors.toMap(
                 MultiBucketsAggregation.Bucket::getKeyAsString,
-                bucket -> toStats(bucket.getAggregations()),
+                bucket ->
+                    new PropertyValueStats(bucket.getAggregations().get(statsAggregationName)),
                 (k1, k2) -> k1,
                 TreeMap::new));
-  }
-
-  private PropertyValueStats toStats(Aggregations aggregations) {
-    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var minAggregationName = fieldName + "/min";
-    var sumAggregationName = fieldName + "/avg";
-    var maxAggregationName = fieldName + "/max";
-    var avgAggregationName = fieldName + "/sum";
-    var countAggregationName = fieldName + "/count";
-
-    return new PropertyValueStats(
-        ((Min) aggregations.get(minAggregationName)).getValue(),
-        ((Avg) aggregations.get(avgAggregationName)).getValue(),
-        ((Max) aggregations.get(maxAggregationName)).getValue(),
-        ((Sum) aggregations.get(sumAggregationName)).getValue(),
-        ((ValueCount) aggregations.get(countAggregationName)).getValue());
   }
 
   public Map<String, Long> mutationsByPostalCode() {
@@ -459,6 +415,14 @@ public class TransactionEsAggregator {
     public final double max;
     public final double sum;
     public final long count;
+
+    private PropertyValueStats(Stats stats) {
+      this.min = stats.getMin();
+      this.avg = stats.getAvg();
+      this.max = stats.getMax();
+      this.sum = stats.getSum();
+      this.count = stats.getCount();
+    }
 
     private PropertyValueStats(double min, double avg, double max, double sum, long count) {
       this.min = min;
