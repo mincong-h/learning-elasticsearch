@@ -184,7 +184,7 @@ public class TransactionEsAggregator {
    *     "runtime_mappings": {
    *         "price_m2": {
    *             "type": "double",
-   *             "script": "if (doc['property_value'].size() > 0 && doc['real_built_up_area'].size() > 0) { emit(doc['property_value'].value / doc['real_built_up_area'].value); } else { emit(0); }"
+   *             "script": "emit(doc['property_value'].value / doc['real_built_up_area'].value)"
    *         }
    *     },
    *     "aggs": {
