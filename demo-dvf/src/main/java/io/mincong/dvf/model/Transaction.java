@@ -26,6 +26,8 @@ public abstract class Transaction {
 
   public static final String FIELD_LOCAL_TYPE = "local_type";
 
+  public static final String FIELD_REAL_BUILT_UP_AREA = "real_built_up_area";
+
   /** See https://www.elastic.co/guide/en/elasticsearch/reference/7.9/mapping-types.html */
   private static final Map<String, Object> mappings = new HashMap<>();
 

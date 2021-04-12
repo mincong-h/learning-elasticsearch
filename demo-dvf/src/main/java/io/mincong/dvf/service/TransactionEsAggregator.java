@@ -169,6 +169,16 @@ public class TransactionEsAggregator {
    *             "local_type": {
    *                 "query": "Appartement"
    *             }
+   *         },
+   *         "range": {
+   *             "property_value": {
+   *                 "gt": 0
+   *             }
+   *         },
+   *         "range": {
+   *             "real_built_up_area": {
+   *                 "gt": 0
+   *             }
    *         }
    *     },
    *     "runtime_mappings": {
@@ -194,7 +204,15 @@ public class TransactionEsAggregator {
 
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
     var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
-    var query = QueryBuilders.boolQuery().filter(mutationNatureQuery).filter(localTypeQuery);
+    var propertyValueQuery = QueryBuilders.rangeQuery(Transaction.FIELD_PROPERTY_VALUE).gt(0);
+    var propertyBuiltUpAreaQuery =
+        QueryBuilders.rangeQuery(Transaction.FIELD_REAL_BUILT_UP_AREA).gt(0);
+    var query =
+        QueryBuilders.boolQuery()
+            .filter(mutationNatureQuery)
+            .filter(localTypeQuery)
+            .filter(propertyValueQuery)
+            .filter(propertyBuiltUpAreaQuery);
 
     // Add check to avoid script exception (error 400):
     // "A document doesn't have a value for a field! Use doc[<field>].size()==0 to check if a
