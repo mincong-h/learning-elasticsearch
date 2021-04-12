@@ -90,45 +90,6 @@ public class TransactionEsAggregator {
    *         "match_all": {}
    *     },
    *     "aggs": {
-   *         "property_value/avg": {
-   *             "avg": {
-   *                 "field": "property_value"
-   *             }
-   *         }
-   *     }
-   * }
-   * </pre>
-   */
-  public Avg propertyValueAvg() {
-    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var aggregationName = fieldName + "/avg";
-    var sourceBuilder =
-        new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.avg(aggregationName).field(fieldName))
-            .query(QueryBuilders.matchAllQuery());
-
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
-
-    SearchResponse response;
-    try {
-      response = client.search(request, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      var msg = "Failed to search for aggregation of field: " + fieldName;
-      logger.error(msg, e);
-      throw new IllegalStateException(msg, e);
-    }
-    return (Avg) response.getAggregations().asMap().get(aggregationName);
-  }
-
-  /**
-   * Equivalent to HTTP request:
-   *
-   * <pre>
-   * {
-   *     "query": {
-   *         "match_all": {}
-   *     },
-   *     "aggs": {
    *         "property_value/min": {
    *             "min": {
    *                 "field": "property_value"
