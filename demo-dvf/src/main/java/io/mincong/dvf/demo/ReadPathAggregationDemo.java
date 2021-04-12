@@ -20,8 +20,9 @@ public class ReadPathAggregationDemo {
     try (var restClient = new RestHighLevelClient(builder)) {
       var aggregator = new TransactionEsAggregator(restClient);
       runMetricAggregations(aggregator);
-      runParisAnalysis(aggregator);
       runBucketAggregations(aggregator);
+      runMetricScriptingStatsAggregations(aggregator);
+      runParisAnalysis(aggregator);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     }
@@ -34,6 +35,20 @@ public class ReadPathAggregationDemo {
 
     var stats = aggregator.aggregations();
     logger.info("== Requesting multiple metric aggregations:");
+    logger.info(
+        "Property values are between {} and {} (avg: {})",
+        String.format("%,.1f€", stats.min),
+        String.format("%,.1f€", stats.max),
+        String.format("%,.1f€", stats.avg));
+    logger.info(
+        "Property values total market value is {} ({} transactions)",
+        String.format("%,.1f€", stats.sum),
+        String.format("%,d", stats.count));
+  }
+
+  public void runMetricScriptingStatsAggregations(TransactionEsAggregator aggregator) {
+    var stats = aggregator.priceStats();
+    logger.info("== Requesting analytics for price/m2 - overview:");
     logger.info(
         "Property values are between {} and {} (avg: {})",
         String.format("%,.1f€", stats.min),

@@ -160,6 +160,52 @@ public class TransactionEsAggregator {
    * <pre>
    * {
    *     "query": {
+   *         "match_all": {}
+   *     },
+   *     "runtime_mappings": {
+   *         "price_m2": {
+   *             "type": "double",
+   *             "script": "emit(doc['property_value'].value * doc['real_built_up_area'].value)"
+   *         }
+   *     },
+   *     "aggs": {
+   *         "price_m2/stats": {
+   *             "stats": {
+   *                 "field": "price_m2"
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   */
+  // TODO rename PropertyValueStats
+  public PropertyValueStats priceStats() {
+    var fieldName = "price_m2";
+    var statsAggregationName = fieldName + "/stats";
+
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .aggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName))
+            .query(QueryBuilders.matchAllQuery());
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    try {
+      var response = client.search(request, RequestOptions.DEFAULT);
+      return new PropertyValueStats(response.getAggregations().get(statsAggregationName));
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + fieldName;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+  }
+
+  /**
+   * Equivalent to HTTP request:
+   *
+   * <pre>
+   * {
+   *     "query": {
    *         "wildcard": {
    *             "postal_code": {
    *                 "value": "75*",
