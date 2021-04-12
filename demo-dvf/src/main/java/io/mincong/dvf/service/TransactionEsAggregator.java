@@ -66,7 +66,7 @@ public class TransactionEsAggregator {
    */
   public ValueCount mutationIdsCount() {
     var fieldName = Transaction.FIELD_MUTATION_ID;
-    var aggregationName = fieldName + "/count";
+    var aggregationName = fieldName + "/value_count";
     var sourceBuilder =
         new SearchSourceBuilder()
             .size(0)
