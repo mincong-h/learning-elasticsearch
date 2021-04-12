@@ -89,42 +89,30 @@ public class TransactionEsAggregator {
    *
    * <pre>
    * {
-   *     "query": {
-   *         "match": {
-   *             "mutation_nature": {
-   *                 "query": "Vente"
-   *             }
-   *         },
-   *         "match": {
-   *             "local_type": {
-   *                 "query": "Appartement"
-   *             }
-   *         },
-   *         "range": {
-   *             "property_value": {
-   *                 "gt": 0
-   *             }
-   *         },
-   *         "range": {
-   *             "real_built_up_area": {
-   *                 "gt": 0
-   *             }
-   *         }
-   *     },
-   *     "runtime_mappings": {
-   *         "price_m2": {
-   *             "type": "double",
-   *             "script": "emit(doc['property_value'].value / doc['real_built_up_area'].value)"
-   *         }
-   *     },
-   *     "size": 0,
-   *     "aggs": {
-   *         "price_m2/stats": {
-   *             "stats": {
-   *                 "field": "price_m2"
-   *             }
-   *         }
+   *   "query": {
+   *     "bool": {
+   *       "filter": [
+   *         { "match": { "mutation_nature": { "query": "Vente" } } },
+   *         { "match": { "local_type": { "query": "Appartement" } } },
+   *         { "range": { "property_value": { "gt": 0 } } },
+   *         { "range": { "real_built_up_area": { "gt": 0 } } }
+   *       ]
    *     }
+   *   },
+   *   "runtime_mappings": {
+   *     "price_m2": {
+   *       "type": "double",
+   *       "script": "emit(doc['property_value'].value / doc['real_built_up_area'].value)"
+   *     }
+   *   },
+   *   "size": 0,
+   *   "aggs": {
+   *     "price_m2/stats": {
+   *       "stats": {
+   *         "field": "price_m2"
+   *       }
+   *     }
+   *   }
    * }
    * </pre>
    */
