@@ -205,4 +205,8 @@ public class WritePathDemo {
       logger.error("Failed to handle snapshot", e);
     }
   }
+
+  public static void main(String[] args) {
+    new WritePathDemo().run();
+  }
 }

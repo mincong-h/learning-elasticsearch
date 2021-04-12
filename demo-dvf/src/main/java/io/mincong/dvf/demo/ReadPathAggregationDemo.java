@@ -171,4 +171,8 @@ public class ReadPathAggregationDemo {
             + m2PriceRows;
     logger.info("Price/M2 Percentiles Per Postal Code in Paris\n{}", m2PriceTable);
   }
+
+  public static void main(String[] args) {
+    new ReadPathAggregationDemo().run();
+  }
 }
