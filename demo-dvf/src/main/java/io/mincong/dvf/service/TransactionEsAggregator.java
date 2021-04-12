@@ -14,6 +14,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms.ParsedBucket;
@@ -358,55 +359,17 @@ public class TransactionEsAggregator {
    * This is a sub-aggregation. See
    * https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-aggregations.html
    *
-   * <p>Equivalent to HTTP request:
-   *
-   * <pre>
-   * {
-   *     "query": {
-   *         "wildcard": {
-   *             "postal_code": {
-   *                 "value": "75*",
-   *                 "boost": 1.0,
-   *                 "rewrite": "constant_score"
-   *             }
-   *         },
-   *         "match": {
-   *             "mutation_nature": {
-   *                 "query": "Vente"
-   *             }
-   *         },
-   *         "match": {
-   *             "local_type": {
-   *                 "query": "Appartement"
-   *             }
-   *         }
-   *     },
-   *     "aggs": {
-   *         "postal-code-aggregation": {
-   *             "terms": {
-   *                 "field": "property_value",
-   *             },
-   *             "aggs": {
-   *                 "property_value/stats": {
-   *                     "stats": {
-   *                         "field": "property_value"
-   *                     }
-   *                 }
-   *             }
-   *         }
-   *     }
-   * }
-   * </pre>
-   *
    * @return a map of stats where the key is the postal code and the value is its related
-   *     statistics.
+   *     percentiles for total property value and percentiles for price per m2.
    */
-  // TODO update Javadoc
-  public SortedMap<String, Percentiles> parisPricePercentilesPerPostalCode() {
+  public SortedMap<String, Percentiles[]> parisPricePercentilesPerPostalCode() {
     var termsAggregationName = "postal-code-aggregation";
 
-    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var percentilesAggregationName = fieldName + "/percentiles";
+    var totalPriceField = Transaction.FIELD_PROPERTY_VALUE;
+    var totalPriceAggregation = totalPriceField + "/percentiles";
+
+    var m2PriceField = "price_m2";
+    var m2PriceAggregation = m2PriceField + "/percentiles";
 
     var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
@@ -417,14 +380,29 @@ public class TransactionEsAggregator {
             .filter(mutationNatureQuery)
             .filter(localTypeQuery);
 
+    Map<String, Object> runtimeMappings =
+        Map.of(
+            "price_m2",
+            Map.of(
+                "type",
+                "double",
+                "script",
+                "emit(doc['property_value'].value / doc['real_built_up_area'].value)"));
+
     var termsAggregation =
         AggregationBuilders.terms(termsAggregationName)
             .field(Transaction.FIELD_POSTAL_CODE)
             .size(20)
             .subAggregation(
-                AggregationBuilders.percentiles(percentilesAggregationName).field(fieldName));
+                AggregationBuilders.percentiles(totalPriceAggregation).field(totalPriceField))
+            .subAggregation(
+                AggregationBuilders.percentiles(m2PriceAggregation).field(m2PriceField));
 
-    var sourceBuilder = new SearchSourceBuilder().aggregation(termsAggregation).query(query);
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .runtimeMappings(runtimeMappings)
+            .aggregation(termsAggregation)
+            .query(query);
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
 
@@ -432,7 +410,7 @@ public class TransactionEsAggregator {
     try {
       response = restClient.search(request, RequestOptions.DEFAULT);
     } catch (IOException e) {
-      var msg = "Failed to search for aggregation of field: " + fieldName;
+      var msg = "Failed to search for aggregation of field: " + totalPriceField;
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
@@ -441,9 +419,15 @@ public class TransactionEsAggregator {
         .collect(
             Collectors.toMap(
                 MultiBucketsAggregation.Bucket::getKeyAsString,
-                bucket -> (Percentiles) bucket.getAggregations().get(percentilesAggregationName),
+                bucket -> toPercentilesArray(bucket.getAggregations()),
                 (k1, k2) -> k1,
                 TreeMap::new));
+  }
+
+  private Percentiles[] toPercentilesArray(Aggregations aggregations) {
+    Percentiles totalPricePercentiles = aggregations.get("property_value/percentiles");
+    Percentiles m2PricePercentiles = aggregations.get("price_m2/percentiles");
+    return new Percentiles[] {totalPricePercentiles, m2PricePercentiles};
   }
 
   /**

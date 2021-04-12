@@ -78,9 +78,9 @@ public class ReadPathAggregationDemo {
         String.format("%,.0f€", overviewStats.sum));
 
     logger.info("== Requesting analytics for Paris - Per Postal Code:");
-    var percentilesPerPostalCode = aggregator.parisPricePercentilesPerPostalCode();
-    var rows =
-        percentilesPerPostalCode.entrySet().stream()
+    var percentilesArray = aggregator.parisPricePercentilesPerPostalCode();
+    var totalPriceRows =
+        percentilesArray.entrySet().stream()
             .map(
                 entry -> {
                   var postalCode = entry.getKey();
@@ -88,15 +88,37 @@ public class ReadPathAggregationDemo {
                   return String.format(
                       "%s | %,.0f | %,.0f | %,.0f | %,.0f | %,.0f",
                       postalCode,
-                      percentiles.percentile(5),
-                      percentiles.percentile(25),
-                      percentiles.percentile(50),
-                      percentiles.percentile(75),
-                      percentiles.percentile(95));
+                      percentiles[0].percentile(5),
+                      percentiles[0].percentile(25),
+                      percentiles[0].percentile(50),
+                      percentiles[0].percentile(75),
+                      percentiles[0].percentile(95));
                 })
             .collect(Collectors.joining("\n"));
-    logger.info(
-        "\nPostal Code | p5 (€) | p25 (€) | p50 (€) | p75 (€) | p95 (€)\n:---: | ---: | ---: | ---: | ---: | ---: |\n{}",
-        rows);
+    var totalPriceTable =
+        "Postal Code | p5 (€) | p25 (€) | p50 (€) | p75 (€) | p95 (€)\n:---: | ---: | ---: | ---: | ---: | ---: |\n"
+            + totalPriceRows;
+    logger.info("Total Price Percentiles Per Postal Code in Paris\n{}", totalPriceTable);
+
+    var m2PriceRows =
+        percentilesArray.entrySet().stream()
+            .map(
+                entry -> {
+                  var postalCode = entry.getKey();
+                  var percentiles = entry.getValue();
+                  return String.format(
+                      "%s | %,.0f | %,.0f | %,.0f | %,.0f | %,.0f",
+                      postalCode,
+                      percentiles[1].percentile(5),
+                      percentiles[1].percentile(25),
+                      percentiles[1].percentile(50),
+                      percentiles[1].percentile(75),
+                      percentiles[1].percentile(95));
+                })
+            .collect(Collectors.joining("\n"));
+    var m2PriceTable =
+        "Postal Code | p5 (€) | p25 (€) | p50 (€) | p75 (€) | p95 (€)\n:---: | ---: | ---: | ---: | ---: | ---: |\n"
+            + m2PriceRows;
+    logger.info("Price/M2 Percentiles Per Postal Code in Paris\n{}", m2PriceTable);
   }
 }
