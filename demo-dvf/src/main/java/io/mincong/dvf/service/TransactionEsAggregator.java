@@ -204,6 +204,10 @@ public class TransactionEsAggregator {
 
     var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
     var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
+
+    // Add queries to avoid script exception (error 400) in painless script:
+    // "A document doesn't have a value for a field! Use doc[<field>].size()==0 to check if a
+    // document is missing a field!"
     var propertyValueQuery = QueryBuilders.rangeQuery(Transaction.FIELD_PROPERTY_VALUE).gt(0);
     var propertyBuiltUpAreaQuery =
         QueryBuilders.rangeQuery(Transaction.FIELD_REAL_BUILT_UP_AREA).gt(0);
@@ -214,9 +218,6 @@ public class TransactionEsAggregator {
             .filter(propertyValueQuery)
             .filter(propertyBuiltUpAreaQuery);
 
-    // Add check to avoid script exception (error 400):
-    // "A document doesn't have a value for a field! Use doc[<field>].size()==0 to check if a
-    // document is missing a field!"
     Map<String, Object> runtimeMappings =
         Map.of(
             fieldName,
