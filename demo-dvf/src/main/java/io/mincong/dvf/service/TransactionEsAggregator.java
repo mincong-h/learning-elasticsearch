@@ -47,13 +47,15 @@ public class TransactionEsAggregator {
    * Equivalent to HTTP request:
    *
    * <pre>
+   * GET /transactions/_search
+   *
    * {
    *     "query": {
    *         "match_all": {}
    *     },
    *     "aggs": {
    *         "mutation_id/count": {
-   *             "count": {
+   *             "value_count": {
    *                 "field": "mutation_id"
    *             }
    *         }
