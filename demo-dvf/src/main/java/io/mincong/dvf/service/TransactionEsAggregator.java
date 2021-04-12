@@ -429,6 +429,80 @@ public class TransactionEsAggregator {
     Percentiles m2PricePercentiles = aggregations.get("price_m2/percentiles");
     return new Percentiles[] {totalPricePercentiles, m2PricePercentiles};
   }
+  /**
+   * This is a sub-aggregation. See
+   * https://www.elastic.co/guide/en/elasticsearch/reference/7.x/search-aggregations.html
+   *
+   * @return a map of stats where the key is the custom lot-type (T1, T2, ...) and the value is its
+   *     related percentiles for total property value and percentiles for price per m2.
+   */
+  public SortedMap<String, Percentiles[]> parisPricePercentilesPerLotType() {
+    var termsAggregationName = "lots-aggregation";
+
+    var totalPriceField = Transaction.FIELD_PROPERTY_VALUE;
+    var totalPriceAggregation = totalPriceField + "/percentiles";
+
+    var m2PriceField = "price_m2";
+    var m2PriceAggregation = m2PriceField + "/percentiles";
+
+    var postalCodeQuery = QueryBuilders.wildcardQuery(Transaction.FIELD_POSTAL_CODE, "75*");
+    var mutationNatureQuery = QueryBuilders.matchQuery(Transaction.FIELD_MUTATION_NATURE, "Vente");
+    var localTypeQuery = QueryBuilders.matchQuery(Transaction.FIELD_LOCAL_TYPE, "Appartement");
+    var query =
+        QueryBuilders.boolQuery()
+            .filter(postalCodeQuery)
+            .filter(mutationNatureQuery)
+            .filter(localTypeQuery);
+
+    Map<String, Object> priceM2Mapping =
+        Map.of(
+            "type",
+            "double",
+            "script",
+            "emit(doc['property_value'].value / doc['real_built_up_area'].value)");
+    Map<String, Object> lotTypeMapping =
+        Map.of(
+            "type",
+            "keyword",
+            "script",
+            "if (0 < doc['lots_count'].value && doc['lots_count'].value < 5) { emit('T' + doc['lots_count'].value) } else { emit('Others') }");
+    Map<String, Object> runtimeMappings =
+        Map.of("price_m2", priceM2Mapping, "lot_type", lotTypeMapping);
+
+    var termsAggregation =
+        AggregationBuilders.terms(termsAggregationName)
+            .field("lot_type")
+            .size(5) // T1, T2, T3, T4, Others
+            .subAggregation(
+                AggregationBuilders.percentiles(totalPriceAggregation).field(totalPriceField))
+            .subAggregation(
+                AggregationBuilders.percentiles(m2PriceAggregation).field(m2PriceField));
+
+    var sourceBuilder =
+        new SearchSourceBuilder()
+            .runtimeMappings(runtimeMappings)
+            .aggregation(termsAggregation)
+            .query(query);
+
+    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+
+    SearchResponse response;
+    try {
+      response = restClient.search(request, RequestOptions.DEFAULT);
+    } catch (IOException e) {
+      var msg = "Failed to search for aggregation of field: " + totalPriceField;
+      logger.error(msg, e);
+      throw new IllegalStateException(msg, e);
+    }
+    var terms = (ParsedStringTerms) response.getAggregations().get(termsAggregationName);
+    return terms.getBuckets().stream()
+        .collect(
+            Collectors.toMap(
+                MultiBucketsAggregation.Bucket::getKeyAsString,
+                bucket -> toPercentilesArray(bucket.getAggregations()),
+                (k1, k2) -> k1,
+                TreeMap::new));
+  }
 
   /**
    * Bucket aggregation, grouped by postal code.

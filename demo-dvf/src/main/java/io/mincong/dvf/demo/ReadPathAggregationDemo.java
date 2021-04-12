@@ -23,7 +23,9 @@ public class ReadPathAggregationDemo {
       runBucketAggregations(aggregator);
       runMetricScriptingStatsAggregations(aggregator);
       runMetricScriptingPercentilesAggregations(aggregator);
-      runParisAnalysis(aggregator);
+      runParisOverviewAnalysis(aggregator);
+      runParisDistrictAnalysis(aggregator);
+      runParisLotAnalysis(aggregator);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     }
@@ -66,7 +68,7 @@ public class ReadPathAggregationDemo {
     logger.info("p95: {}", String.format("%,.0f€/m2", stats.percentile(95.0)));
   }
 
-  public void runParisAnalysis(TransactionEsAggregator aggregator) {
+  public void runParisOverviewAnalysis(TransactionEsAggregator aggregator) {
     var overviewStats = aggregator.parisStatsOverview();
     logger.info("== Requesting analytics for Paris - Overview:");
     logger.info(
@@ -76,7 +78,9 @@ public class ReadPathAggregationDemo {
         String.format("%,.0f€", overviewStats.max),
         String.format("%,d", overviewStats.count),
         String.format("%,.0f€", overviewStats.sum));
+  }
 
+  public void runParisDistrictAnalysis(TransactionEsAggregator aggregator) {
     logger.info("== Requesting analytics for Paris - Per Postal Code:");
     var percentilesArray = aggregator.parisPricePercentilesPerPostalCode();
     var totalPriceRows =
@@ -117,7 +121,53 @@ public class ReadPathAggregationDemo {
                 })
             .collect(Collectors.joining("\n"));
     var m2PriceTable =
-        "Postal Code | p5 (€) | p25 (€) | p50 (€) | p75 (€) | p95 (€)\n:---: | ---: | ---: | ---: | ---: | ---: |\n"
+        "Postal Code | p5 (€/m2) | p25 (€/m2) | p50 (€/m2) | p75 (€/m2) | p95 (€/m2)\n:---: | ---: | ---: | ---: | ---: | ---: |\n"
+            + m2PriceRows;
+    logger.info("Price/M2 Percentiles Per Postal Code in Paris\n{}", m2PriceTable);
+  }
+
+  public void runParisLotAnalysis(TransactionEsAggregator aggregator) {
+    logger.info("== Requesting analytics for Paris - Per Lot Type:");
+    var percentilesArray = aggregator.parisPricePercentilesPerLotType();
+    var totalPriceRows =
+        percentilesArray.entrySet().stream()
+            .map(
+                entry -> {
+                  var lotType = entry.getKey();
+                  var percentiles = entry.getValue();
+                  return String.format(
+                      "%s | %,.0f | %,.0f | %,.0f | %,.0f | %,.0f",
+                      lotType,
+                      percentiles[0].percentile(5),
+                      percentiles[0].percentile(25),
+                      percentiles[0].percentile(50),
+                      percentiles[0].percentile(75),
+                      percentiles[0].percentile(95));
+                })
+            .collect(Collectors.joining("\n"));
+    var totalPriceTable =
+        "Lot Type | p5 (€) | p25 (€) | p50 (€) | p75 (€) | p95 (€)\n:---: | ---: | ---: | ---: | ---: | ---: |\n"
+            + totalPriceRows;
+    logger.info("Total Price Percentiles Per Lot Type in Paris\n{}", totalPriceTable);
+
+    var m2PriceRows =
+        percentilesArray.entrySet().stream()
+            .map(
+                entry -> {
+                  var lotType = entry.getKey();
+                  var percentiles = entry.getValue();
+                  return String.format(
+                      "%s | %,.0f | %,.0f | %,.0f | %,.0f | %,.0f",
+                      lotType,
+                      percentiles[1].percentile(5),
+                      percentiles[1].percentile(25),
+                      percentiles[1].percentile(50),
+                      percentiles[1].percentile(75),
+                      percentiles[1].percentile(95));
+                })
+            .collect(Collectors.joining("\n"));
+    var m2PriceTable =
+        "Lot Type | p5 (€/m2) | p25 (€/m2) | p50 (€/m2) | p75 (€/m2) | p95 (€/m2)\n:---: | ---: | ---: | ---: | ---: | ---: |\n"
             + m2PriceRows;
     logger.info("Price/M2 Percentiles Per Postal Code in Paris\n{}", m2PriceTable);
   }
