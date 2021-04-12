@@ -14,7 +14,6 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.ParsedMultiBucketAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms.ParsedBucket;
@@ -118,6 +117,7 @@ public class TransactionEsAggregator {
    *             "script": "emit(doc['property_value'].value / doc['real_built_up_area'].value)"
    *         }
    *     },
+   *     "size": 0,
    *     "aggs": {
    *         "price_m2/stats": {
    *             "stats": {
@@ -161,6 +161,7 @@ public class TransactionEsAggregator {
         new SearchSourceBuilder()
             .runtimeMappings(runtimeMappings)
             .aggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName))
+            .size(0)
             .query(query);
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
@@ -456,10 +457,37 @@ public class TransactionEsAggregator {
                 TreeMap::new));
   }
 
+  /**
+   * Bucket aggregation, grouped by postal code.
+   *
+   * <p>Equivalent to HTTP request:
+   *
+   * <pre>
+   * GET /transactions/_search
+   *
+   * {
+   *     "query": {
+   *         "match_all": {}
+   *     },
+   *     "size": 0,
+   *     "aggs": {
+   *         "postal_code/terms": {
+   *             "terms": {
+   *                 "field": "postal_code"
+   *             }
+   *         }
+   *     }
+   * }
+   * </pre>
+   *
+   * @return a map of transaction counts (key: postal code, value: transaction count)
+   */
   public Map<String, Long> mutationsByPostalCode() {
     var sourceBuilder =
         new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.terms("postal_code_agg").field("postal_code"))
+            .size(0)
+            .aggregation(
+                AggregationBuilders.terms("postal_code/terms").field("postal_code").size(3))
             .query(QueryBuilders.matchAllQuery());
 
     var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
@@ -472,13 +500,10 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-    var terms = (ParsedStringTerms) response.getAggregations().asMap().get("postal_code_agg");
+    var terms = (ParsedStringTerms) response.getAggregations().get("postal_code/terms");
     return terms.getBuckets().stream()
         .map(b -> (ParsedBucket) b)
-        .collect(
-            Collectors.toMap(
-                ParsedBucket::getKeyAsString,
-                ParsedMultiBucketAggregation.ParsedBucket::getDocCount));
+        .collect(Collectors.toMap(ParsedBucket::getKeyAsString, ParsedBucket::getDocCount));
   }
 
   public static class PropertyValueStats {
