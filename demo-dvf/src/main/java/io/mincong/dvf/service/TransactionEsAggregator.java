@@ -117,8 +117,7 @@ public class TransactionEsAggregator {
    * }
    * </pre>
    */
-  // TODO rename PropertyValueStats
-  public PropertyValueStats priceM2Stats() {
+  public Stats priceM2Stats() {
     var fieldName = "price_m2";
     var statsAggregationName = fieldName + "/stats";
 
@@ -157,7 +156,7 @@ public class TransactionEsAggregator {
 
     try {
       var response = restClient.search(request, RequestOptions.DEFAULT);
-      return new PropertyValueStats(response.getAggregations().get(statsAggregationName));
+      return response.getAggregations().get(statsAggregationName);
     } catch (IOException e) {
       var msg = "Failed to search for aggregation of field: " + fieldName;
       logger.error(msg, e);
@@ -257,7 +256,7 @@ public class TransactionEsAggregator {
   }
 
   /** See request.paris.price-stats-overview.json */
-  public PropertyValueStats parisStatsOverview() {
+  public Stats parisStatsOverview() {
     var fieldName = Transaction.FIELD_PROPERTY_VALUE;
     var statsAggregationName = fieldName + "/stats";
 
@@ -285,8 +284,7 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-    Stats results = response.getAggregations().get(statsAggregationName);
-    return new PropertyValueStats(results);
+    return response.getAggregations().get(statsAggregationName);
   }
 
   /**
@@ -485,22 +483,5 @@ public class TransactionEsAggregator {
     return terms.getBuckets().stream()
         .map(b -> (ParsedBucket) b)
         .collect(Collectors.toMap(ParsedBucket::getKeyAsString, ParsedBucket::getDocCount));
-  }
-
-  public static class PropertyValueStats {
-
-    public final double min;
-    public final double avg;
-    public final double max;
-    public final double sum;
-    public final long count;
-
-    private PropertyValueStats(Stats stats) {
-      this.min = stats.getMin();
-      this.avg = stats.getAvg();
-      this.max = stats.getMax();
-      this.sum = stats.getSum();
-      this.count = stats.getCount();
-    }
   }
 }

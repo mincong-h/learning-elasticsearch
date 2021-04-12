@@ -52,10 +52,10 @@ public class ReadPathAggregationDemo {
     logger.info("== Requesting analytics for price/m2 - Overview:");
     logger.info(
         "Property values are between {} and {} (avg: {})",
-        String.format("%,.1f€/m2", stats.min),
-        String.format("%,.1f€/m2", stats.max),
-        String.format("%,.1f€/m2", stats.avg));
-    logger.info("There were {} mutations", String.format("%,d", stats.count));
+        String.format("%,.1f€/m2", stats.getMin()),
+        String.format("%,.1f€/m2", stats.getMax()),
+        String.format("%,.1f€/m2", stats.getAvg()));
+    logger.info("There were {} mutations", String.format("%,d", stats.getCount()));
   }
 
   public void runMetricScriptingPercentilesAggregations(TransactionEsAggregator aggregator) {
@@ -73,11 +73,11 @@ public class ReadPathAggregationDemo {
     logger.info("== Requesting analytics for Paris - Overview:");
     logger.info(
         "min: {}, avg: {}, max: {}, count: {}, sum: {}",
-        String.format("%,.0f€", overviewStats.min),
-        String.format("%,.0f€", overviewStats.avg),
-        String.format("%,.0f€", overviewStats.max),
-        String.format("%,d", overviewStats.count),
-        String.format("%,.0f€", overviewStats.sum));
+        String.format("%,.0f€", overviewStats.getMin()),
+        String.format("%,.0f€", overviewStats.getAvg()),
+        String.format("%,.0f€", overviewStats.getMax()),
+        String.format("%,d", overviewStats.getCount()),
+        String.format("%,.0f€", overviewStats.getSum()));
   }
 
   public void runParisDistrictAnalysis(TransactionEsAggregator aggregator) {
