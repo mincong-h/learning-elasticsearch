@@ -55,7 +55,7 @@ public class TransactionEsAggregator {
    *     },
    *     "size": 0,
    *     "aggs": {
-   *         "mutation_id/count": {
+   *         "mutation_id/value_count": {
    *             "value_count": {
    *                 "field": "mutation_id"
    *             }
@@ -83,79 +83,6 @@ public class TransactionEsAggregator {
       logger.error(msg, e);
       throw new IllegalStateException(msg, e);
     }
-  }
-
-  /**
-   * Equivalent to HTTP request:
-   *
-   * <pre>
-   * {
-   *     "query": {
-   *         "match_all": {}
-   *     },
-   *     "aggs": {
-   *         "property_value/min": {
-   *             "min": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/avg": {
-   *             "avg": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/max": {
-   *             "max": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/sum": {
-   *             "sum": {
-   *                 "field": "property_value"
-   *             }
-   *         },
-   *         "property_value/count": {
-   *             "count": {
-   *                 "field": "property_value"
-   *             }
-   *         }
-   *     }
-   * }
-   * </pre>
-   */
-  public PropertyValueStats aggregations() {
-    var fieldName = Transaction.FIELD_PROPERTY_VALUE;
-    var minAggregationName = fieldName + "/min";
-    var sumAggregationName = fieldName + "/avg";
-    var maxAggregationName = fieldName + "/max";
-    var avgAggregationName = fieldName + "/sum";
-    var countAggregationName = fieldName + "/count";
-    var sourceBuilder =
-        new SearchSourceBuilder()
-            .aggregation(AggregationBuilders.sum(sumAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.avg(avgAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.min(minAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.max(maxAggregationName).field(fieldName))
-            .aggregation(AggregationBuilders.count(countAggregationName).field(fieldName))
-            .query(QueryBuilders.matchAllQuery());
-
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
-
-    SearchResponse response;
-    try {
-      response = restClient.search(request, RequestOptions.DEFAULT);
-    } catch (IOException e) {
-      var msg = "Failed to search for aggregation of field: " + fieldName;
-      logger.error(msg, e);
-      throw new IllegalStateException(msg, e);
-    }
-    var results = response.getAggregations().asMap();
-    return new PropertyValueStats(
-        ((Min) results.get(minAggregationName)).getValue(),
-        ((Avg) results.get(avgAggregationName)).getValue(),
-        ((Max) results.get(maxAggregationName)).getValue(),
-        ((Sum) results.get(sumAggregationName)).getValue(),
-        ((ValueCount) results.get(countAggregationName)).getValue());
   }
 
   /**
