@@ -22,4 +22,4 @@ docker run \
   -e "path.repo=/opt/elasticsearch/backup" \
   -v "$esdata":/usr/share/elasticsearch/data \
   -v "$esbackup":/opt/elasticsearch/backup \
-  docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+  docker.elastic.co/elasticsearch/elasticsearch:7.12.0

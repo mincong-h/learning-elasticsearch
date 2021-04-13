@@ -1,6 +1,8 @@
-package io.mincong.dvf.service;
+package io.mincong.dvf.demo;
 
 import io.mincong.dvf.model.Transaction;
+import io.mincong.dvf.service.TransactionBulkEsWriter;
+import io.mincong.dvf.service.TransactionCsvReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -9,7 +11,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,18 +19,18 @@ import org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotReq
 import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
-import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
+import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
 
-public class Main {
-  private static final Logger logger = LogManager.getLogger(Main.class);
+public class WritePathDemo {
+  private static final Logger logger = LogManager.getLogger(WritePathDemo.class);
 
   private static final String CSV_PATH = "/Users/minconghuang/github/dvf/downloads/full.2020.csv";
 
   private static final String REPO_NAME = "dvf";
+
   /**
    * This the location of the backup.
    *
@@ -44,18 +45,19 @@ public class Main {
   private static final String BACKUP_LOCATION = REPO_NAME;
 
   private static final int BULK_SIZE = 1000;
+
   private static final int THREADS = Runtime.getRuntime().availableProcessors() * 2;
 
-  public static void main(String[] args) {
-    var main = new Main();
+  private static final long INDEX_BULK_LIMIT = -1;
+
+  public void run() {
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
     var executor = Executors.newFixedThreadPool(THREADS);
     try (var restClient = new RestHighLevelClient(builder)) {
-      main.indexTransactions(restClient, executor).join();
-      main.forceMerge(restClient);
-      main.snapshot(restClient);
-      //      main.search(restClient);
+      indexTransactions(restClient, executor).join();
+      forceMerge(restClient);
+      snapshot(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
@@ -68,11 +70,15 @@ public class Main {
     var csvReader = new TransactionCsvReader(BULK_SIZE);
     var esWriter =
         new TransactionBulkEsWriter(
-            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.NONE);
+            restClient, Transaction.INDEX_NAME, executor, WriteRequest.RefreshPolicy.NONE);
     //    var esWriter =
     //        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH)).limit(10);
+    var transactions = csvReader.readCsv(Path.of(CSV_PATH));
+    if (INDEX_BULK_LIMIT > 0) {
+      transactions = transactions.limit(INDEX_BULK_LIMIT);
+    }
+
     esWriter.createIndex();
     logger.info("Start writing transaction...");
     return esWriter
@@ -200,14 +206,7 @@ public class Main {
     }
   }
 
-  public void search(RestHighLevelClient restClient) {
-    var searcher = new TransactionEsSearcher(restClient);
-    logger.info("Total property value: {}", searcher.sumAggregate("property_value").getValue());
-    logger.info(
-        "Transactions activity per postal code:\n{}",
-        searcher.transactionByPostalCode(QueryBuilders.matchAllQuery()).entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .map(entry -> "  " + entry.getKey() + ": " + entry.getValue())
-            .collect(Collectors.joining("\n")));
+  public static void main(String[] args) {
+    new WritePathDemo().run();
   }
 }
