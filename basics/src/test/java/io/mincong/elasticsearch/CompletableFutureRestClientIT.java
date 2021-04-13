@@ -26,7 +26,7 @@ public class CompletableFutureRestClientIT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
-    System.setProperty("tests.rest.cluster", "localhost:9200");
+    System.setProperty("tests.rest.cluster", "localhost:19200");
   }
 
   @AfterClass
@@ -41,7 +41,7 @@ public class CompletableFutureRestClientIT extends ESRestTestCase {
   public void setUp() throws Exception {
     super.setUp();
 
-    var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+    var builder = RestClient.builder(new HttpHost("localhost", 19200, "http"));
     restClient = new RestHighLevelClient(builder);
   }
 
