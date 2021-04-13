@@ -397,14 +397,14 @@ public class TransactionEsAggregator {
             "type",
             "keyword",
             "script",
-            "if (0 < doc['lots_count'].value && doc['lots_count'].value < 5) { emit('T' + doc['lots_count'].value) } else { emit('Others') }");
+            "if (0 < doc['lots_count'].value && doc['lots_count'].value < 6) { emit('T' + doc['lots_count'].value) } else { emit('Others') }");
     Map<String, Object> runtimeMappings =
         Map.of("price_m2", priceM2Mapping, "lot_type", lotTypeMapping);
 
     var termsAggregation =
         AggregationBuilders.terms(termsAggregationName)
             .field("lot_type")
-            .size(5) // T1, T2, T3, T4, Others
+            .size(6) // T1, T2, T3, T4, T5, Others
             .subAggregation(
                 AggregationBuilders.percentiles(totalPriceAggregation).field(totalPriceField))
             .subAggregation(

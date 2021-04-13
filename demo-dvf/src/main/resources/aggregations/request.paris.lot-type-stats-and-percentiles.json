@@ -49,7 +49,7 @@
     },
     "lot_type": {
       "type": "keyword",
-      "script": "if (doc['lots_count'].value < 5) { emit('T' + doc['lots_count'].value) } else { emit('Others') }"
+      "script": "if (0 < doc['lots_count'].value && doc['lots_count'].value < 6) { emit('T' + doc['lots_count'].value) } else { emit('Others') }"
     }
   },
   "size": 0,
