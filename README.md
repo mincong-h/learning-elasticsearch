@@ -40,7 +40,7 @@ Articles wrote using code of this repository and other related repositories:
 - [DVF: Indexing Optimization](https://mincong.io/2020/12/17/dvf-indexing-optimization/)
 - [DVF: Storage Optimization](https://mincong.io/2020/12/25/dvf-storage-optimization/)
 - [DVF: Snapshot And Restore](https://mincong.io/2021/01/10/dvf-snapshot-and-restore/)
-- [DVF: Aggregations)(https://mincong.io/2021/04/12/dvf-aggregations/)
+- [DVF: Aggregations](https://mincong.io/2021/04/12/dvf-aggregations/)
 - [Disk Watermarks In Elasticsearch](https://mincong.io/2021/04/10/disk-watermarks-in-elasticsearch/)
 - [Elasticsearch: Generate Configuration With Python Jinja 2](https://mincong.io/2021/04/11/elasticsearch-generate-configuration-with-python-jinja2/)
 
