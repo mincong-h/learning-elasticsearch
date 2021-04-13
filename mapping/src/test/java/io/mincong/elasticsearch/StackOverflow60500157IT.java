@@ -27,7 +27,7 @@ public class StackOverflow60500157IT extends ESRestTestCase {
 
   @BeforeClass
   public static void setUpBeforeClass() {
-    System.setProperty("tests.rest.cluster", "localhost:9200");
+    System.setProperty("tests.rest.cluster", "localhost:19200");
   }
 
   @AfterClass
@@ -42,7 +42,7 @@ public class StackOverflow60500157IT extends ESRestTestCase {
   public void setUp() throws Exception {
     super.setUp();
 
-    var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
+    var builder = RestClient.builder(new HttpHost("localhost", 19200, "http"));
     client = new RestHighLevelClient(builder);
 
     var createRequest = new CreateIndexRequest("contacts");
