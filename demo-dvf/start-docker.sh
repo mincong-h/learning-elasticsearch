@@ -3,6 +3,10 @@
 esdata="${HOME}/dvf-volume-es"
 esbackup="${HOME}/es-backup/demo-dvf/"
 
+# How can I get the source directory of a Bash script from within the script itself?
+# https://stackoverflow.com/questions/59895/
+current_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
+
 if [ ! -d "$esdata" ]
 then
   mkdir -p "$esdata"
@@ -22,4 +26,5 @@ docker run \
   -e "path.repo=/opt/elasticsearch/backup" \
   -v "$esdata":/usr/share/elasticsearch/data \
   -v "$esbackup":/opt/elasticsearch/backup \
+  -v "${current_dir}/src/main/resources/config/custom.elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml" \
   docker.elastic.co/elasticsearch/elasticsearch:7.12.0

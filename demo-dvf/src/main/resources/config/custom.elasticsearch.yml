@@ -1,0 +1,6 @@
+network.host: 0.0.0.0
+
+# Allow using elasticsearch-head (UI)
+# https://github.com/mobz/elasticsearch-head
+http.cors.enabled: true
+http.cors.allow-origin: "*"
