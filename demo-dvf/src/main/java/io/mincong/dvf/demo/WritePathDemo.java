@@ -197,7 +197,7 @@ public class WritePathDemo {
           restClient.snapshot().create(createSnapshotRequest, RequestOptions.DEFAULT);
       logger.info("Snapshot created: {}", createSnapshotResponse);
 
-      var deleteIndexRequest = new DeleteIndexRequest().indices("transactions");
+      var deleteIndexRequest = new DeleteIndexRequest().indices(Transaction.INDEX_NAME);
       var deletionIndexResponse =
           restClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
       logger.info("Index deleted: {}", deletionIndexResponse);
