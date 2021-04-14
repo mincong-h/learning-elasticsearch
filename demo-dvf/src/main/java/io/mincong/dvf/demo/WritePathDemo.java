@@ -57,7 +57,7 @@ public class WritePathDemo {
     try (var restClient = new RestHighLevelClient(builder)) {
       indexTransactions(restClient, executor).join();
       forceMerge(restClient);
-      snapshot(restClient);
+      //      snapshot(restClient);
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
