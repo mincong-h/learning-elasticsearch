@@ -10,4 +10,17 @@
 
 ## Frontend
 
+### elasticsearch-head
+
 Use <https://github.com/mobz/elasticsearch-head>.
+
+### Kibana
+
+Run commands:
+
+```
+./start-elasticsearch.sh
+./start-kibana.sh
+```
+
+Then visit Kibana: http://localhost:5601
