@@ -7,9 +7,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.immutables.value.Value.Immutable;
+import org.immutables.value.Value;
 
-@Immutable
+@Value.Immutable
 @JsonSerialize(as = ImmutableTransaction.class)
 @JsonDeserialize(as = ImmutableTransaction.class)
 public abstract class Transaction {
@@ -59,6 +59,7 @@ public abstract class Transaction {
   public abstract double propertyValue();
 
   @JsonProperty("price_m2")
+  @Value.Default
   public Optional<Double> priceM2() {
     return realBuiltUpArea().map(area -> propertyValue() / area);
   }
