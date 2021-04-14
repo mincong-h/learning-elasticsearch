@@ -7,6 +7,8 @@ esbackup="${HOME}/es-backup/demo-dvf/"
 # https://stackoverflow.com/questions/59895/
 current_dir="$(cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 
+docker_container_name_elasticsearch="elasticsearch-dvf"
+
 if [ ! -d "$esdata" ]
 then
   mkdir -p "$esdata"
@@ -27,4 +29,5 @@ docker run \
   -v "$esdata":/usr/share/elasticsearch/data \
   -v "$esbackup":/opt/elasticsearch/backup \
   -v "${current_dir}/src/main/resources/config/custom.elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml" \
+  --name "$docker_container_name_elasticsearch" \
   docker.elastic.co/elasticsearch/elasticsearch:7.12.0
