@@ -58,6 +58,11 @@ public abstract class Transaction {
   @JsonProperty("property_value")
   public abstract double propertyValue();
 
+  @JsonProperty("price_m2")
+  public Optional<Double> priceM2() {
+    return realBuiltUpArea().map(area -> propertyValue() / area);
+  }
+
   @JsonProperty("address_number")
   public abstract String addressNumber();
 
