@@ -58,7 +58,7 @@ Certifications:
 
 - [Elastic Certified Engineer](https://www.elastic.co/training/elastic-certified-engineer-exam)
 
-Book:
+Books:
 
 - Radu Gheorghe, Matthew Lee hinman, Roy Russo, "Elasticsearch in Action", Manning, 2016.
 - Clinton Gormley and Zachary Tong, "Elasticsearch: The Definitive Guide", O'Reilly Media, 2014 - 2015.<br>
@@ -84,6 +84,10 @@ Articles:
   <https://blog.twitter.com/engineering/en_us/topics/infrastructure/2020/reducing-search-indexing-latency-to-one-second.html>
 - Prabin Meitei M, "Garbage Collection in Elasticsearch and the G1GC", _Medium_, 2018.<br>
   <https://medium.com/naukri-engineering/garbage-collection-in-elasticsearch-and-the-g1gc-16b79a447181>
+
+Forums:
+
+- Elastic 中文社区 https://elasticsearch.cn/
 
 ## Development
 
