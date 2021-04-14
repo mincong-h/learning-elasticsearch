@@ -14,7 +14,7 @@ import org.immutables.value.Value;
 @JsonDeserialize(as = ImmutableTransaction.class)
 public abstract class Transaction {
 
-  public static final String INDEX_NAME = "transactions";
+  public static final String INDEX_NAME = "transactions.2014-2020";
 
   public static final String FIELD_MUTATION_ID = "mutation_id";
 

@@ -27,7 +27,16 @@ import org.elasticsearch.client.RestHighLevelClient;
 public class WritePathDemo {
   private static final Logger logger = LogManager.getLogger(WritePathDemo.class);
 
-  private static final String CSV_PATH = "/Users/minconghuang/github/dvf/downloads/full.2020.csv";
+  private static final Path[] CSV_PATHS =
+      new Path[] {
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2014.csv"),
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2015.csv"),
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2016.csv"),
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2017.csv"),
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2018.csv"),
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2019.csv"),
+        Path.of("/Users/minconghuang/github/dvf/downloads/full.2020.csv"),
+      };
 
   private static final String REPO_NAME = "dvf";
 
@@ -74,7 +83,7 @@ public class WritePathDemo {
     //    var esWriter =
     //        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH));
+    var transactions = csvReader.readCsv(CSV_PATHS);
     if (INDEX_BULK_LIMIT > 0) {
       transactions = transactions.limit(INDEX_BULK_LIMIT);
     }

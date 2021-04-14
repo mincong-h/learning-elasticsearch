@@ -25,17 +25,23 @@ public class TransactionCsvReader {
     this.bulkSize = bulkSize;
   }
 
-  public Stream<List<ImmutableTransaction>> readCsv(Path path) {
-    try {
-      Iterator<ImmutableTransactionRow> iterator = objectReader.readValues(path.toFile());
-      var bulkIterator = new BulkIterator<>(iterator, bulkSize);
-      return StreamSupport.stream(Spliterators.spliteratorUnknownSize(bulkIterator, ORDERED), false)
-          .map(
-              rows ->
-                  rows.stream().map(TransactionRow::toTransactionObj).collect(Collectors.toList()));
-    } catch (IOException e) {
-      throw new IllegalStateException("Failed to read file " + path, e);
-    }
+  public Stream<List<ImmutableTransaction>> readCsv(Path... paths) {
+    return Stream.of(paths)
+        .flatMap(
+            path -> {
+              Iterator<ImmutableTransactionRow> iterator;
+              try {
+                iterator = objectReader.readValues(path.toFile());
+              } catch (IOException e) {
+                throw new IllegalStateException("Failed to read file " + path, e);
+              }
+              var bulkIterator = new BulkIterator<>(iterator, bulkSize);
+              return StreamSupport.stream(
+                  Spliterators.spliteratorUnknownSize(bulkIterator, ORDERED), false);
+            })
+        .map(
+            rows ->
+                rows.stream().map(TransactionRow::toTransactionObj).collect(Collectors.toList()));
   }
 
   static class BulkIterator<T> implements Iterator<List<T>> {
