@@ -34,7 +34,7 @@ public class WritePathDemo {
    * related CSV files and index them into Elasticsearch.
    */
   private static final int[] YEARS = {
-    2014, //
+    //    2014, // done
     2015, //
     2016, //
     2017, //
@@ -65,14 +65,23 @@ public class WritePathDemo {
   private static final long INDEX_BULK_LIMIT = -1;
 
   public void run() {
-    var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
     var executor = Executors.newFixedThreadPool(THREADS);
+    var builder =
+        RestClient.builder(new HttpHost("localhost", 9200, "http"))
+            .setRequestConfigCallback(
+                requestConfigBuilder -> {
+                  // Increase default socket timeout to avoid exception when
+                  // indexing too many documents (1M+)
+                  // https://blog.csdn.net/qq_38680405/article/details/107240686
+                  return requestConfigBuilder.setSocketTimeout(300_000); // ms
+                });
+
     try (var restClient = new RestHighLevelClient(builder)) {
       for (var year : YEARS) {
         indexTransactions(restClient, executor, year).join();
         //      forceMerge(restClient, year);
-        //            snapshot(restClient, year);
+        //      snapshot(restClient, year);
       }
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
