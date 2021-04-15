@@ -30,6 +30,8 @@ public abstract class TransactionEsWriterAbstractIT extends ESRestTestCase {
 
   protected abstract EsWriter newEsWriter();
 
+  protected final int year = 2020;
+
   @Before
   @Override
   public void setUp() throws Exception {
@@ -68,7 +70,7 @@ public abstract class TransactionEsWriterAbstractIT extends ESRestTestCase {
     Assertions.assertThat(count).isEqualTo(3L);
 
     var objectMapper = Jackson.newObjectMapper();
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME);
+    var request = new SearchRequest().indices(Transaction.indexNameForYear(year));
     var response = restClient.search(request, RequestOptions.DEFAULT);
     Assertions.assertThat(response.getHits().getHits())
         .extracting(

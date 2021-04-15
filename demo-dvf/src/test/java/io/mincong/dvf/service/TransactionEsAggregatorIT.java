@@ -31,6 +31,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
   private final ImmutableTransaction[] transactions = {
     TRANSACTION_1, TRANSACTION_2, TRANSACTION_3, TRANSACTION_4
   };
+  private final int year = 2020;
 
   private RestHighLevelClient restClient;
   private ExecutorService executor;
@@ -46,7 +47,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
     executor = Executors.newSingleThreadExecutor();
     var writer =
         new TransactionBulkEsWriter(
-            restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.IMMEDIATE);
+            restClient, Transaction.indexNameForYear(year), executor, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
     writer.write(transactions).get(10, SECONDS);
   }
@@ -61,7 +62,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
   @Test
   public void testCountValueAggregation() {
     // Given
-    var searcher = new TransactionEsAggregator(restClient);
+    var searcher = new TransactionEsAggregator(restClient, year);
 
     // When
     var valueCount = searcher.mutationIdsCount();
@@ -73,7 +74,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
   @Test
   public void testPostalCode() {
     // Given
-    var searcher = new TransactionEsAggregator(restClient);
+    var searcher = new TransactionEsAggregator(restClient, year);
 
     // When
     var stats = searcher.mutationsByPostalCode();
