@@ -48,7 +48,7 @@ public class TransactionEsAggregatorIT extends ESRestTestCase {
         new TransactionBulkEsWriter(
             restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.IMMEDIATE);
     writer.createIndex();
-    writer.write(transactions).get(10, SECONDS).forEach(id -> logger.info("Transaction " + id));
+    writer.write(transactions).get(10, SECONDS);
   }
 
   @After
