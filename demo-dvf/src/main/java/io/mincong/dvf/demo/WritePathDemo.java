@@ -34,13 +34,13 @@ public class WritePathDemo {
    * related CSV files and index them into Elasticsearch.
    */
   private static final int[] YEARS = {
-    //    2014, // done
-    //    2015, // done
-    //    2016, // done
-    2017, //
-    2018, //
-    2019, //
-    2020, //
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
   };
 
   private static final String REPO_NAME = "dvf";
