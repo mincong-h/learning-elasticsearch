@@ -130,9 +130,10 @@ public class WritePathDemo {
   }
 
   public void forceMerge(RestHighLevelClient restClient, int year) {
-    logger.info("Start force merge");
+    var index = Transaction.indexNameForYear(year);
+    logger.info("Start force merge of index {}", index);
     try {
-      var request = new ForceMergeRequest(Transaction.indexNameForYear(year)).maxNumSegments(1);
+      var request = new ForceMergeRequest(index).maxNumSegments(1);
       var response = restClient.indices().forcemerge(request, RequestOptions.DEFAULT);
       logger.info("Force merge response: {}", response);
     } catch (IOException e) {
