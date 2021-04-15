@@ -27,16 +27,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 public class WritePathDemo {
   private static final Logger logger = LogManager.getLogger(WritePathDemo.class);
 
-  private static final Path[] CSV_PATHS =
-      new Path[] {
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2014.csv"),
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2015.csv"),
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2016.csv"),
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2017.csv"),
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2018.csv"),
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2019.csv"),
-        Path.of("/Users/minconghuang/github/dvf/downloads/full.2020.csv"),
-      };
+  private static final String DVF_DOWNLOADS_DIR = "/Users/minconghuang/github/dvf/downloads/";
 
   /**
    * Specify which years should be included in the write path demo. The program will read the
@@ -103,7 +94,8 @@ public class WritePathDemo {
     //    var esWriter =
     //        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(CSV_PATHS);
+    var path = Path.of(DVF_DOWNLOADS_DIR, String.format("full.%d.csv", year));
+    var transactions = csvReader.readCsv(path);
     if (INDEX_BULK_LIMIT > 0) {
       transactions = transactions.limit(INDEX_BULK_LIMIT);
     }
