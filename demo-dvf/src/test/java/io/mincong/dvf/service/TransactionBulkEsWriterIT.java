@@ -28,6 +28,6 @@ public class TransactionBulkEsWriterIT extends TransactionEsWriterAbstractIT {
   @Override
   protected EsWriter newEsWriter() {
     return new TransactionBulkEsWriter(
-        restClient, Transaction.INDEX_NAME, executor, RefreshPolicy.IMMEDIATE);
+        restClient, Transaction.indexNameForYear(year), executor, RefreshPolicy.IMMEDIATE);
   }
 }

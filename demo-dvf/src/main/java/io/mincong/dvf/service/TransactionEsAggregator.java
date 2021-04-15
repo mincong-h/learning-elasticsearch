@@ -38,9 +38,11 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 public class TransactionEsAggregator {
   private static final Logger logger = LogManager.getLogger(TransactionEsAggregator.class);
   private final RestHighLevelClient restClient;
+  private final int year;
 
-  public TransactionEsAggregator(RestHighLevelClient restClient) {
+  public TransactionEsAggregator(RestHighLevelClient restClient, int year) {
     this.restClient = restClient;
+    this.year = year;
   }
 
   /**
@@ -73,7 +75,8 @@ public class TransactionEsAggregator {
             .aggregation(AggregationBuilders.count(aggregationName).field(fieldName))
             .query(QueryBuilders.matchAllQuery());
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     try {
       var response = restClient.search(request, RequestOptions.DEFAULT);
@@ -152,7 +155,8 @@ public class TransactionEsAggregator {
             .size(0)
             .query(query);
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     try {
       var response = restClient.search(request, RequestOptions.DEFAULT);
@@ -242,7 +246,8 @@ public class TransactionEsAggregator {
                 AggregationBuilders.percentiles(percentilesAggregationName).field(fieldName))
             .query(query);
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     SearchResponse response;
     try {
@@ -274,7 +279,8 @@ public class TransactionEsAggregator {
             .aggregation(AggregationBuilders.stats(statsAggregationName).field(fieldName))
             .query(query);
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     SearchResponse response;
     try {
@@ -336,7 +342,8 @@ public class TransactionEsAggregator {
             .aggregation(termsAggregation)
             .query(query);
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     SearchResponse response;
     try {
@@ -416,7 +423,8 @@ public class TransactionEsAggregator {
             .aggregation(termsAggregation)
             .query(query);
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     SearchResponse response;
     try {
@@ -469,7 +477,8 @@ public class TransactionEsAggregator {
                 AggregationBuilders.terms("postal_code/terms").field("postal_code").size(3))
             .query(QueryBuilders.matchAllQuery());
 
-    var request = new SearchRequest().indices(Transaction.INDEX_NAME).source(sourceBuilder);
+    var request =
+        new SearchRequest().indices(Transaction.indexNameForYear(year)).source(sourceBuilder);
 
     SearchResponse response;
     try {

@@ -1,5 +1,6 @@
 package io.mincong.dvf.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,7 +15,7 @@ import org.immutables.value.Value;
 @JsonDeserialize(as = ImmutableTransaction.class)
 public abstract class Transaction {
 
-  public static final String INDEX_NAME = "transactions";
+  private static final String INDEX_NAME = "transactions";
 
   public static final String FIELD_MUTATION_ID = "mutation_id";
 
@@ -240,5 +241,12 @@ public abstract class Transaction {
 
   static {
     mappings.put("location", Map.of("type", "geo_point"));
+  }
+
+  /* ----- JSON unrelated methods ----- */
+
+  @JsonIgnore
+  public static String indexNameForYear(int year) {
+    return INDEX_NAME + "." + year;
   }
 }

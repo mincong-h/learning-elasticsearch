@@ -27,7 +27,21 @@ import org.elasticsearch.client.RestHighLevelClient;
 public class WritePathDemo {
   private static final Logger logger = LogManager.getLogger(WritePathDemo.class);
 
-  private static final String CSV_PATH = "/Users/minconghuang/github/dvf/downloads/full.2020.csv";
+  private static final String DVF_DOWNLOADS_DIR = "/Users/minconghuang/github/dvf/downloads/";
+
+  /**
+   * Specify which years should be included in the write path demo. The program will read the
+   * related CSV files and index them into Elasticsearch.
+   */
+  private static final int[] YEARS = {
+    //    2014, // done
+    2015, //
+    2016, //
+    2017, //
+    2018, //
+    2019, //
+    2020, //
+  };
 
   private static final String REPO_NAME = "dvf";
 
@@ -51,13 +65,24 @@ public class WritePathDemo {
   private static final long INDEX_BULK_LIMIT = -1;
 
   public void run() {
-    var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
     var executor = Executors.newFixedThreadPool(THREADS);
+    var builder =
+        RestClient.builder(new HttpHost("localhost", 9200, "http"))
+            .setRequestConfigCallback(
+                requestConfigBuilder -> {
+                  // Increase default socket timeout to avoid exception when
+                  // indexing too many documents (1M+)
+                  // https://blog.csdn.net/qq_38680405/article/details/107240686
+                  return requestConfigBuilder.setSocketTimeout(300_000); // ms
+                });
+
     try (var restClient = new RestHighLevelClient(builder)) {
-      indexTransactions(restClient, executor).join();
-      forceMerge(restClient);
-      //      snapshot(restClient);
+      for (var year : YEARS) {
+        indexTransactions(restClient, executor, year).join();
+        //      forceMerge(restClient, year);
+        //      snapshot(restClient, year);
+      }
     } catch (IOException e) {
       logger.error("Failed to execute DVF program", e);
     } finally {
@@ -65,16 +90,21 @@ public class WritePathDemo {
     }
   }
 
-  public CompletableFuture<?> indexTransactions(RestHighLevelClient restClient, Executor executor) {
+  public CompletableFuture<?> indexTransactions(
+      RestHighLevelClient restClient, Executor executor, int year) {
     var start = Instant.now();
     var csvReader = new TransactionCsvReader(BULK_SIZE);
     var esWriter =
         new TransactionBulkEsWriter(
-            restClient, Transaction.INDEX_NAME, executor, WriteRequest.RefreshPolicy.NONE);
+            restClient,
+            Transaction.indexNameForYear(year),
+            executor,
+            WriteRequest.RefreshPolicy.NONE);
     //    var esWriter =
     //        new TransactionSimpleEsWriter(restClient, Transaction.INDEX_NAME, RefreshPolicy.NONE);
 
-    var transactions = csvReader.readCsv(Path.of(CSV_PATH));
+    var path = Path.of(DVF_DOWNLOADS_DIR, String.format("full.%d.csv", year));
+    var transactions = csvReader.readCsv(path);
     if (INDEX_BULK_LIMIT > 0) {
       transactions = transactions.limit(INDEX_BULK_LIMIT);
     }
@@ -84,29 +114,30 @@ public class WritePathDemo {
     return esWriter
         .write(transactions)
         .whenComplete(
-            (ids, ex) -> {
+            (docCount, ex) -> {
               if (ex != null) {
                 logger.error("Failed to complete", ex);
               } else {
                 var duration = Duration.between(start, Instant.now());
-                var speed = String.format("%.2f", ids.size() * 1.0 / duration.toSeconds());
+                var speed = String.format("%.2f", docCount * 1.0 / duration.toSeconds());
                 logger.info(
                     "Finished, indexed {} documents in {} (speed: {} docs/s)",
-                    ids.size(),
+                    docCount,
                     duration,
                     speed);
               }
             });
   }
 
-  public void forceMerge(RestHighLevelClient restClient) {
+  public void forceMerge(RestHighLevelClient restClient, int year) {
     logger.info("Start force merge");
     try {
-      var request = new ForceMergeRequest(Transaction.INDEX_NAME).maxNumSegments(1);
+      var request = new ForceMergeRequest(Transaction.indexNameForYear(year)).maxNumSegments(1);
       var response = restClient.indices().forcemerge(request, RequestOptions.DEFAULT);
       logger.info("Force merge response: {}", response);
     } catch (IOException e) {
-      logger.error("Failed to perform force-merge for index " + Transaction.INDEX_NAME, e);
+      logger.error(
+          "Failed to perform force-merge for index " + Transaction.indexNameForYear(year), e);
     }
   }
 
@@ -166,7 +197,7 @@ public class WritePathDemo {
    *
    * @param restClient
    */
-  public void snapshot(RestHighLevelClient restClient) {
+  public void snapshot(RestHighLevelClient restClient, int year) {
     try {
       logger.info("Start creating snapshot repository");
       var putRepoRequest =
@@ -188,7 +219,7 @@ public class WritePathDemo {
           restClient.snapshot().create(createSnapshotRequest, RequestOptions.DEFAULT);
       logger.info("Snapshot created: {}", createSnapshotResponse);
 
-      var deleteIndexRequest = new DeleteIndexRequest().indices("transactions");
+      var deleteIndexRequest = new DeleteIndexRequest().indices(Transaction.indexNameForYear(year));
       var deletionIndexResponse =
           restClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
       logger.info("Index deleted: {}", deletionIndexResponse);

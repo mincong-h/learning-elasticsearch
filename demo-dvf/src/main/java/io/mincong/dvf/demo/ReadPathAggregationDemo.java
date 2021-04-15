@@ -13,12 +13,13 @@ import org.elasticsearch.client.RestHighLevelClient;
 public class ReadPathAggregationDemo {
 
   private static final Logger logger = LogManager.getLogger(ReadPathAggregationDemo.class);
+  private static final int YEAR = 2020;
 
   public void run() {
     var builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
     logger.info("Start creating REST high-level client...");
     try (var restClient = new RestHighLevelClient(builder)) {
-      var aggregator = new TransactionEsAggregator(restClient);
+      var aggregator = new TransactionEsAggregator(restClient, YEAR);
 
       runMetricAggregations(aggregator);
       runBucketAggregations(aggregator);

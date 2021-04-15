@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -49,19 +49,11 @@ public class TransactionBulkEsWriter implements EsWriter {
   }
 
   @Override
-  public CompletableFuture<List<String>> write(Stream<List<ImmutableTransaction>> transactions) {
-    var cfs = transactions.map(this::indexAsync).collect(Collectors.toList());
+  public CompletableFuture<Long> write(Stream<List<ImmutableTransaction>> transactions) {
+    var resultCount = new AtomicLong();
+    var cfs = transactions.map(tx -> indexAsync(tx, resultCount)).collect(Collectors.toList());
     return CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
-        .thenApply(
-            ignored -> {
-              List<String> ids = new ArrayList<>();
-              for (var cf : cfs) {
-                if (cf.isDone()) {
-                  ids.addAll(cf.join());
-                }
-              }
-              return ids;
-            });
+        .thenApply(ignored -> resultCount.get());
   }
 
   @Override
@@ -80,8 +72,14 @@ public class TransactionBulkEsWriter implements EsWriter {
     logger.info("Creation of index {} is acknowledged", indexName);
   }
 
-  private CompletableFuture<List<String>> indexAsync(List<ImmutableTransaction> transactions) {
-    return CompletableFuture.supplyAsync(() -> index(transactions), executor);
+  private CompletableFuture<Void> indexAsync(
+      List<ImmutableTransaction> transactions, AtomicLong counter) {
+    return CompletableFuture.supplyAsync(() -> index(transactions), executor)
+        .thenApply(
+            results -> {
+              counter.addAndGet(results.size());
+              return null;
+            });
   }
 
   private List<String> index(List<ImmutableTransaction> transactions) {

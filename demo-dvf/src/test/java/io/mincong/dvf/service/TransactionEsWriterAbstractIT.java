@@ -7,8 +7,7 @@ import io.mincong.dvf.model.ImmutableTransaction;
 import io.mincong.dvf.model.Transaction;
 import org.apache.http.HttpHost;
 import org.assertj.core.api.Assertions;
-import org.elasticsearch.action.get.MultiGetItemResponse;
-import org.elasticsearch.action.get.MultiGetRequest;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -30,6 +29,8 @@ public abstract class TransactionEsWriterAbstractIT extends ESRestTestCase {
   protected RestHighLevelClient restClient;
 
   protected abstract EsWriter newEsWriter();
+
+  protected final int year = 2020;
 
   @Before
   @Override
@@ -62,16 +63,18 @@ public abstract class TransactionEsWriterAbstractIT extends ESRestTestCase {
     writer.createIndex();
 
     // When
-    var ids = writer.write(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3).get(10, SECONDS);
+    var transactions = new ImmutableTransaction[] {TRANSACTION_1, TRANSACTION_2, TRANSACTION_3};
+    var count = writer.write(transactions).get(10, SECONDS);
 
     // Then
+    Assertions.assertThat(count).isEqualTo(3L);
+
     var objectMapper = Jackson.newObjectMapper();
-    var request = new MultiGetRequest();
-    ids.forEach(id -> request.add(Transaction.INDEX_NAME, id));
-    var response = restClient.mget(request, RequestOptions.DEFAULT);
-    Assertions.assertThat(response.getResponses())
-        .extracting(MultiGetItemResponse::getResponse)
-        .extracting(r -> objectMapper.readValue(r.getSourceAsString(), ImmutableTransaction.class))
-        .containsExactlyInAnyOrder(TRANSACTION_1, TRANSACTION_2, TRANSACTION_3);
+    var request = new SearchRequest().indices(Transaction.indexNameForYear(year));
+    var response = restClient.search(request, RequestOptions.DEFAULT);
+    Assertions.assertThat(response.getHits().getHits())
+        .extracting(
+            hit -> objectMapper.readValue(hit.getSourceAsString(), ImmutableTransaction.class))
+        .containsExactlyInAnyOrder(transactions);
   }
 }

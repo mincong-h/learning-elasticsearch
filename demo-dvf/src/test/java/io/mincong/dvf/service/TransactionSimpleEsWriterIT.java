@@ -8,6 +8,6 @@ public class TransactionSimpleEsWriterIT extends TransactionEsWriterAbstractIT {
   @Override
   protected EsWriter newEsWriter() {
     return new TransactionSimpleEsWriter(
-        restClient, Transaction.INDEX_NAME, RefreshPolicy.IMMEDIATE);
+        restClient, Transaction.indexNameForYear(year), RefreshPolicy.IMMEDIATE);
   }
 }
