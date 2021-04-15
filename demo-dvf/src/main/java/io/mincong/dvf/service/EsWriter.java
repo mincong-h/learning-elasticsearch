@@ -8,9 +8,9 @@ import java.util.stream.Stream;
 public interface EsWriter {
   void createIndex();
 
-  default CompletableFuture<List<String>> write(ImmutableTransaction... items) {
+  default CompletableFuture<Long> write(ImmutableTransaction... items) {
     return write(Stream.of(List.of(items)));
   }
 
-  CompletableFuture<List<String>> write(Stream<List<ImmutableTransaction>> items);
+  CompletableFuture<Long> write(Stream<List<ImmutableTransaction>> items);
 }

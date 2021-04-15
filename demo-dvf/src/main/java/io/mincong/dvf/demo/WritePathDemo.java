@@ -93,15 +93,15 @@ public class WritePathDemo {
     return esWriter
         .write(transactions)
         .whenComplete(
-            (ids, ex) -> {
+            (docCount, ex) -> {
               if (ex != null) {
                 logger.error("Failed to complete", ex);
               } else {
                 var duration = Duration.between(start, Instant.now());
-                var speed = String.format("%.2f", ids.size() * 1.0 / duration.toSeconds());
+                var speed = String.format("%.2f", docCount * 1.0 / duration.toSeconds());
                 logger.info(
                     "Finished, indexed {} documents in {} (speed: {} docs/s)",
-                    ids.size(),
+                    docCount,
                     duration,
                     speed);
               }

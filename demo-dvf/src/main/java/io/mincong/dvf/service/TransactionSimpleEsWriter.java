@@ -41,7 +41,7 @@ public class TransactionSimpleEsWriter implements EsWriter {
   }
 
   @Override
-  public CompletableFuture<List<String>> write(Stream<List<ImmutableTransaction>> transactions) {
+  public CompletableFuture<Long> write(Stream<List<ImmutableTransaction>> transactions) {
     var cfs = transactions.flatMap(List::stream).map(this::index).collect(Collectors.toList());
     return CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
         .thenApply(
@@ -52,7 +52,7 @@ public class TransactionSimpleEsWriter implements EsWriter {
                   ids.addAll(cf.join());
                 }
               }
-              return ids;
+              return (long) ids.size();
             });
   }
 

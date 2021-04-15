@@ -12,9 +12,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TransactionCsvReader {
 
+  private static final Logger logger = LogManager.getLogger(TransactionCsvReader.class);
   private final ObjectReader objectReader;
   private final int bulkSize;
 
@@ -31,6 +34,7 @@ public class TransactionCsvReader {
             path -> {
               Iterator<ImmutableTransactionRow> iterator;
               try {
+                logger.info("Reading file {}", path);
                 iterator = objectReader.readValues(path.toFile());
               } catch (IOException e) {
                 throw new IllegalStateException("Failed to read file " + path, e);
