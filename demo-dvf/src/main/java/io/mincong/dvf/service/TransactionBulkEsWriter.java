@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
@@ -77,12 +76,12 @@ public class TransactionBulkEsWriter implements EsWriter {
     return CompletableFuture.supplyAsync(() -> index(transactions), executor)
         .thenApply(
             results -> {
-              counter.addAndGet(results.size());
+              counter.addAndGet(results);
               return null;
             });
   }
 
-  private List<String> index(List<ImmutableTransaction> transactions) {
+  private long index(List<ImmutableTransaction> transactions) {
     logger.info(
         "Indexing transaction {}: {}",
         counter.getAndIncrement(),
@@ -104,9 +103,7 @@ public class TransactionBulkEsWriter implements EsWriter {
 
     try {
       var response = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-      return Stream.of(response.getItems())
-          .map(BulkItemResponse::getId)
-          .collect(Collectors.toList());
+      return response.getItems().length;
     } catch (IOException e) {
       var msg =
           String.format(
