@@ -1,0 +1,42 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.elasticsearch.test:framework
+    versions:
+    - 7.10.2
+    - 7.11.0
+    - 7.11.1
+    - 7.11.2
+    - 7.12.0
+  - dependency-name: org.elasticsearch.client:elasticsearch-rest-high-level-client
+    versions:
+    - 7.10.2
+    - 7.11.0
+    - 7.11.1
+    - 7.11.2
+    - 7.12.0
+  - dependency-name: net.javacrumbs.json-unit:json-unit-assertj
+    versions:
+    - 2.22.1
+    - 2.24.0
+  - dependency-name: com.fasterxml.jackson.datatype:jackson-datatype-jsr310
+    versions:
+    - 2.12.1
+  - dependency-name: com.fasterxml.jackson.datatype:jackson-datatype-jdk8
+    versions:
+    - 2.12.1
+  - dependency-name: com.fasterxml.jackson.module:jackson-module-parameter-names
+    versions:
+    - 2.12.1
+  - dependency-name: com.fasterxml.jackson.dataformat:jackson-dataformat-csv
+    versions:
+    - 2.12.1
+  - dependency-name: com.fasterxml.jackson.core:jackson-databind
+    versions:
+    - 2.12.1
