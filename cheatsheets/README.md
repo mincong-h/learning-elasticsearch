@@ -1,6 +1,6 @@
 # Cheatsheets
 
-Elasticsearch-related cheatsheets to be used with [cheat](https://github.com/cheat/cheat).
+Elasticsearch-related cheatsheets to be used with [`cheat`](https://github.com/cheat/cheat).
 
 ## Install
 
@@ -23,11 +23,23 @@ Add this path to your `cheat` configuration (`~/.config/cheat/conf.yml`):
 
 +   - name: elasticsearch
 +     path: /path/to/learning-elasticsearch/cheatsheets
-+     tags: [ elasticsearch ]
++     tags: [ elasticsearch, es ]
 +     readonly: true
-+
+
     - name: personal
       path: ~/documents/cheat/personal  # this is a separate directory and repository than above
       tags: [ personal ]
       readonly: false                   # new sheets may be written here
+```
+
+## Usage
+
+```sh
+# Show all the curl commands related to Elasticsearch
+cheat -t elasticsearch curl
+cheat -t es curl
+
+# Show curl commands related to module "snapshot"
+cheat -t elasticsearch:snapshot curl
+cheat -t es:snapshot curl
 ```
