@@ -1,0 +1,48 @@
+---
+syntax: shell
+tags: ["elasticsearch:snapshot", "es:snapshot"]
+---
+#
+# Snapshot and restore APIs
+# https://www.elastic.co/guide/en/elasticsearch/reference/7.x/snapshot-restore-apis.html
+#
+
+##### Snapshot repository management APIs #####
+
+# List all snapshot repositories
+curl localhost:9200/_snapshot/
+
+# Get snapshot repository
+curl localhost:9200/_snapshot/<repository>
+
+# Create or update snapshot repository
+curl -X PUT localhost:9200/_snapshot/<repository>
+
+# Verify snapshot repository
+curl -X POST localhost:9200/_snapshot/<repository>/_verify
+
+# Delete snapshot repository
+curl -X DELETE localhost:9200/_snapshot/<repository>
+
+# Clean up snapshot repository
+curl -X POST localhost:9200/_snapshot/<repository>/_cleanup
+
+##### Snapshot management APIs #####
+
+# Create snapshot
+curl -X PUT localhost:9200/_snapshot/<repository>/<snapshot>
+
+# Clone snapshot
+curl -X PUT localhost:9200/_snapshot/<repository>/<source_snapshot>/_clone/<target_snapshot>
+
+# Get snapshot
+curl localhost:9200/_snapshot/<repository>/<snapshot>
+
+# Get snapshot status
+curl localhost:9200/_snapshot/<repository>/<snapshot>/_status
+
+# Restore snapshot
+curl -X POST localhost:9200/_snapshot/<repository>/<snapshot>/_restore
+
+# Delete snapshot
+curl -X DELETE localhost:9200/_snapshot/<repository>/<snapshot>
