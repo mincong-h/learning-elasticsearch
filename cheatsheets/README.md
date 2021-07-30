@@ -12,6 +12,23 @@ MacOS:
 brew install cheat
 ```
 
+Use `cheat` and let it guide you for the initialization:
+
+```
+$ cheat
+A config file was not found. Would you like to create one now? [Y/n]: Y
+Would you like to download the community cheatsheets? [Y/n]: Y
+Cloning into '/Users/mincong.huang/.config/cheat/cheatsheets/community'...
+remote: Enumerating objects: 823, done.
+remote: Counting objects: 100% (119/119), done.
+remote: Compressing objects: 100% (89/89), done.
+remote: Total 823 (delta 47), reused 71 (delta 30), pack-reused 704
+Receiving objects: 100% (823/823), 231.26 KiB | 19.27 MiB/s, done.
+Resolving deltas: 100% (310/310), done.
+Created config file: /Users/mincong.huang/.config/cheat/conf.yml
+Please read this file for advanced configuration information.
+```
+
 Add this path to your `cheat` configuration (`~/.config/cheat/conf.yml`):
 
 ```diff
