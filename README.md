@@ -77,8 +77,10 @@ GitHub:
 
 Blogs:
 
-- Code 972, A blog about BigData, Cloud and Search technologies by Itamar Syn-Hershko<br>
-  <https://code972.com/blog>
+- Code 972, A blog about BigData, Cloud and Search technologies by Itamar Syn-Hershko <https://code972.com/blog>
+- 铭毅天下, Elasticsearch Expert, <https://elastic.blog.csdn.net/>
+- 少强, Alicloud, <https://www.zhihu.com/people/8080/posts>
+- 木洛, Alicloud, <https://www.zhihu.com/people/zhougong-cap/posts>
 
 Articles:
 
