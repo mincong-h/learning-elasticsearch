@@ -44,6 +44,9 @@ Articles wrote using code of this repository and other related repositories:
 - [DVF: Real Estate Analysis For Île-de-France in 2020](https://mincong.io/2021/04/16/dvf-real-estate-analysis-idf-2020/)
 - [Disk Watermarks In Elasticsearch](https://mincong.io/2021/04/10/disk-watermarks-in-elasticsearch/)
 - [Elasticsearch: Generate Configuration With Python Jinja 2](https://mincong.io/2021/04/11/elasticsearch-generate-configuration-with-python-jinja2/)
+- [Fix Corrupted Index in Elasticsearch](https://mincong.io/en/elasticsearch-corrupted-index/) / [修复 Elasticsearch 中损坏的索引](https://mincong.io/cn/elasticsearch-corrupted-index/)
+- [How to prevent data loss in Elasticsearch?](https://mincong.io/en/prevent-data-loss-in-elasticsearch/) / [如何防止 Elasticsearch 中的数据丢失？](https://mincong.io/cn/prevent-data-loss-in-elasticsearch/)
+- [Elasticsearch Settings](https://mincong.io/en/elasticsearch-settings/) / [一文了解 Elasticsearch 设置](https://mincong.io/cn/elasticsearch-settings/)
 
 ## Resources
 
