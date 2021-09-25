@@ -47,6 +47,7 @@ Articles wrote using code of this repository and other related repositories:
 - [Fix Corrupted Index in Elasticsearch](https://mincong.io/en/elasticsearch-corrupted-index/) / [修复 Elasticsearch 中损坏的索引](https://mincong.io/cn/elasticsearch-corrupted-index/)
 - [How to prevent data loss in Elasticsearch?](https://mincong.io/en/prevent-data-loss-in-elasticsearch/) / [如何防止 Elasticsearch 中的数据丢失？](https://mincong.io/cn/prevent-data-loss-in-elasticsearch/)
 - [Elasticsearch Settings](https://mincong.io/en/elasticsearch-settings/) / [一文了解 Elasticsearch 设置](https://mincong.io/cn/elasticsearch-settings/)
+- [Internal Structure Of Snapshot Repository](https://mincong.io/en/elasticsearch-snapshot-repository-structure/) / [Elasticsearch 快照仓库的内部结构](https://mincong.io/cn/elasticsearch-snapshot-repository-structure/)
 
 ## Resources
 
