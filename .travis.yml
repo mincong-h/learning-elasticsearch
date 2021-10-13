@@ -1,8 +1,0 @@
-language: java
-jdk:
-  - openjdk11
-script:
-  - mvn clean verify
-cache:
-  directories:
-    - '$HOME/.m2/repository'
