@@ -1,4 +1,4 @@
-# Learning Elasticsearch [![TravisCI](https://travis-ci.org/mincong-h/learning-elasticsearch.svg?branch=master)](https://travis-ci.org/github/mincong-h/learning-elasticsearch)
+# Learning Elasticsearch [![Build Status][actions-img]][actions]
 
 Elasticsearch is a distributed, RESTful search and analytics engine capable of
 addressing a growing number of use cases. As the heart of the Elastic Stack,
@@ -107,3 +107,6 @@ Upgrade Elasticsearch version, e.g 7.8.0 -> 7.10.0:
 ✅ README.md
 Finished.
 ```
+
+[actions]:     https://github.com/mincong-h/learning-elasticsearch/actions
+[actions-img]: https://github.com/mincong-h/learning-elasticsearch/workflows/Actions/badge.svg
