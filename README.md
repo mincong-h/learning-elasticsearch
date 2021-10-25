@@ -63,6 +63,7 @@ Elasticsearch documentation:
 Certifications:
 
 - [Elastic Certified Engineer](https://www.elastic.co/training/elastic-certified-engineer-exam)
+- ^ Article [ElasticSearch Engineer Exam v7.13 (2021)](https://kapuablog.wordpress.com/2021/10/15/elasticsearch-engineer-exam-v7-13-2021/) and Github project [Elastic Certified Engineer exam notes](https://github.com/mohclips/Elastic-Certified-Engineer-Exam-Notes) by [Nicholas Cross](https://github.com/mohclips)
 
 Books:
 
