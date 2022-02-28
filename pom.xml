@@ -132,7 +132,7 @@
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
-          <version>0.36.1</version>
+          <version>0.39.1</version>
           <!--
             Connect this plugin to the maven lifecycle around the integration-test phase:
             start the container in pre-integration-test and stop it in post-integration-test.
